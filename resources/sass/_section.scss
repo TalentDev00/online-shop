@@ -1,0 +1,29 @@
+section.product-search {
+    padding-top: 105px;
+
+    position: relative;
+
+    .wrapper-16 {
+        .search {
+
+            padding: 15px 0px 17px 0px!important;
+            &__form {
+
+                &__input {
+                    height:40px;
+
+                }
+            }
+        }
+    }
+}
+section.found {
+    padding-top: 19px;
+    padding-bottom: 41px;
+
+    .items {
+        @include row-flex();
+        align-items: stretch;
+
+    }
+}

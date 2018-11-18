@@ -1,0 +1,37 @@
+section.cart, section.cart-active, section.cart-done {
+    padding: 64px 0 79px 0;
+
+    .order__status {
+        max-width:107px;
+        margin: 16px auto 7px auto;
+    }
+
+    .items {
+        padding-top: 1px;
+        min-height: calc(100vh - 144px);
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        width:100%;
+
+        .btn {
+            margin-top: auto;
+            border-radius: 0px;
+            margin-bottom: 10px;
+        }
+
+        .promocode-wrapper {
+            background: $gray;
+            padding: 8px 0 9px 0;
+        }
+
+        .cartsum-wrapper {
+            padding: 14px 0px 19px 0px;
+        }
+
+        .incart {
+            padding-bottom: 0px;
+            width: 100%;
+        }
+    }
+}

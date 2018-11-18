@@ -1,0 +1,50 @@
+section.gallery {
+    background: $black;
+    height:100vh;
+    .items {
+        height:100%;
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .close {
+            position:absolute;
+            top:38px;
+            right:8px;
+            height:40px;
+            width:40px;
+            background: transparent;
+            border:none;
+
+            img {
+                width:24px;
+                height: 24px;
+            }
+        }
+
+        .owl-carousel {
+
+        }
+
+        .nav {
+            &__dots {
+                &__dot {
+                    span {
+                        width: 6px;
+                        height: 6px;
+                        display: block;
+                        border: solid 1px $white;
+                        background-color: $black;
+                        border-radius: 30px;
+                    }
+
+                    &-active {
+                        border: solid 1px $white!important;
+                        background-color: $white!important;
+                    }
+                }
+            }
+        }
+
+    }
+}

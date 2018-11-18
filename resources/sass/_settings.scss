@@ -1,0 +1,27 @@
+section.settings {
+    height: calc(100vh - 103px);
+    padding: 64px 0 39px 0;
+
+    .items {
+        height:100%;
+        .list {
+            &__item {
+                display: flex;
+                flex-direction: column;
+                border-top: 1px solid $catalog-border;
+                &:first-child {
+                    border-top: none;
+                }
+                &:last-child {
+                    border-bottom: 1px solid $catalog-border;
+                }
+                a {
+                    text-align: right;
+                }
+                &__name {
+                    display: block;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,62 @@
+.radiobutton {
+    width: 100%;
+
+    &__container {
+        display: block;
+        position: relative;
+        width:100%;
+        border:none;
+        text-decoration: none;
+        background: transparent;
+        box-sizing: padding-box;
+        padding-top: 12px;
+        padding-bottom: 15px;
+        font-family: Montserrat, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        font-style: normal;
+        font-stretch: normal;
+        letter-spacing: normal;
+        color: $black;
+        text-align: left;
+        max-width: calc(100% - 35px);
+        overflow-wrap: break-word;
+
+        &__input {
+            position: absolute;
+            opacity: 0;
+
+            &:checked ~ .radiobutton__container__checkmark {
+                background: transparent!important;
+                background-image:url("../images/icons/ok.svg") !important;
+                background-position:right center!important;
+                background-repeat: no-repeat!important;
+                background-size: 24px, 24px, contain!important;
+
+                &:after {
+                    display: block;
+                }
+            }
+        }
+        &__checkmark {
+            position: absolute;
+            top: 0;
+            right: -35px;
+            height: 100%;
+            width: 100%;
+            background: transparent!important;
+            background-image:url("../images/icons/circle.svg") !important;
+            background-position:right center!important;
+            background-repeat: no-repeat!important;
+            background-size: 24px, 24px, contain!important;
+
+
+            &:after {
+                content: "";
+                position: absolute;
+                display: none;
+            }
+        }
+    }
+}

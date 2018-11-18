@@ -1,0 +1,52 @@
+h2.options {
+    font-family: Montserrat, sans-serif;
+    font-weight: 700;
+    color: rgba(0,0,0,0.3);
+    font-size: 14px;
+    line-height: 20px;
+    text-align: left;
+    padding-top: 12px;
+    margin-bottom: -2px;
+}
+
+section.cart-checkout {
+    padding: 64px 0 79px 0;
+    display:flex;
+    flex-direction: column;
+    width:100%;
+    min-height:calc(100vh - 113px);
+
+    @include xs-block(){
+        padding: 64px 0 39px 0;
+    }
+
+    .items {
+        padding-bottom: 30px;
+        .delivery, .comment {
+            background: $gray;
+        }
+
+        .address, .comment {
+            padding-bottom: 8px;
+
+            h2 {
+                margin-bottom: 6px;
+            }
+        }
+
+
+        .list {
+            &__item {
+
+                &:last-child {
+                    margin-bottom: 0px;
+                }
+            }
+        }
+    }
+
+    button {
+        border-radius: 0px;
+        margin-bottom: 10px;
+    }
+}

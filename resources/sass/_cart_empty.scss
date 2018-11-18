@@ -1,0 +1,25 @@
+section.cart-empty {
+    padding: 64px 0 39px 0;
+    height:calc(100vh - 133px);
+
+    .items {
+
+        height:100%;
+
+        h2.done {
+            margin-top: 25px;
+        }
+        .buttons {
+            margin-bottom: 20px;
+            .btn {
+
+            }
+            .btn-stock {
+            }
+
+
+            .btn-catalog {
+            }
+        }
+    }
+}

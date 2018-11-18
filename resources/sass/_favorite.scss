@@ -1,0 +1,14 @@
+section.favorite {
+    padding-top: 64px;
+    padding-bottom: 41px;
+
+    .items {
+        @include row-flex();
+        align-items: stretch;
+    }
+
+    .product-found {
+        padding-top: 58px;
+        padding-bottom: 19px;
+    }
+}

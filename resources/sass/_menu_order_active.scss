@@ -1,0 +1,19 @@
+section.cart-active {
+
+    .items {
+        .incart {
+            .list {
+                width: 100%;
+                &__item {
+                    &:last-child {
+                        border-bottom: 1px solid $catalog-border!important;
+                    }
+                }
+            }
+        }
+    }
+
+    .cartsum-wrapper {
+        margin-bottom: 10px;
+    }
+}

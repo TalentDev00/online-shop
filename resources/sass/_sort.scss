@@ -1,0 +1,15 @@
+section.sort-list {
+    height:calc(100vh - 119px);
+    .wrapper-16 {
+        width: calc(100% - 32px);
+        height: calc(100% - 17px);
+        .items {
+            padding-top: 64px;
+            height:100%;
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            width:100%;
+        }
+    }
+}
