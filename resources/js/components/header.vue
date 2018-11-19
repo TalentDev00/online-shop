@@ -11,18 +11,21 @@
                 <button class="back"><img src="../../images/icons/back.svg" alt=""
                                           @click="back"
                 ></button>
-                <h2 class="head" ref="title">{{ newTitle }}</h2>
+                <slot name="title"></slot>
                 <button class="chat"><img :src="currentScreenChat ? '' : '../../images/icons/chat.svg'" alt=""
                                           @click="toChat"
                 ></button>
             </div>
+
             <div class="filters">
                 <button class="sort"
                         @click="toSort"
                 >Сортировка</button>
-                <button data-count="3" class="filter"
+                <button class="filter"
                         @click="toFilter"
-                >Фильтр&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                >Фильтр
+                    <span v-show="allFilters.length !== 0" class="filter-count">{{ allFilters.length }}</span>
+                </button>
             </div>
 
         </div>
@@ -31,7 +34,7 @@
             <button class="back"><img src="../../images/icons/back.svg" alt=""
                     @click="back"
             ></button>
-            <h2 class="head" ref="title">{{ newTitle }}</h2>
+            <slot name="title"></slot>
             <button class="chat"><img :src="currentScreenChat ? '' : '../../images/icons/chat.svg'" alt=""
                     @click="toChat"
             ></button>

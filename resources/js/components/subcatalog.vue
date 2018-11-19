@@ -20,7 +20,7 @@
                         <p class="list__item__name list__item__name-reactive">{{ searchValue }}</p>
                     </li>
                     <template v-if="searchValue === ''">
-                        <router-link v-for="(item, index) in category.categories"
+                        <router-link v-for="(item, index) in category.children"
                                      :key="index"
                                      tag="li"
                                      :to="'/catalog/' + $route.params.catalog_id + '/' + item.id"
@@ -46,6 +46,7 @@
     import Vue from 'vue';
     import axios from 'axios';
     import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
     export default {
         /*beforeRouteEnter(){
             axios.get('/catalog/' + this.$route.params.catalog_id)
@@ -57,8 +58,12 @@
         created() {
             axios.get('/catalog/' + this.$route.params.catalog_id)
                 .then(({ data }) => {
-                    this.category = data.data;
+                    this.category = data;
+                    Vue.nextTick(function(){
+                        this.changeTitle(data.name);
+                    }.bind(this));
                 });
+
         },
         data() {
             return {
@@ -92,6 +97,9 @@
             }*/
         },
         methods: {
+            ...mapActions('header', {
+                changeTitle: 'setTitle'
+            }),
             search(e) {
                 this.searchValue = e.target.value;
             }

@@ -77,6 +77,7 @@
     </div>
 </template>
 <script>
+    import Vue from 'vue';
     import myModal from './modal';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
@@ -89,7 +90,10 @@
         created() {
             axios.get('/catalog/' + this.$route.params.catalog_id + '/' + this.$route.params.category_id)
                 .then(({ data }) => {
-                    this.sectionProducts = data.data;
+                    this.sectionProducts = data;
+                    Vue.nextTick(function(){
+                        this.changeTitle(data[0].category.name);
+                    }.bind(this));
                 });
         },
         data() {
@@ -108,7 +112,7 @@
                 productsInCart: 'getProducts',
                 countProductsInCart: 'getCountProducts'
             }),
-            findByCategoryId() {
+           /* findByCategoryId() {
                 let found = [];
                 for (let i = 0; i < this.products.length; i++) {
                     if (this.products[i].cat_id === parseInt(this.$route.params.category_id)) {
@@ -117,12 +121,13 @@
                 }
 
                 return found;
-            },
+            },*/
             filteredList() {
-                return this.findByCategoryId.filter(item => {
+                return this.sectionProducts.filter(item => {
                     return item.name.toLowerCase().includes(this.searchValue.toLowerCase())
                 })
             },
+
 
         },
         methods: {
@@ -133,6 +138,9 @@
             ...mapActions('cart', {
                 add: 'addToCart',
                 remove: 'removeFromCart',
+            }),
+            ...mapActions('header', {
+                changeTitle: 'setTitle'
             }),
             popModal(product) {
                 this.currentProduct = product;

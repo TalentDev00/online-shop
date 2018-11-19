@@ -12,8 +12,8 @@ class Image extends Model
 
     // Realtions
 
-    public function products()
+    public function items()
     {
-        return $this->belongsToMany('App\Models\Product');
+        return $this->belongsToMany('App\Models\Item');
     }
 }

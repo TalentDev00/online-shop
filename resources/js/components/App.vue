@@ -1,7 +1,8 @@
 <template>
     <div >
-        <my-header v-show="!showHeader"
-        ></my-header>
+        <my-header v-show="!showHeader">
+            <h2 class="head" slot="title">{{ headerTitle }}</h2>
+        </my-header>
         <div class="transition-wrapper">
             <transition name="swipe" mode="out-in">
                 <router-view></router-view>
@@ -32,7 +33,7 @@
 <script>
     import myHeader from './header';
     import myFooter from './footer';
-
+    import {mapGetters} from 'vuex';
     export default {
         components: {
             myFooter,
@@ -57,6 +58,9 @@
             }
         },
         computed: {
+            ...mapGetters('header', {
+                headerTitle: 'getTitle'
+            }),
             startScreen(){
                 return this.currentScreenStart1
                     || this.currentScreenStart2

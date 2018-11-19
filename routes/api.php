@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,19 +18,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/users', function () {
-    return factory('App\User', 10)->make();
-});
 
 
 Route::namespace('Api')->group(function () {
-    Route::get('/catalog', 'CatalogController@index')->name('catalog');
-    Route::get('/catalog/{catalog_id}', 'CatalogController@subcatalogIndex')
-        ->where('catalog_id', '[0-9]+')
+    Route::get('/catalog', 'CategoryController@index');
+    Route::get('/catalog/{path}', 'CategoryController@index')
+        ->where('path', '[a-zA-Z0-9\-/_]+');
 
-        ->name('subcatalog');
-    Route::get('/catalog/{catalog_id}/{section_id}', 'CatalogController@sectionIndex')
-        ->where('catalog_id', '[0-9]+')
-        ->where('section_id', '[0-9]+');
 
 });

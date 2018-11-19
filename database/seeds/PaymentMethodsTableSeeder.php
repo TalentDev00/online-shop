@@ -11,6 +11,12 @@ class PaymentMethodsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\PaymentMethod::class, 4)->create();
+        App\Models\PaymentMethod::create([
+            'name' => 'Наличными',
+        ]);
+
+        App\Models\PaymentMethod::create([
+            'name' => 'Картой',
+        ]);
     }
 }

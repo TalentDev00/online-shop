@@ -11,22 +11,43 @@ class CategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        $catIds = App\Models\Catalog::pluck('id')->toArray();
-        $catalog = App\Models\Catalog::all();
+        factory(App\Models\Category::class, 12)->create();
+
+        $catIds = App\Models\Category::pluck('id')->toArray();
+        $categories = App\Models\Category::all();
 
 
-        $catalog->each(function($catalog) use($catIds) {
-            $catalog->categories()->saveMany(factory(App\Models\Category::class, 15)
-                ->create(['parent_id' => $catalog->id])
+       /* $categories->each(function($category) use($catIds) {
+            $category->saveMany(factory(App\Models\Category::class, 15)
+                ->create(['parent_id' => $category->id])
                 ->each(function($category) {
-                    $category->products()->saveMany(factory(App\Models\Product::class, 15))
+                    $category->items()->saveMany(factory(App\Models\Item::class, 15))
                         ->create(['cat_id' => $category->id]);
                 })
-              /*  ->each(function($category) use($catIds) {
-                    $category->tags()->sync(array_random($catIds, mt_rand(2, 2)));
-                })*/
             );
+        });*/
+
+
+       /* $categories->each(function($category) use ($catIds) {
+            $category->items()->saveMany(factory(App\Models\Item::class, 15))->create(['cat_id' => $category->id]);
+        });*/
+
+       //;
+
+        $categories->each(function($category){
+            $category->children()->saveMany(factory(App\Models\Category::class, 5)->states('children')->make());
         });
+
+        //factory(App\Models\Category::class, 15)->states('children')->make();
+
+        $allCats = App\Models\Category::all();
+
+        $allCats->each(function($cat){
+            $cat->items()->saveMany(factory(App\Models\Item::class, 15))
+                ->create(['cat_id' => $cat->id]);
+        });
+
+
     }
 }
 

@@ -12,22 +12,24 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            CatalogsTableSeeder::class,
             CategoriesTableSeeder::class,
             ImagesTableSeeder::class,
-            PropertiesTableSeeder::class,
-            VariantsTableSeeder::class,
-            ValuesTableSeeder::class,
-           // ProductsTableSeeder::class,
-            ImagesProductsTableSeeder::class,
-            ProductsPropertiesTableSeeder::class,
-            ProductsVariantsTableSeeder::class,
+            ItemPropertiesTableSeeder::class,
+            ItemVariantsTableSeeder::class,
+            ItemVariantValuesTableSeeder::class,
+            ImagesItemsTableSeeder::class,
+            ItemsPropertiesTableSeeder::class,
+            ItemsItemVariantsTableSeeder::class,
             PaymentMethodsTableSeeder::class,
             DeliveryMethodsTableSeeder::class,
             ShopInformationTableSeeder::class,
             DeliveryMethodsShopInformationTableSeeder::class,
             PaymentMethodsShopInformationTableSeeder::class,
-            CatalogsShopInformationTableSeeder::class,
+            CategoriesShopInformationTableSeeder::class,
+            OrdersTableSeeder::class,
+            CartItemsTableSeeder::class,
+            CartItemsOrdersTableSeeder::class,
+            CartItemsCartsTableSeeder::class
         ]);
     }
 }

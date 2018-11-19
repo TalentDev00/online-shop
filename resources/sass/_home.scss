@@ -161,29 +161,30 @@ header {
         .filter {
             position: relative;
             border-left: 0.5px solid rgba(0, 0, 0, 0.1);
-            padding: 0 16px 0 0;
+            padding: 0 26px 0 0;
+
+            .filter-count {
+                position: absolute;
+                top:7px;
+                left:calc(50% + 22px);
+                background: $dark-lime;
+                font-family: Montserrat, sans-serif;
+                font-weight: bold;
+                font-size: 14px;
+                font-style: normal;
+                font-stretch: normal;
+                line-height: 24px;
+                letter-spacing: normal;
+                text-align: center;
+                color: $white;
+                display: block;
+                border-radius: 50%;
+                width:24px;
+                height: 24px;
+            }
         }
 
-        .filter:before {
-            content: attr(data-count);
-            position: absolute;
-            top:7px;
-            left:calc(50% + 21px);
-            background: $dark-lime;
-            font-family: Montserrat, sans-serif;
-            font-weight: bold;
-            font-size: 14px;
-            font-style: normal;
-            font-stretch: normal;
-            line-height: 24px;
-            letter-spacing: normal;
-            text-align: center;
-            color: $white;
-            display: block;
-            border-radius: 50%;
-            width:24px;
-            height: 24px;
-        }
+
     }
 }
 

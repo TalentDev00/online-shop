@@ -31,7 +31,7 @@ export default {
                 })*/
             axios.get('/catalog')
                 .then(({ data }) => {
-                    store.commit('mutateLoadCatalogItems', data.data);
+                    store.commit('mutateLoadCatalogItems', data);
                 }).catch(error => {
                 console.log(error)
             })

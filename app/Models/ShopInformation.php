@@ -33,13 +33,13 @@ class ShopInformation extends Model
         );
     }
 
-    public function catalogs()
+    public function categories()
     {
         return $this->belongsToMany(
-            'App\Models\Catalog',
-            'catalog_shop_information',
+            'App\Models\Category',
+            'category_shop_information',
             'shop_information_id',
-            'catalog_id'
+            'category_id'
         );
     }
 }

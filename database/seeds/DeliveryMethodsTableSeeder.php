@@ -11,6 +11,14 @@ class DeliveryMethodsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\DeliveryMethod::class, 3)->create();
+        //factory(\App\Models\DeliveryMethod::class, 3)->create();
+
+        App\Models\DeliveryMethod::create([
+            'name' => 'Курьером - 300 рублей',
+        ]);
+
+        App\Models\DeliveryMethod::create([
+            'name' => 'Самовывоз - бесплатно',
+        ]);
     }
 }

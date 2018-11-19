@@ -48,6 +48,7 @@
     import {mapActions} from 'vuex';
     export default {
         created() {
+                this.changeTitle('КАТАЛОГ');
                 this.loadCatalog();
         },
         data() {
@@ -68,6 +69,9 @@
         methods: {
             ...mapActions('catalog', {
                 loadCatalog: 'loadCatalogItems'
+            }),
+            ...mapActions('header', {
+                changeTitle: 'setTitle'
             }),
             search(e) {
                 this.searchValue = e.target.value;
