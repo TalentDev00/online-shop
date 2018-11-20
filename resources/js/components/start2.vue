@@ -30,21 +30,33 @@
 
                         <div class="form">
                             <transition name="form-login">
-                                <form class="login" action="start2.html"
+                                <form class="login" action="" method="post"
                                       v-show="showLogin === true"
                                 >
-                                    <input type="email" placeholder="e-mail">
-                                    <input type="password" placeholder="пароль">
-                                    <button class="submit">войти</button>
+                                    <input type="email" placeholder="e-mail" name="email"
+                                           v-model="email"
+                                    >
+                                    <input type="password" placeholder="пароль" name="password"
+                                           v-model="password"
+                                    >
+                                    <button class="submit"
+                                            @click.prevent="login"
+                                    >войти</button>
                                 </form>
                             </transition>
                             <transition name="form-register">
-                                <form class="login register" action="start2.html"
+                                <form class="login register" action="" method="post"
                                       v-show="showLogin === false"
                                 >
-                                    <input type="email" placeholder="e-mail">
-                                    <input type="password" placeholder="пароль">
-                                    <button class="submit">зарегистрироваться</button>
+                                    <input type="email" placeholder="e-mail" name="email"
+                                           v-model="email"
+                                    >
+                                    <input type="password" placeholder="пароль" name="password"
+                                           v-model="password"
+                                    >
+                                    <button class="submit"
+                                            @click.prevent="register"
+                                    >зарегистрироваться</button>
                                 </form>
                             </transition>
                         </div>
@@ -57,17 +69,52 @@
 
 
 <script>
+    import axios from "axios";
+
     export default {
         name: 'app',
         components: {
         },
         data(){
             return {
-                showLogin: true
+                showLogin: true,
+                email: '',
+                password: '',
+                success: false,
+                error: false,
+                errors: {}
             }
         },
         methods: {
-
+            login() {
+                this.$auth.login({
+                    params: {
+                        email: this.email,
+                        password: this.password
+                    },
+                    success: function () {},
+                    error: function () {},
+                    fetchUser: true,
+                });
+            },
+            register() {
+                this.$auth.register({
+                    data: {
+                        email: this.email,
+                        password: this.password
+                    },
+                    success: function() {
+                        this.success = true;
+                    },
+                    error: function(resp) {
+                        this.error = true;
+                        this.errors = resp.response.data.errors;
+                    },
+                    autoLogin: true,
+                    rememberMe: true,
+                    redirect: {path: '/start3'}
+                });
+            }
         },
         computed: {
             ///

@@ -48,13 +48,19 @@ const routes = [
     },
     {
         name: 'start1',
-        path: '/start1',
-        component: start1
+        path: '/info',
+        component: start1,
+        meta: {
+            auth: false,
+        }
     },
     {
         name: 'start2',
-        path: '/start2',
-        component: start2
+        path: '/user',
+        component: start2,
+        meta: {
+            auth: false,
+        }
     },
     {
         name: 'start3',
@@ -66,7 +72,8 @@ const routes = [
         path: '/discounts',
         component: myAction,
         meta: {
-            title: 'АКЦИИ'
+            title: 'АКЦИИ',
+            auth: true
         }
     },
 
@@ -80,18 +87,25 @@ const routes = [
         name: 'product',
         path: '/catalog/products/:id',
         component: myItem,
+        meta: {
+            auth: true,
+        }
     },
     {
         name: 'gallery',
         path: '/catalog/products/:id/gallery',
-        component: myGallery
+        component: myGallery,
+        meta: {
+            auth: true,
+        }
     },
     {
         name: 'chat',
         path: '/chat',
         component: myChat,
         meta: {
-            title: 'МЫ ВСЕГДА НА СВЯЗИ!'
+            title: 'МЫ ВСЕГДА НА СВЯЗИ!',
+            auth: true,
         }
     },
     /*
@@ -105,6 +119,7 @@ const routes = [
         path: '/catalog',
         component: myCatalog,
         meta: {
+            auth: true,
             title: 'КАТАЛОГ'
         }
     },
@@ -112,22 +127,32 @@ const routes = [
         name: 'subcatalog',
         path: '/catalog/:catalog_id',
         component: mySubcatalog,
+        meta: {
+            auth: true,
+        }
     },
     {
         name: 'section',
         path: '/catalog/:catalog_id/:category_id',
         component: mySection,
+        meta: {
+            auth: true,
+        }
     },
     {
         name: 'result',
         path: '/result/:id',
-        component: myResult
+        component: myResult,
+        meta: {
+            auth: true,
+        }
     },
     {
         name: 'sort',
         path: '/sort',
         component: mySort,
         meta: {
+            auth: true,
             title: 'СОРТИРОВКА'
         }
     },
@@ -136,18 +161,25 @@ const routes = [
         path: '/filter',
         component: myFilter,
         meta: {
+            auth: true,
             title: 'ФИЛЬТРАЦИЯ'
         },
     },
     {
         name: 'parameters',
         path: '/filter/:id/parameters',
-        component: myParameters
+        component: myParameters,
+        meta: {
+            auth: true,
+        }
     },
     {
         name: 'home',
         path: '/home',
         component: myHome,
+        meta: {
+            auth: true,
+        }
     },
     /*
     *
@@ -160,6 +192,7 @@ const routes = [
         path: '/cart',
         component: myCart,
         meta: {
+            auth: true,
             title: 'КОРЗИНА'
         }
     },
@@ -168,6 +201,7 @@ const routes = [
         path: '/cart/checkout',
         component: myCheckout,
         meta: {
+            auth: true,
             title: 'ОФОРМЛЕНИЕ ЗАКАЗА'
         }
     },
@@ -176,6 +210,7 @@ const routes = [
         path: '/favorite',
         component: myFavorite,
         meta: {
+            auth: true,
             title: 'ИЗБРАННОЕ'
         }
     },
@@ -189,6 +224,7 @@ const routes = [
         path: '/menu',
         component: myMenu,
         meta: {
+            auth: true,
             title: 'ЛИЧНЫЙ КАБИНЕТ'
         }
     },
@@ -197,6 +233,7 @@ const routes = [
         path: '/menu/orders',
         component: myOrders,
         meta: {
+            auth: true,
             title: 'МОИ ЗАКАЗЫ'
         }
     },
@@ -205,6 +242,7 @@ const routes = [
         path: '/menu/orders/:id',
         component: myOrder,
         meta: {
+            auth: true,
             title: ':order-id'
         }
     },
@@ -213,6 +251,7 @@ const routes = [
         path: '/menu/settings',
         component: mySettings,
         meta: {
+            auth: true,
             title: 'НАСТРОЙКИ'
         }
     },
@@ -221,6 +260,7 @@ const routes = [
         path: '/menu/settings/edit',
         component: myEdit,
         meta: {
+            auth: true,
             title: 'НАСТРОЙКИ'
         }
     },
@@ -229,6 +269,7 @@ const routes = [
         path: '/menu/about',
         component: myAbout,
         meta: {
+            auth: true,
             title: 'О КОМПАНИИ'
         }
     },
@@ -237,6 +278,7 @@ const routes = [
         path: '/menu/delivery',
         component: myDelivery,
         meta: {
+            auth: true,
             title: 'ДОСТАВКА И ОПЛАТА'
         }
     },
@@ -245,6 +287,7 @@ const routes = [
         path: '/menu/contacts',
         component: myContacts,
         meta: {
+            auth: true,
             title: 'КОНТАКТЫ'
         }
     },

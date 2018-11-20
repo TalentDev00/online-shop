@@ -39,6 +39,7 @@
             myFooter,
             myHeader,
         },
+
         data(){
             return {
             }
@@ -46,15 +47,15 @@
         methods: {
             onNext(){
                 if (this.currentScreenStart1) {
-                    this.$router.push('/start2');
+                    this.$router.push({name: 'start2'});
                 }
 
                 else {
-                    this.$router.push('/start3');
+                    this.$router.push({name: 'start3'});
                 }
             },
             skip(){
-                this.$router.push('/start3');
+                this.$router.push({name: 'start3'});
             }
         },
         computed: {
