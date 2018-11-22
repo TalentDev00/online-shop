@@ -24,6 +24,7 @@ class CreateItemsTable extends Migration
             $table->string('name', 255);
             $table->integer('price')->unsigned();
             $table->float('discount')->unsigned()->default(0);
+            $table->integer('rating')->unsigned()->default(0);
             $table->timestamps();
         });
     }

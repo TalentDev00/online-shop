@@ -57,3 +57,18 @@
         </div>
     </section>
 </template>
+<script>
+    export default {
+        data() {
+            return {
+
+            }
+        },
+        computed: {
+
+        },
+        methods: {
+
+        }
+    }
+</script>

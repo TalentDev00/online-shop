@@ -4,38 +4,49 @@ import axios from 'axios';
 export default {
     namespaced: true,
     state: {
-        catalogItems: []
+        catalogItems: [],
+        sort: 'price_asc'
+
     },
     getters: {
         getCatalogItems(state) {
             return state.catalogItems;
+        },
+        getSort(state) {
+            return state.sort;
         }
     },
     mutations: {
         mutateLoadCatalogItems(state, data) {
             state.catalogItems = data;
         },
+        mutateClearCatalog(state) {
+            state.catalogItems = [];
+        },
+        mutateSort(state, value) {
+            state.sort = value;
+        }
     },
     actions: {
         loadCatalogItems(store) {
-          /*  Vue.http.get('anystore_catalog.php')
-                .then(response => response.json())
-                .then(data => {
-                    store.commit('mutateLoadCatalogItems', data);
-                });*/
-            /*axios.get('http://localhost/api/anystore_catalog.php')
-                .then(({ data }) => {
-                    store.commit('mutateLoadCatalogItems', data);
-                }).catch(error => {
-                    console.log(error)
-                })*/
-            axios.get('/catalog')
+            axios.get('/store/catalog')
                 .then(({ data }) => {
                     store.commit('mutateLoadCatalogItems', data);
                 }).catch(error => {
                 console.log(error)
             })
         },
+
+        loadNewItems(store, data) {
+            store.commit('mutateLoadCatalogItems', data);
+        },
+        clearCatalog(store) {
+            store.commit('mutateClearCatalog');
+        },
+        sortChange(store, value) {
+            store.commit('mutateSort', value);
+        }
+
 
     }
 }

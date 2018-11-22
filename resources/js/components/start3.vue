@@ -18,26 +18,14 @@
 </template>
 <script>
     export default {
-        name: 'app',
-        components: {
-        },
-        data(){
-            return {
-
-            }
-        },
         methods: {
             toDiscounts(){
-                this.$router.push('/discounts');
+                this.$router.push({name: 'actions'});
             },
             toCatalog(){
-                this.$router.push('/catalog');
+                this.$router.push({name: 'catalog'});
             }
         },
-        computed: {
-            ///
-
-        }
     }
 </script>
 <style lang="scss">

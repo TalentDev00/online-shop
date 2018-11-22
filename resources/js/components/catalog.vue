@@ -18,11 +18,12 @@
                         class="list__item">
                         <p class="list__item__name list__item__name-reactive">{{ searchValue }}</p>
                     </li>
+
                     <template v-if="searchValue === ''">
-                        <router-link v-for="(item, index) in catalogItems"
+                        <router-link v-for="(item, index) in rootCategories"
                                      :key="index"
                                      tag="li"
-                                     :to="'/catalog/' + item.id"
+                                     :to="{ name: 'subcatalog', params: { cat_id: item.id } }"
                                      class="list__item"
                         >
                             <a class="list__item__name" href="">{{ item.name }}</a>
@@ -32,7 +33,7 @@
                         <router-link v-for="(item, index) in filteredList"
                                      :key="index"
                                      tag="li"
-                                     :to="'/catalog/' + item.id"
+                                     :to="{ name: 'subcatalog', params: { cat_id: item.id } }"
                                      class="list__item"
                         >
                             <a class="list__item__name" href="">{{ item.name }}</a>
@@ -44,12 +45,14 @@
     </section>
 </template>
 <script>
+    import axios from 'axios';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
     export default {
-        created() {
-                this.changeTitle('КАТАЛОГ');
-                this.loadCatalog();
+        beforeRouteEnter(to, from, next) {
+            next(vm => {
+                vm.changeTitle('КАТАЛОГ');
+            });
         },
         data() {
             return {
@@ -65,17 +68,25 @@
                     return item.name.toLowerCase().includes(this.searchValue.toLowerCase())
                 })
             },
+            rootCategories() {
+                let found = [];
+
+                for (let i = 0; i < this.catalogItems.length; i++) {
+                    if (this.catalogItems[i].parent_id === null) {
+                        found.push(this.catalogItems[i]);
+                    }
+                }
+
+                return found;
+            },
         },
         methods: {
-            ...mapActions('catalog', {
-                loadCatalog: 'loadCatalogItems'
-            }),
             ...mapActions('header', {
                 changeTitle: 'setTitle'
             }),
             search(e) {
                 this.searchValue = e.target.value;
-            }
+            },
         }
     }
 </script>

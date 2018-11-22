@@ -34,9 +34,14 @@ Route::group(['middleware' => 'jwt.refresh'], function(){
 
 
 Route::namespace('Api')->group(function () {
-    Route::get('/catalog', 'CategoryController@index');
-    Route::get('/catalog/{path}', 'CategoryController@index')
-        ->where('path', '[a-zA-Z0-9\-/_]+');
+    //Route::get('/store/catalog', 'CategoryController@show');
+    //Route::get('/store/catalog/{path}', 'CategoryController@index')
+   //     ->where('path', '[a-zA-Z0-9\-/_]+');
+
+   /* Route::get('/store/catalog/{path?}', 'CategoryController@show')
+        ->where('path', '[a-zA-Z0-9\-/_]+');*/
 
 
+    Route::get('/store/catalog', 'ItemController@index');
+    Route::get('/info', 'CategoryController@index');
 });

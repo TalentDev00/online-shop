@@ -8,10 +8,11 @@
                     :id="'slct_' + variant.name"
                     @input="onSelect($event)"
             >
-                <option v-for="(option, index) in variant.values" :key="index"
+                <option v-for="(name, index) in variant.values" :key="index"
                         class="select__slct__opt"
-                        :value="option.name"
-                >{{ option.name }}</option>
+                        :selected="index == 0"
+                        :value="name"
+                >{{ name }}</option>
             </select>
         </div>
     </div>
@@ -26,7 +27,11 @@
                     variant: this.variant,
                     selected: e.target.value
                 });
+            },
+            console(name, index) {
+                console.log(name);
+                    console.log(index);
             }
-        }
+        },
     }
 </script>

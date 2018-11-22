@@ -44,7 +44,9 @@
 
 </template>
 <script>
+    import Vue from 'vue';
     import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
     export default {
         components: {
         },
@@ -53,17 +55,23 @@
             }
         },
         methods: {
+            ...mapActions('header', {
+                changeAnimationName: 'setAnimationName'
+            }),
             back() {
+                this.changeAnimationName('swipe-right');
                 this.$router.go(-1);
+
+                //this.changeAnimationName('swipe-left');
             },
             toChat() {
               this.$router.push({name: 'chat'});
             },
             toSort() {
-                this.$router.push({name: 'sort'})
+                this.$router.push({name: 'sort', params: {cat_id: this.$route.params.cat_id} })
             },
             toFilter() {
-                this.$router.push({name: 'filter'})
+                this.$router.push({name: 'filter', params: {cat_id: this.$route.params.cat_id} })
             }
         },
         computed: {

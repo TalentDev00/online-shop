@@ -56,23 +56,43 @@ body {
 }
 
 
-.swipe-enter-active {
-    animation: slideIn 0.2s;
+.swipe-left-enter-active {
+    animation: swipe-left-In 0.2s;
 }
 
-.swipe-leave-active {
-    animation: slideOut 0.2s;
+.swipe-left-leave-active {
+    animation: swipe-left-Out 0.2s;
 }
 
-@keyframes slideIn {
+@keyframes swipe-left-In {
     from{transform: translateX(100%);}
     to{transform: translateX(0px);}
 }
 
-@keyframes slideOut {
+@keyframes swipe-left-Out {
     from{transform: translateX(0px);}
     to{transform: translateX(-100%);}
 }
+
+.swipe-right-enter-active {
+    animation: swipe-right-In 0.2s;
+}
+
+.swipe-right-leave-active {
+    animation: swipe-right-Out 0.2s;
+}
+
+@keyframes swipe-right-In {
+    from{transform: translateX(-100%);}
+    to{transform: translateX(0px);}
+}
+
+@keyframes swipe-right-Out {
+    from{transform: translateX(0px);}
+    to{transform: translateX(100%);}
+}
+
+
 
 .btn {
     height: 40px;

@@ -11,39 +11,46 @@
                 </p>
             </div>
         </div>
-        <!--<div class="nav">
-            <button class="nav__btn nav__btn-previous">ПРОПУСТИТЬ</button>
-            <div class="nav__dots">
-                <div class="nav__dots__dot"><span class="nav__dots__dot-active"></span></div>
-                <div class="nav__dots__dot"><span></span></div>
-                <div class="nav__dots__dot"><span></span></div>
-            </div>
-            <button class="nav__btn nav__btn-next"
-                    @click="onNext"
-            >ДАЛЕЕ</button>
-        </div>-->
-
     </section>
-
 </template>
 
 <script>
-    export default {
+    import axios from 'axios';
+    import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
+    const getCatalog = (callback) => {
 
-        components: {
+        axios
+            .get('/info')
+            .then(response => {
+                callback(response.data);
+            }).catch(error => {
+            callback(error.response.data);
+        });
+    };
+    export default {
+        beforeRouteEnter (to, from, next) {
+            getCatalog(data => {
+                next(vm => {
+                    vm.loadItems(data.categories);
+                });
+            });
         },
         data(){
             return {
-                //
+
             }
         },
-        methods: {
-            /*onNext(){
-                this.$router.push('/start2');
-            }*/
-        },
         computed: {
-            ///
+            ...mapGetters('catalog', {
+                allCatalogs: 'getCatalogItems'
+            })
+        },
+        methods: {
+            ...mapActions('catalog', {
+                loadItems: 'loadNewItems'
+            }),
         }
+
     }
 </script>

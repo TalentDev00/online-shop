@@ -4,8 +4,10 @@
             <h2 class="head" slot="title">{{ headerTitle }}</h2>
         </my-header>
         <div class="transition-wrapper">
-            <transition name="swipe" mode="out-in">
-                <router-view></router-view>
+            <transition :name="animationName" mode="out-in"
+                        v-on:leave="leave"
+            >
+                <router-view :key="$route.fullPath"></router-view>
             </transition>
         </div>
 
@@ -34,17 +36,24 @@
     import myHeader from './header';
     import myFooter from './footer';
     import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
     export default {
         components: {
             myFooter,
             myHeader,
         },
-
         data(){
             return {
             }
         },
         methods: {
+            leave: function (el, done) {
+                this.changeAnimationName = 'swipe-left';
+                done();
+            },
+            ...mapActions('header', {
+                changeAnimationName: 'setAnimationName'
+            }),
             onNext(){
                 if (this.currentScreenStart1) {
                     this.$router.push({name: 'start2'});
@@ -60,7 +69,8 @@
         },
         computed: {
             ...mapGetters('header', {
-                headerTitle: 'getTitle'
+                headerTitle: 'getTitle',
+                animationName: 'getAnimationName'
             }),
             startScreen(){
                 return this.currentScreenStart1

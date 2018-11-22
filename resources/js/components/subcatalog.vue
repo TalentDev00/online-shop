@@ -19,11 +19,16 @@
                         class="list__item">
                         <p class="list__item__name list__item__name-reactive">{{ searchValue }}</p>
                     </li>
+                    <router-link tag="li"
+                                 :to="{ name:'section', params: {cat_id: $route.params.cat_id} }"
+                                 class="list__item">
+                        <a class="list__item__name list__item__name">Показать все товары раздела</a>
+                    </router-link>
                     <template v-if="searchValue === ''">
-                        <router-link v-for="(item, index) in category.children"
+                        <router-link v-for="(item, index) in childrenCategories"
                                      :key="index"
                                      tag="li"
-                                     :to="'/catalog/' + $route.params.catalog_id + '/' + item.id"
+                                     :to="{ name: 'subcatalog', params: { cat_id: item.id } }"
                                      class="list__item">
                             <a class="list__item__name" href="">{{ item.name }}</a>
                         </router-link>
@@ -32,7 +37,7 @@
                         <router-link v-for="(item, index) in filteredList"
                                      :key="index"
                                      tag="li"
-                                     :to="'/catalog/' + $route.params.catalog_id + '/' + item.id"
+                                     :to="{name: 'subcatalog', params: { cat_id: item.id}}"
                                      class="list__item">
                             <a class="list__item__name" href="">{{ item.name }}</a>
                         </router-link>
@@ -47,62 +52,73 @@
     import axios from 'axios';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
-    export default {
-        /*beforeRouteEnter(){
-            axios.get('/catalog/' + this.$route.params.catalog_id)
-                .then(({ data }) => {
-                    this.category = data;
-                });
-            next();
-        },*/
-        created() {
-            axios.get('/catalog/' + this.$route.params.catalog_id)
-                .then(({ data }) => {
-                    this.category = data;
-                    Vue.nextTick(function(){
-                        this.changeTitle(data.name);
-                    }.bind(this));
-                });
 
+
+
+    export default {
+        beforeRouteEnter(to, from, next) {
+            next(vm => {
+                let found = vm.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
+                vm.changeTitle(found.name);
+            });
         },
+        beforeRouteUpdate(to, from, next) {
+            let found = this.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
+            if (found) {
+                this.changeTitle(found.name);
+            }
+            next();
+        },
+      /*beforeRouteUpdate(to, from, next) {
+            this.path = parseInt(to.params.path);
+            next();
+        },
+        watch: {
+            $route ({params, query}) {
+                this.path = params.path;
+            }
+        },*/
         data() {
             return {
-                allCategories: [],
                 searchValue: '',
-                category: []
+                cat_id: parseInt(this.$route.params.cat_id)
             }
         },
         computed: {
-         /*   ...mapGetters('catalog', {
-                catalogItems: 'getCatalogItems'
-            }),*/
-            categoriesById() {
+            ...mapGetters('catalog', {
+                catalogItems: 'getCatalogItems',
+                sort: 'getSort'
+            }),
+            ...mapGetters('products', {
+                productItems: 'getItems'
+            }),
+            filteredList() {
+                return this.childrenCategories.filter(item => {
+                    return item.name.toLowerCase().includes(this.searchValue.toLowerCase())
+                })
+            },
+            childrenCategories() {
                 let found = [];
-                for (let i = 0; i < this.allCategories.length; i++) {
-                    if (this.allCategories[i].parent_id === parseInt(this.$route.params.catalog_id)) {
-                        found.push(this.allCategories[i]);
+                for (let i = 0; i < this.catalogItems.length; i++) {
+                    if (this.catalogItems[i].parent_id === this.cat_id) {
+                        found.push(this.catalogItems[i]);
                     }
                 }
 
                 return found;
-            },
-            filteredList() {
-                return this.categoriesById.filter(item => {
-                    return item.name.toLowerCase().includes(this.searchValue.toLowerCase())
-                })
-            },
-           /* subcatalogItem() {
-                return this.catalogItems.find(item => item.name === this.$route.params.subcatalog);
-
-            }*/
+            }
         },
         methods: {
             ...mapActions('header', {
-                changeTitle: 'setTitle'
+                changeTitle: 'setTitle',
+            }),
+            ...mapActions('products', {
+                clearProducts: 'clearItems',
+                loadProducts: 'loadItems'
             }),
             search(e) {
                 this.searchValue = e.target.value;
-            }
+            },
         }
     }
 </script>

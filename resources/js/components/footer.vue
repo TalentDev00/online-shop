@@ -32,19 +32,19 @@
         },
         methods: {
             toHome(){
-                this.$router.push('/home');
+                this.$router.push({name: 'home'});
             },
             toCatalog(){
-                this.$router.push('/catalog');
+                this.$router.push({name: 'catalog'});
             },
             toCart(){
-                this.$router.push('/cart');
+                this.$router.push({name: 'cart'});
             },
             toMenu(){
-                this.$router.push('/menu');
+                this.$router.push({name: 'menu'});
             },
             toFavorite(){
-                this.$router.push('/favorite');
+                this.$router.push({name: 'favorite'});
             }
         },
         computed: {

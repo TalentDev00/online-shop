@@ -12,6 +12,9 @@ export default {
         },
     },
     mutations: {
+        mutateClearItems(state) {
+            state.items = [];
+        },
         mutateLoadItems(state, data) {
             state.items = data;
         },
@@ -34,19 +37,7 @@ export default {
         },
     },
     actions: {
-        loadItems(store) {
-           /* Vue.http.get('anystore_prods.php')
-                .then(response => response.json())
-                .then(data => {
-                    store.commit('mutateLoadItems', data);
-                });*/
-            axios.get('http://localhost/api/anystore_prods.php')
-                .then(({ data }) => {
-                    store.commit('mutateLoadItems', data);
-                }).catch(error => {
-                console.log(error)
-            })
-        },
+
         like(store, product) {
             store.commit('mutateFavorite', product);
         },
@@ -54,6 +45,12 @@ export default {
             store.commit('mutateProductCondition', obj);
         },
 
+        loadItems(store, data){
+            store.commit('mutateLoadItems', data);
+        },
+        clearItems(store) {
+            store.commit('mutateClearItems');
+        }
 
 
     }

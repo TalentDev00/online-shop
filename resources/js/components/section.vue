@@ -14,7 +14,7 @@
                     </form>
                 </div>
             </div>
-            <p class="product-found" v-if="searchValue === ''">Найдено товаров: {{ sectionProducts.length }}</p>
+            <p class="product-found" v-if="searchValue === ''">Найдено товаров: {{ products.length }}</p>
         </section>
         <section class="found">
             <div class="wrapper-16">
@@ -34,11 +34,11 @@
 
                 <div v-else class="items" >
                     <div class="product"
-                         v-for="(product, index) in sectionProducts"
+                         v-for="(product, index) in products"
                          :key="index"
                     >
                         <router-link tag="div" :to="'/catalog/products/' + product.id" class="product__img">
-                            <a href=""><img :src="'../../images/' + product.images[0].large" :alt="product.name"></a>
+                            <a href=""><img :src="'/images/' + product.images[0].large" :alt="product.name"></a>
                         </router-link>
                         <div class="product__prices">
                             <p v-show="product.discount === 0" class="product__prices__nodiscount">{{ product.price }} <span>руб.</span></p>
@@ -77,34 +77,58 @@
     </div>
 </template>
 <script>
-    import Vue from 'vue';
+    import storeCatalogModule from '../store/modules/catalog.js';
+    import axios from 'axios';
     import myModal from './modal';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
-    import axios from 'axios';
+
+    const getProducts = (cat_id, sort, callback) => {
+        const params = { cat_id, sort };
+
+        axios
+            .get('/store/catalog', { params })
+            .then(response => {
+                callback(response.data);
+            }).catch(error => {
+            callback(error.response.data);
+        });
+    };
 
     export default {
         components: {
             myModal
         },
-        created() {
-            axios.get('/catalog/' + this.$route.params.catalog_id + '/' + this.$route.params.category_id)
-                .then(({ data }) => {
-                    this.sectionProducts = data;
-                    Vue.nextTick(function(){
-                        this.changeTitle(data[0].category.name);
-                    }.bind(this));
+        beforeRouteEnter(to, from, next) {
+            let sort = storeCatalogModule.state.sort;
+            getProducts(to.params.cat_id, sort, (data) => {
+                next(vm => {
+                    vm.loadProducts(data);
                 });
+            });
+        },
+        beforeRouteUpdate(to, from, next) {
+            this.clearProducts();
+            axios.get(`/store/catalog?cat_id=${to.params.cat_id}?sort=${this.sort}`)
+                .then(data => {
+                    this.loadProducts(data.data);
+                }).catch(error => {
+                console.log(error);
+            });
+            next();
         },
         data() {
             return {
                 showModal: false,
                 currentProduct: '',
                 searchValue: '',
-                sectionProducts: []
             }
         },
         computed: {
+            ...mapGetters('catalog', {
+                catalogItems: 'getCatalogItems',
+                sort:'getSort'
+            }),
             ...mapGetters('products', {
                 products: 'getItems'
             }),
@@ -112,23 +136,11 @@
                 productsInCart: 'getProducts',
                 countProductsInCart: 'getCountProducts'
             }),
-           /* findByCategoryId() {
-                let found = [];
-                for (let i = 0; i < this.products.length; i++) {
-                    if (this.products[i].cat_id === parseInt(this.$route.params.category_id)) {
-                        found.push(this.products[i]);
-                    }
-                }
-
-                return found;
-            },*/
             filteredList() {
-                return this.sectionProducts.filter(item => {
+                return this.products.filter(item => {
                     return item.name.toLowerCase().includes(this.searchValue.toLowerCase())
                 })
             },
-
-
         },
         methods: {
             ...mapActions('products', {
@@ -138,9 +150,6 @@
             ...mapActions('cart', {
                 add: 'addToCart',
                 remove: 'removeFromCart',
-            }),
-            ...mapActions('header', {
-                changeTitle: 'setTitle'
             }),
             popModal(product) {
                 this.currentProduct = product;

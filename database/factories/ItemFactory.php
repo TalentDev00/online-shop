@@ -11,7 +11,8 @@ $factory->define(App\Models\Item::class, function (Faker $faker) {
     return [
         'name' => $faker->firstName,
         'price' => mt_rand(300, 3000),
-        'discount' => array_rand($array)
+        'discount' => array_rand($array),
+        'rating' => mt_rand(0, 5)
 
     ];
 });

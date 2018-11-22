@@ -11,6 +11,6 @@ class ItemPropertiesTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\ItemProperty::class, 30)->create();
+        factory(\App\Models\ItemProperty::class, 8)->create();
     }
 }
