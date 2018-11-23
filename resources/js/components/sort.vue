@@ -3,72 +3,72 @@
         <div class="wrapper-16">
             <div class="items">
                 <ul class="list">
-                    <li class="list__item">
-                        <div class="radiobutton">
-                            <label class="radiobutton__container">Цена по возрастанию
-                                <input class="radiobutton__container__input" type="radio" checked="checked" name="radio">
-                                <span class="radiobutton__container__checkmark"></span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="list__item">
-                        <div class="radiobutton">
-                            <label class="radiobutton__container">Цена по убыванию
-                                <input class="radiobutton__container__input" type="radio" checked="checked" name="radio">
-                                <span class="radiobutton__container__checkmark"></span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="list__item">
-                        <div class="radiobutton">
-                            <label class="radiobutton__container">По рейтингу
-                                <input class="radiobutton__container__input" type="radio" checked="checked" name="radio">
-                                <span class="radiobutton__container__checkmark"></span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="list__item">
-                        <div class="radiobutton">
-                            <label class="radiobutton__container">По размеру скидки
-                                <input class="radiobutton__container__input" type="radio" checked="checked" name="radio">
-                                <span class="radiobutton__container__checkmark"></span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="list__item">
-                        <div class="radiobutton">
-                            <label class="radiobutton__container">Новинки
-                                <input class="radiobutton__container__input" type="radio" checked="checked" name="radio">
-                                <span class="radiobutton__container__checkmark"></span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="list__item">
-                        <div class="radiobutton">
-                            <label class="radiobutton__container">По умолчанию
-                                <input class="radiobutton__container__input" type="radio" checked="checked" name="radio">
-                                <span class="radiobutton__container__checkmark"></span>
-                            </label>
-                        </div>
+                    <li v-for="(item, index) in sortVariants" :key="index"
+                        class="list__item">
+                        <my-radio :variant="item"
+                                  @onchange="updateValue($event)"
+                        ></my-radio>
                     </li>
                 </ul>
             </div>
-            <button class="btn">применить</button>
+            <button class="btn"
+                    @click.prevent="applySort"
+            >применить</button>
         </div>
     </section>
 </template>
 <script>
+    import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
+    import myRadio from './helpers/radio';
     export default {
+        components: {
+            myRadio
+        },
         data() {
             return {
-
+                sortVariants: [
+                    {
+                        name : 'Цена по возрастанию',
+                        value: 'price_asc'
+                    },
+                    {
+                        name: 'Цена по убыванию',
+                        value: 'price_desc'
+                    },
+                    {
+                        name: 'По рейтингу',
+                        value: 'rating'
+                    },
+                    {
+                        name: 'Новинки',
+                        value: 'new'
+                    },
+                    {
+                        name: 'По умолчанию',
+                        value: 'default'
+                    }
+                ],
+                checked: this.sort
             }
         },
         computed: {
-
+            ...mapGetters('products', {
+                sort:'getSort'
+            }),
         },
         methods: {
+            ...mapActions('products', {
+                changeSort: 'sortChange'
+            }),
+            updateValue(data) {
+                this.checked = data;
+            },
 
+            applySort() {
+                this.changeSort(this.checked);
+                this.$router.go(-1);
+            }
         }
     }
 </script>

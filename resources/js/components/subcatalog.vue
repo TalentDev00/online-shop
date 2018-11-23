@@ -13,7 +13,6 @@
                         ><img src="../../images/icons/close.svg" alt=""></a>
                     </form>
                 </div>
-
                 <ul class="list">
                     <li v-if="searchValue !== ''"
                         class="list__item">
@@ -28,7 +27,7 @@
                         <router-link v-for="(item, index) in childrenCategories"
                                      :key="index"
                                      tag="li"
-                                     :to="{ name: 'subcatalog', params: { cat_id: item.id } }"
+                                     :to="item.children_count > 0 ? { name: 'subcatalog', params: { cat_id: item.id } } : { name:'section', params: {cat_id: item.id} }"
                                      class="list__item">
                             <a class="list__item__name" href="">{{ item.name }}</a>
                         </router-link>
@@ -37,7 +36,7 @@
                         <router-link v-for="(item, index) in filteredList"
                                      :key="index"
                                      tag="li"
-                                     :to="{name: 'subcatalog', params: { cat_id: item.id}}"
+                                     :to="item.children_count > 0 ? { name: 'subcatalog', params: { cat_id: item.id } } : { name:'section', params: {cat_id: item.id} }"
                                      class="list__item">
                             <a class="list__item__name" href="">{{ item.name }}</a>
                         </router-link>
@@ -48,18 +47,16 @@
     </section>
 </template>
 <script>
-    import Vue from 'vue';
-    import axios from 'axios';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
-
-
 
     export default {
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 let found = vm.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
-                vm.changeTitle(found.name);
+                if (found) {
+                    vm.changeTitle(found.name);
+                }
             });
         },
         beforeRouteUpdate(to, from, next) {
@@ -69,15 +66,6 @@
             }
             next();
         },
-      /*beforeRouteUpdate(to, from, next) {
-            this.path = parseInt(to.params.path);
-            next();
-        },
-        watch: {
-            $route ({params, query}) {
-                this.path = params.path;
-            }
-        },*/
         data() {
             return {
                 searchValue: '',
@@ -87,10 +75,6 @@
         computed: {
             ...mapGetters('catalog', {
                 catalogItems: 'getCatalogItems',
-                sort: 'getSort'
-            }),
-            ...mapGetters('products', {
-                productItems: 'getItems'
             }),
             filteredList() {
                 return this.childrenCategories.filter(item => {
@@ -111,10 +95,6 @@
         methods: {
             ...mapActions('header', {
                 changeTitle: 'setTitle',
-            }),
-            ...mapActions('products', {
-                clearProducts: 'clearItems',
-                loadProducts: 'loadItems'
             }),
             search(e) {
                 this.searchValue = e.target.value;

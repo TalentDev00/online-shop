@@ -34,17 +34,28 @@
         },
         computed: {
             ...mapGetters('filters', {
-                allFilters: 'getFilterItems'
+                products: 'getItems'
             }),
-            findFilter() {
-                return this.allFilters.find(item => item.id === parseInt(this.$route.params.id));
-            }
+            getFilters() {
+                let properties = [];
+                for (let i = 0; i < this.products.length; i++) {
+                    if (this.products[i].properties && this.products[i].properties.length > 0) {
+                        let prop = this.products[i].properties;
+                        for (let i = 0; i < prop.length; i++) {
+                            properties.push(prop[i]);
+                        }
+                    }
+                }
+
+                return properties.filter((e, i) => {
+                    return properties.findIndex((x) => {
+                        return x.name === e.name;
+                    }) === i;
+
+                });
+            },
         },
         methods: {
-            ...mapActions('filters', {
-                loadFilters: 'loadFilterItems',
-                check: 'checkFilter'
-            }),
             changeValue(e) {
                 this.check(e);
             },

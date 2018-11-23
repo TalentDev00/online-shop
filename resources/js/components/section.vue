@@ -33,7 +33,8 @@
                 </ul>
 
                 <div v-else class="items" >
-                    <div class="product"
+                    <div
+                         class="product"
                          v-for="(product, index) in products"
                          :key="index"
                     >
@@ -77,17 +78,15 @@
     </div>
 </template>
 <script>
-    import storeCatalogModule from '../store/modules/catalog.js';
+    import storeProductsModule from '../store/modules/products.js';
     import axios from 'axios';
     import myModal from './modal';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
 
-    const getProducts = (cat_id, sort, callback) => {
-        const params = { cat_id, sort };
-
-        axios
-            .get('/store/catalog', { params })
+    const getProducts = (cat_id, sort, min, max, callback) => {
+        const params = { cat_id, sort, min, max };
+        axios.get('/store/catalog', { params })
             .then(response => {
                 callback(response.data);
             }).catch(error => {
@@ -100,10 +99,17 @@
             myModal
         },
         beforeRouteEnter(to, from, next) {
-            let sort = storeCatalogModule.state.sort;
-            getProducts(to.params.cat_id, sort, (data) => {
+            let sort = storeProductsModule.state.sort;
+            let min = storeProductsModule.state.minRange;
+            let max = storeProductsModule.state.maxRange;
+            getProducts(to.params.cat_id, sort, min, max, (data) => {
                 next(vm => {
                     vm.loadProducts(data);
+
+                    let found = vm.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
+                    if (found) {
+                        vm.changeTitle(found.name);
+                    }
                 });
             });
         },
@@ -115,6 +121,11 @@
                 }).catch(error => {
                 console.log(error);
             });
+
+            let found = this.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
+            if (found) {
+                this.changeTitle(found.name);
+            }
             next();
         },
         data() {
@@ -127,10 +138,11 @@
         computed: {
             ...mapGetters('catalog', {
                 catalogItems: 'getCatalogItems',
-                sort:'getSort'
+
             }),
             ...mapGetters('products', {
-                products: 'getItems'
+                products: 'getItems',
+                sort:'getSort'
             }),
             ...mapGetters('cart', {
                 productsInCart: 'getProducts',
@@ -145,11 +157,15 @@
         methods: {
             ...mapActions('products', {
                 loadProducts: 'loadItems',
-                addOrRemoveLike: 'like'
+                addOrRemoveLike: 'like',
+                clearProducts: 'clearItems'
             }),
             ...mapActions('cart', {
                 add: 'addToCart',
                 remove: 'removeFromCart',
+            }),
+            ...mapActions('header', {
+                changeTitle: 'setTitle'
             }),
             popModal(product) {
                 this.currentProduct = product;

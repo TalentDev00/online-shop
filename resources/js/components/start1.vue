@@ -18,8 +18,8 @@
     import axios from 'axios';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
-    const getCatalog = (callback) => {
 
+    const getCatalog = (callback) => {
         axios
             .get('/info')
             .then(response => {
@@ -28,6 +28,7 @@
             callback(error.response.data);
         });
     };
+
     export default {
         beforeRouteEnter (to, from, next) {
             getCatalog(data => {
@@ -35,11 +36,6 @@
                     vm.loadItems(data.categories);
                 });
             });
-        },
-        data(){
-            return {
-
-            }
         },
         computed: {
             ...mapGetters('catalog', {
@@ -51,6 +47,5 @@
                 loadItems: 'loadNewItems'
             }),
         }
-
     }
 </script>

@@ -1,20 +1,20 @@
 <template>
     <footer>
         <div class="menu">
-            <button class="menu__button menu__button__home"><img :src="currentScreenHome ? '../../images/icons/home_active.svg' : '../../images/icons/home.svg'" alt=""
+            <button class="menu__button menu__button__home"><img :src="currentScreenHome ? '/images/icons/home_active.svg' : '/images/icons/home.svg'" alt=""
                     @click="toHome"
             >
             </button>
-            <button class="menu__button menu__button__search"><img :src="currentScreenCatalog ? '../../images/icons/catalog_active.svg' : '../../images/icons/catalog.svg'" alt=""
+            <button class="menu__button menu__button__search"><img :src="currentScreenCatalog ? '/images/icons/catalog_active.svg' : '/images/icons/catalog.svg'" alt=""
                     @click="toCatalog"
             ></button>
-            <button :data-notification="countProductsInCart" class="menu__button menu__button__cart"><img :src="currentScreenCart ? '../../images/icons/cart_active.svg' : '../../images/icons/cart.svg'"
+            <button :data-notification="countProductsInCart" class="menu__button menu__button__cart"><img :src="currentScreenCart ? '/images/icons/cart_active.svg' : '/images/icons/cart.svg'"
                     @click="toCart"
             ></button>
-            <button class="menu__button menu__button__favorite"><img :src="currentScreenFavorite ? '../../images/icons/favorite_active.svg' : '../../images/icons/favorite.svg'"
+            <button class="menu__button menu__button__favorite"><img :src="currentScreenFavorite ? '/images/icons/favorite_active.svg' : '/images/icons/favorite.svg'"
                     @click="toFavorite"
             ></button>
-            <button class="menu__button menu__button__menu"><img :src="currentScreenMenu ? '../../images/icons/menu_active.svg' : '../../images/icons/menu.svg'"
+            <button class="menu__button menu__button__menu"><img :src="currentScreenMenu ? '/images/icons/menu_active.svg' : '/images/icons/menu.svg'"
                     @click="toMenu"
             ></button>
         </div>

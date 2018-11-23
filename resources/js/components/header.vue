@@ -12,7 +12,7 @@
                                           @click="back"
                 ></button>
                 <slot name="title"></slot>
-                <button class="chat"><img :src="currentScreenChat ? '' : '../../images/icons/chat.svg'" alt=""
+                <button class="chat"><img :src="currentScreenChat ? '' : '/images/icons/chat.svg'" alt=""
                                           @click="toChat"
                 ></button>
             </div>
@@ -35,7 +35,7 @@
                     @click="back"
             ></button>
             <slot name="title"></slot>
-            <button class="chat"><img :src="currentScreenChat ? '' : '../../images/icons/chat.svg'" alt=""
+            <button class="chat"><img :src="currentScreenChat ? '' : '/images/icons/chat.svg'" alt=""
                     @click="toChat"
             ></button>
         </div>

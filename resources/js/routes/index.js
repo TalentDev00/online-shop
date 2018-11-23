@@ -153,6 +153,14 @@ const routes = [
         },
     },
     {
+        name: 'parameters',
+        path: '/store/catalog/:cat_id?/section/filter/:filter_id/parameters',
+        component: myParameters,
+        meta: {
+            auth: false,
+        }
+    },
+    {
         name: 'result',
         path: '/result/:id',
         component: myResult,
@@ -160,14 +168,7 @@ const routes = [
             auth: false,
         }
     },
-    {
-        name: 'parameters',
-        path: '/filter/:id/parameters',
-        component: myParameters,
-        meta: {
-            auth: false,
-        }
-    },
+
     {
         name: 'home',
         path: '/home',

@@ -5,10 +5,48 @@ export default {
     namespaced: true,
     state: {
         items: [],
+        sort: 'price_asc',
+
+        /*
+        *
+        * FILTER
+        *
+        * */
+        filteredItems: [],
+        minRange: '',
+        maxRange: '',
+        slider: {
+            startMin: 0,
+            startMax: 0,
+        }
     },
     getters: {
         getItems(state) {
             return state.items;
+        },
+        getSort(state) {
+            return state.sort;
+        },
+
+        /*
+        *
+        * FILTER GETTERS
+        *
+        * */
+        getFilteredItems(state) {
+            return state.filteredItems;
+        },
+        getSliderMinRange(state) {
+            return state.minRange;
+        },
+        getSliderMaxRange(state) {
+            return state.maxRange;
+        },
+        getSliderStartMin(state) {
+            return state.slider.startMin;
+        },
+        getSliderStartMax(state) {
+            return state.slider.startMax;
         },
     },
     mutations: {
@@ -35,6 +73,40 @@ export default {
                 }
             }
         },
+        mutateSort(state, value) {
+            state.sort = value;
+        },
+        /*
+        *
+        * FILTER MUTATIONS
+        *
+        * */
+        mutateAddToFiltered(state, product) {
+            let found = state.filteredItems.find(item => item.id === product.id);
+
+            if (!found) {
+                state.filteredItems.push(product);
+            }
+        },
+        mutateRemoveFromFiltered(state, product) {
+            let found = state.filteredItems.find(item => item.id === product.id);
+            let index = state.filteredItems.indexOf(found);
+            if (index > -1) {
+                state.filteredItems.splice(index, 1);
+            }
+        },
+        mutateMinRange(state, value) {
+            state.minRange = value;
+        },
+        mutateMaxRange(state, value) {
+            state.maxRange = value;
+        },
+        mutateStartMin(state, value) {
+            state.slider.startMin = value;
+        },
+        mutateStartMax(state, value) {
+            state.slider.startMax = value;
+        },
     },
     actions: {
 
@@ -50,8 +122,33 @@ export default {
         },
         clearItems(store) {
             store.commit('mutateClearItems');
-        }
+        },
+        sortChange(store, value) {
+            store.commit('mutateSort', value);
+        },
 
-
+        /*
+        *
+        * FILTER MUTATIONS
+        *
+        * */
+        addToFiltered(store, product) {
+            store.commit('mutateAddToFiltered', product);
+        },
+        removeFromFiltered(store, product) {
+            store.commit('mutateRemoveFromFiltered', product);
+        },
+        changeMinRange(store, value) {
+            store.commit('mutateMinRange', value);
+        },
+        changeMaxRange(store, value) {
+            store.commit('mutateMaxRange', value);
+        },
+        changeStartMax(store, value) {
+            store.commit('mutateStartMax', value);
+        },
+        changeStartMin(store, value) {
+            store.commit('mutateStartMin', value);
+        },
     }
 }
