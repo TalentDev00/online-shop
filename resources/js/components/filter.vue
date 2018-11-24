@@ -3,17 +3,19 @@
         <div class="wrapper-16">
             <div class="items">
                 <ul class="list">
-                    <li v-for="(filter, index) in getFilters" :ket="index"
+                    <li v-for="(filter, index) in filters" :ket="index"
                         class="list__item">
                         <router-link tag="a" :to="{ name:'parameters', params: {cat_id: $route.params.cat_id, filter_id: filter.id} }">
                             <div class="item-wrapper">
                                 <div class="name-wrapper">
                                     <span class="list__item__name">{{ filter.name }}</span>
-                                    <span class="list__item__filtercounter">3</span>
+                                    <span v-show="filterParams(filter) ? filterParams(filter).values.length > 0 : false"
+                                          class="list__item__filtercounter">{{ filterParams(filter) ? filterParams(filter).values.length : 0 }}</span>
                                 </div>
-                                <button
+                                <button v-show="filterParams(filter) ? filterParams(filter).values.length > 0 : false"
                                         class="list__item__close list__item__close-active"
-                                ><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjRweCIgaGVpZ2h0PSIyNHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDUyLjIgKDY3MTQ1KSAtIGh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaCAtLT4KICAgIDx0aXRsZT5pY29ucyAvIGNsb3NlPC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+CiAgICAgICAgPHBhdGggZD0iTTMuMTA1NDE2NjcsNS4yMjY0MTY2NyBDMi41MjA0MTY2Nyw0LjY0MTQxNjY3IDIuNTIwNDE2NjcsMy42OTA0MTY2NyAzLjEwNTQxNjY3LDMuMTA1NDE2NjcgQzMuNjkwNDE2NjcsMi41MjA0MTY2NyA0LjY0MTQxNjY3LDIuNTIwNDE2NjcgNS4yMjY0MTY2NywzLjEwNTQxNjY3IEwxMS45OTkyNSw5Ljg3ODI1IEwxOC43NzIwODMzLDMuMTA1NDE2NjcgQzE5LjM1NzA4MzMsMi41MjA0MTY2NyAyMC4zMDgwODMzLDIuNTIwNDE2NjcgMjAuODkzMDgzMywzLjEwNTQxNjY3IEMyMS40NzgwODMzLDMuNjkwNDE2NjcgMjEuNDc4MDgzMyw0LjY0MTQxNjY3IDIwLjg5MzA4MzMsNS4yMjY0MTY2NyBMMTQuMTIwMjUsMTEuOTk5MjUgTDIwLjg5MzA4MzMsMTguNzcyMDgzMyBDMjEuNDc4MDgzMywxOS4zNTcwODMzIDIxLjQ3ODA4MzMsMjAuMzA4MDgzMyAyMC44OTMwODMzLDIwLjg5MzA4MzMgQzIwLjMwODA4MzMsMjEuNDc4MDgzMyAxOS4zNTcwODMzLDIxLjQ3ODA4MzMgMTguNzcyMDgzMywyMC44OTMwODMzIEwxMS45OTkyNSwxNC4xMjAyNSBMNS4yMjY0MTY2NywyMC44OTMwODMzIEM0LjY0MTQxNjY3LDIxLjQ3ODA4MzMgMy42OTA0MTY2NywyMS40NzgwODMzIDMuMTA1NDE2NjcsMjAuODkzMDgzMyBDMi41MjA0MTY2NywyMC4zMDgwODMzIDIuNTIwNDE2NjcsMTkuMzU3MDgzMyAzLjEwNTQxNjY3LDE4Ljc3MjA4MzMgTDkuODc4MjUsMTEuOTk5MjUgTDMuMTA1NDE2NjcsNS4yMjY0MTY2NyBaIiBpZD0icGF0aC0xIj48L3BhdGg+CiAgICA8L2RlZnM+CiAgICA8ZyBpZD0iaWNvbnMtLy1jbG9zZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPG1hc2sgaWQ9Im1hc2stMiIgZmlsbD0id2hpdGUiPgogICAgICAgICAgICA8dXNlIHhsaW5rOmhyZWY9IiNwYXRoLTEiPjwvdXNlPgogICAgICAgIDwvbWFzaz4KICAgICAgICA8dXNlIGlkPSJTaGFwZSIgZmlsbD0iIzAwMDAwMCIgb3BhY2l0eT0iMC4yOTk1NDg5MjEiIHhsaW5rOmhyZWY9IiNwYXRoLTEiPjwvdXNlPgogICAgPC9nPgo8L3N2Zz4=" alt=""></button>
+                                        @click.prevent="clearParams(filter)"
+                                ><img src="../../images/icons/close_gray.svg" alt=""></button>
                             </div>
                         </router-link>
                     </li>
@@ -44,22 +46,22 @@
 </template>
 <script>
     import Vue from 'vue';
-    import storeProducts from '../store/modules/products';
     import {mapActions, mapGetters} from 'vuex';
 
     export default {
         beforeRouteEnter(to, from, next) {
-            let products =  storeProducts.state.items;
-            if (products.length > 0) {
-                let prices = [];
-                for (let i = 0; i < products.length; i++) {
-                    let product_price  = parseInt(products[i].price) - parseInt(products[i].discount);
-                    prices.push(product_price);
-                }
+            next(vm => {
+                let products = vm.$store.state.products.items;
+                if (products.length > 0) {
+                    let prices = [];
+                    products.forEach(item => {
+                        let price = parseInt(item.price) - parseInt(item.discount);
+                        prices.push(price);
+                    });
 
-                let minPrice = Math.min(...prices);
-                let maxPrice = Math.max(...prices);
-                next(vm => {
+                    let minPrice = Math.min(...prices);
+                    let maxPrice = Math.max(...prices);
+
                     vm.changeTitle('ФИЛЬТР');
                     vm.slider.min = 0;
                     vm.slider.max = maxPrice;
@@ -67,11 +69,11 @@
                     vm.maxRange = maxPrice;
                     vm.slider.startMin = minPrice;
                     vm.slider.startMax = maxPrice;
-                });
-            }
-            else {
-                next(vm =>  vm.changeTitle('ФИЛЬТР'));
-            }
+                }
+                else {
+                    vm.changeTitle('ФИЛЬТР');
+                }
+            });
         },
         created() {
             Vue.nextTick(function() {
@@ -97,6 +99,7 @@
                 products: 'getItems',
 
                 // FILTERS
+                paramsChecked: 'getChecked',
                 filteredProducts: 'getFilteredItems',
                 sliderMinRange: 'getSliderMinRange',
                 sliderMaxRange: 'getSliderMaxRange',
@@ -104,50 +107,85 @@
                 sliderStartMax: 'getSliderStartMax',
 
             }),
-            getFilters() {
+            filterParams() {
+                return (filter) => this.paramsChecked.find(item => item.filter === filter.name)
+            },
+            filters() {
                 let properties = [];
-                for (let i = 0; i < this.products.length; i++) {
-                    if (this.products[i].properties && this.products[i].properties.length > 0) {
-                        let prop = this.products[i].properties;
-                        for (let i = 0; i < prop.length; i++) {
-                            properties.push(prop[i]);
-                        }
+                this.products.forEach((item) => {
+                    if (item.properties && item.properties.length > 0) {
+                        item.properties.forEach((elem) => {
+                            properties.push(elem);
+                        });
                     }
-                }
+                });
 
-                return properties.filter((e, i) => {
-                    return properties.findIndex((x) => {
-                        return x.name === e.name;
+                return properties.filter((item, i) => {
+                    return properties.findIndex((elem) => {
+                        return elem.name === item.name;
                     }) === i;
 
                 });
             },
             lowestPrice() {
                 let prices = [];
-                for (let i = 0; i < this.products.length; i++) {
-                    let product_price  = this.products[i].price - this.products[i].discount;
-                    prices.push(product_price);
-                }
+                this.products.forEach(item => {
+                    let price = item.price - item.discount;
+                    prices.push(price);
+                });
 
                 return Math.min(...prices);
 
             },
             highestPrice() {
                 let prices = [];
-                for (let i = 0; i < this.products.length; i++) {
-                    for (let i = 0; i < this.products.length; i++) {
-                        let product_price  = this.products[i].price - this.products[i].discount;
-                        prices.push(product_price);
-                    }
-                }
+                this.products.forEach(item => {
+                    let price = item.price - item.discount;
+                    prices.push(price);
+                });
+
                 return Math.max(...prices);
             },
             countSortedProducts() {
                 return this.products.filter(item => {
                     let totalPrice = item.price - item.discount;
-                    return (totalPrice >= parseInt(this.minRange) && totalPrice <= parseInt(this.maxRange));
+
+                    if (this.paramsChecked && this.paramsChecked.length > 0) {
+                        return (
+                            totalPrice >= parseInt(this.minRange)
+                            && totalPrice <= parseInt(this.maxRange)
+
+
+                           /* && item.properties[0].name === 'Color'
+                            && (item.properties[0].value === 'LightBlue'
+                            || item.properties[0].value === 'PaleGreen'
+                            || item.properties[0].value === 'Plum')*/
+                        );
+                    }
+
+
+                    return (
+                        totalPrice >= parseInt(this.minRange)
+                        && totalPrice <= parseInt(this.maxRange)
+                    );
                 });
             },
+            countByParams() {
+                return this.products.filter(item => {
+                    let filterNames = item.properties.filter(elem => {
+                        let filtered = [];
+                        this.paramsChecked.forEach(it => {
+                            if (it.filter === elem.name) {
+                                filtered.push(elem.name);
+                            }
+                        });
+
+                        return filtered;
+
+                    });
+
+                });
+            }
         },
         methods: {
             ...mapActions('products', {
@@ -156,7 +194,8 @@
                 changeSliderStartMax: 'changeStartMax',
                 changeSliderStartMin: 'changeStartMin',
                 addToFilteredProducts: 'addToFiltered',
-                removeFromFilteredProducts: 'removeFromFiltered'
+                removeFromFilteredProducts: 'removeFromFiltered',
+                clearFilterParameters: 'clearCheckedParams'
             }),
             ...mapActions('header', {
                 changeTitle: 'setTitle'
@@ -190,6 +229,9 @@
                     this.startMax = values[1];
                 });
             },
+            clearParams(filter) {
+                this.clearFilterParameters(filter);
+            },
             showFiltered() {
                 this.changeSliderMinRange(this.minRange);
                 this.changeSliderMaxRange(this.maxRange);
@@ -199,8 +241,15 @@
 
             },
             clear() {
-                this.minRange = '';
-                this.maxRange = '';
+                this.filters.forEach(item => {
+                    this.clearFilterParameters(item);
+                });
+
+                this.slider.startMin = 0;
+                this.minRange = 0;
+                this.maxRange = this.highestPrice;
+                this.$refs.slider.noUiSlider.set([0, this.highestPrice]);
+
             }
         },
 

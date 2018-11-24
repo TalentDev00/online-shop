@@ -2,8 +2,8 @@
     <div class="checkbox">
         <label class="checkbox__container">{{ name }}
             <input class="checkbox__container__input" type="checkbox"
-                   :checked="value"
-                   :filter="filter"
+                   :value="value"
+                   :name="name"
                    @change="updateValue($event)"
             >
             <span class="checkbox__container__checkmark"></span>
@@ -12,10 +12,9 @@
 </template>
 <script>
     export default {
-        props: ['name', 'filter', 'value'],
+        props: ['value', 'name', 'filter'],
         data() {
             return {
-
             }
         },
         computed: {
@@ -24,7 +23,7 @@
         methods: {
             updateValue(e) {
                 this.$emit('onchange', {
-                    filter: this.filter,
+                    filter: this.filter.name,
                     name: this.name,
                     value: e.target.checked
                 });

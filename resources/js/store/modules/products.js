@@ -12,6 +12,7 @@ export default {
         * FILTER
         *
         * */
+        checked: [],
         filteredItems: [],
         minRange: '',
         maxRange: '',
@@ -33,6 +34,9 @@ export default {
         * FILTER GETTERS
         *
         * */
+        getChecked(state) {
+            return state.checked;
+        },
         getFilteredItems(state) {
             return state.filteredItems;
         },
@@ -50,6 +54,23 @@ export default {
         },
     },
     mutations: {
+        mutateCheckFilters(state, data) {
+            let found = state.checked.find(item => item.filter === data.filter);
+
+            if (found) {
+                found.filter = data.filter;
+                found.values = data.values;
+            }
+
+            else {
+                state.checked.push({
+                    filter: data.filter,
+                    values: data.values
+                });
+            }
+
+        },
+
         mutateClearItems(state) {
             state.items = [];
         },
@@ -81,6 +102,14 @@ export default {
         * FILTER MUTATIONS
         *
         * */
+        mutateClearCheckedParams(state, filter) {
+            let found = state.checked.find(item => item.filter === filter.name);
+            let index = state.checked.indexOf(found);
+
+            if (index > -1) {
+                state.checked.splice(index, 1);
+            }
+        },
         mutateAddToFiltered(state, product) {
             let found = state.filteredItems.find(item => item.id === product.id);
 
@@ -132,6 +161,12 @@ export default {
         * FILTER MUTATIONS
         *
         * */
+        clearCheckedParams(store, filter) {
+            store.commit('mutateClearCheckedParams', filter);
+        },
+        checkFilter(store, data) {
+            store.commit('mutateCheckFilters', data);
+        },
         addToFiltered(store, product) {
             store.commit('mutateAddToFiltered', product);
         },

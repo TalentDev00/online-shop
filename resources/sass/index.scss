@@ -57,11 +57,11 @@ body {
 
 
 .swipe-left-enter-active {
-    animation: swipe-left-In 0.2s;
+    animation: swipe-left-In 0.4s;
 }
 
 .swipe-left-leave-active {
-    animation: swipe-left-Out 0.2s;
+    animation: swipe-left-Out 0.4s;
 }
 
 @keyframes swipe-left-In {
@@ -75,11 +75,11 @@ body {
 }
 
 .swipe-right-enter-active {
-    animation: swipe-right-In 0.2s;
+    animation: swipe-right-In 0.4s;
 }
 
 .swipe-right-leave-active {
-    animation: swipe-right-Out 0.2s;
+    animation: swipe-right-Out 0.4s;
 }
 
 @keyframes swipe-right-In {

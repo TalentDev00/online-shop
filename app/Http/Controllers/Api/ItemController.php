@@ -83,14 +83,21 @@ class ItemController extends Controller
 
 
         return ItemResource::collection(
-            Item::with(['images', 'item_variants.item_variant_values', 'item_properties'])
+            Item::whereHas(
+                'item_properties', function($query) {
+                    $query->where('name', 'Color');
+                    $query->where('value', 'Aqua');
+                })
+                ->with([
+                    'images',
+                    'item_variants.item_variant_values',
+                    'item_properties'
+                ])
                 ->where('cat_id', '=', $request->input('cat_id'))
                 ->where('price', '>=', $minPrice)
                 ->where('price', '<=', $maxPrice)
                 ->orderBy($sortMethod, $direction)
                 ->get());
-
-
     }
 }
 /*2903-2940*/

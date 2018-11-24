@@ -13,9 +13,17 @@ class ItemsPropertiesTableSeeder extends Seeder
     {
         $items = App\Models\Item::all();
         $propertiesIds = App\Models\ItemProperty::pluck('id')->toArray();
-
-        $items->each(function($item) use ($propertiesIds){
-            $item->item_properties()->sync(array_random($propertiesIds, mt_rand(1,4)));
+        $propertiesColorsIds = App\Models\ItemProperty::where('name', '=', 'Color')->pluck('id')->toArray();
+        $propertiesBrandsIds = App\Models\ItemProperty::where('name', '=', 'Brand')->pluck('id')->toArray();
+        $propertiesCountryIds = App\Models\ItemProperty::where('name', '=', 'Country')->pluck('id')->toArray();
+        $propertiesSizeIds = App\Models\ItemProperty::where('name', '=', 'Size')->pluck('id')->toArray();
+        $items->each(function($item) use ($propertiesColorsIds, $propertiesBrandsIds, $propertiesCountryIds, $propertiesSizeIds){
+            $item->item_properties()->sync([
+                intval(array_random($propertiesColorsIds)),
+                intval(array_random($propertiesBrandsIds)),
+                intval(array_random($propertiesCountryIds)),
+                intval(array_random($propertiesSizeIds)),
+            ]);
         });
     }
 }
