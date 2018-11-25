@@ -12,6 +12,7 @@ export default {
         * FILTER
         *
         * */
+
         checked: [],
         filteredItems: [],
         minRange: '',
@@ -19,6 +20,7 @@ export default {
         slider: {
             startMin: 0,
             startMax: 0,
+            maxValues: [],
         }
     },
     getters: {
@@ -37,6 +39,9 @@ export default {
         getChecked(state) {
             return state.checked;
         },
+        getCheckedCount(state) {
+            return state.checked.length;
+        },
         getFilteredItems(state) {
             return state.filteredItems;
         },
@@ -52,6 +57,8 @@ export default {
         getSliderStartMax(state) {
             return state.slider.startMax;
         },
+
+
     },
     mutations: {
         mutateCheckFilters(state, data) {
@@ -136,6 +143,8 @@ export default {
         mutateStartMax(state, value) {
             state.slider.startMax = value;
         },
+
+
     },
     actions: {
 
@@ -185,5 +194,7 @@ export default {
         changeStartMin(store, value) {
             store.commit('mutateStartMin', value);
         },
+
+
     }
 }

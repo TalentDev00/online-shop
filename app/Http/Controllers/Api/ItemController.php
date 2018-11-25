@@ -81,12 +81,33 @@ class ItemController extends Controller
             $maxPrice = $request->input('max');
         }
 
+        if ($request->has('filters')) {
+            $filters = $request->input('filters');
+        }
+        else {
+            $filters = Null;
+        }
+
 
         return ItemResource::collection(
             Item::whereHas(
-                'item_properties', function($query) {
-                    $query->where('name', 'Color');
-                    $query->where('value', 'Aqua');
+                'item_properties', function($query) use ($filters){
+                    if ($filters !== Null) {
+                       //dd(json_decode($filters));
+                        $filters = json_decode($filters, true);
+                        $i = 0;
+                        foreach ($filters as $filter) {
+                           if ($i === 0) {
+                               $query->where('name', $filter["name"])
+                                    ->where('value', $filter["value"]);
+                           }
+                           else {
+                               $query->orWhere('name', $filter["name"])
+                                    ->where('value', $filter["value"]);
+                           }
+                           $i++;
+                        }
+                    }
                 })
                 ->with([
                     'images',
@@ -100,4 +121,4 @@ class ItemController extends Controller
                 ->get());
     }
 }
-/*2903-2940*/
+

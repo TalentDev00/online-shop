@@ -33,6 +33,7 @@
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
     import myCheckbox from './helpers/checkbox';
+
     export default {
         components: {
             myCheckbox
@@ -88,12 +89,19 @@
         },
         methods: {
             ...mapActions('products', {
-                check: 'checkFilter'
+                check: 'checkFilter',
             }),
             changeValue(data) {
                 this.checkedItems = data;
             },
             backToFilter() {
+                let modified = [];
+                    this.checkedItems.forEach(item => {
+                        modified.push({
+                            name: this.currentFilter.name,
+                            value: item,
+                        });
+                });
                 this.check({
                     filter: this.currentFilter.name,
                     values: this.checkedItems

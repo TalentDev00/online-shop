@@ -24,7 +24,7 @@
                 <button class="filter"
                         @click="toFilter"
                 >Фильтр
-                    <span v-show="allFilters.length !== 0" class="filter-count">{{ allFilters.length }}</span>
+                    <span v-show="filtersActiveCount !== 0" class="filter-count">{{ filtersActiveCount }}</span>
                 </button>
             </div>
 
@@ -76,7 +76,9 @@
         },
         computed: {
             ...mapGetters('products', {
-                allProducts: 'getItems'
+                allProducts: 'getItems',
+                filtersActiveCount: 'getCheckedCount'
+
             }),
             ...mapGetters('filters', {
                 allFilters: 'getFilterItems'

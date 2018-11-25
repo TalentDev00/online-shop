@@ -84,8 +84,8 @@
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
 
-    const getProducts = (cat_id, sort, min, max, callback) => {
-        const params = { cat_id, sort, min, max };
+    const getProducts = (cat_id, sort, min, max, filters, callback) => {
+        const params = { cat_id, sort, min, max, filters };
         axios.get('/store/catalog', { params })
             .then(response => {
                 callback(response.data);
@@ -99,10 +99,24 @@
             myModal
         },
         beforeRouteEnter(to, from, next) {
-            let sort = storeProductsModule.state.sort;
-            let min = storeProductsModule.state.minRange;
-            let max = storeProductsModule.state.maxRange;
-            getProducts(to.params.cat_id, sort, min, max, (data) => {
+           let filters = storeProductsModule.state.checked;
+           let newFilters = [];
+           filters.forEach(item => {
+               item.values.forEach(elem => {
+                   newFilters.push({
+                       name: item.filter,
+                       value: elem
+                   });
+               })
+           });
+            const params = {
+                cat_id: to.params.cat_id,
+                sort: storeProductsModule.state.sort,
+                min : storeProductsModule.state.minRange,
+                max: storeProductsModule.state.maxRange,
+                filters: newFilters.length > 0 ? JSON.stringify(newFilters) : newFilters
+            };
+            getProducts(params.cat_id, params.sort, params.min, params.max, params.filters, (data) => {
                 next(vm => {
                     vm.loadProducts(data);
 
