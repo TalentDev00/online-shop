@@ -68,10 +68,10 @@
               this.$router.push({name: 'chat'});
             },
             toSort() {
-                this.$router.push({name: 'sort', params: {cat_id: this.$route.params.cat_id} })
+                this.$router.push({name: 'sort', params: {cat_id: this.$route.params.cat_id, keywords: this.$route.params.keywords} })
             },
             toFilter() {
-                this.$router.push({name: 'filter', params: {cat_id: this.$route.params.cat_id} })
+                this.$router.push({name: 'filter', params: {cat_id: this.$route.params.cat_id, keywords: this.$route.params.keywords} })
             }
         },
         computed: {
@@ -80,9 +80,7 @@
                 filtersActiveCount: 'getCheckedCount'
 
             }),
-         /*   ...mapGetters('filters', {
-                allFilters: 'getFilterItems'
-            }),*/
+
             currentScreenChat(){
                 return this.$route.name === 'chat';
             },
@@ -90,7 +88,9 @@
                 return this.$route.name === 'home';
             },
             currentScreenWithFilters(){
-                return this.$route.name === 'favorite' || this.$route.name === 'section'
+                return this.$route.name === 'favorite'
+                    || this.$route.name === 'section'
+                    || this.$route.name === 'result'
             },
             newTitle() {
                 if (this.$route.meta.title) {

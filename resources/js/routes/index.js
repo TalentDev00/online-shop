@@ -25,7 +25,6 @@ import myItem from '../components/product';
 import mySort from '../components/sort';
 import myFilter from '../components/filter';
 import myGallery from '../components/gallery';
-import myTest from '../components/test';
 import myParameters from '../components/parameters';
 import myResult from '../components/result';
 Vue.use(VueRouter);
@@ -80,8 +79,8 @@ const routes = [
     *
     * */
     {
-        name: 'product',
-        path: '/store/catalog/products/:id',
+        name: 'single',
+        path: '/store/catalog/products/:item_id',
         component: myItem,
         meta: {
             auth: false,
@@ -130,7 +129,7 @@ const routes = [
     },
     {
         name: 'section',
-        path: '/store/catalog/:cat_id?/section',
+        path: '/store/catalog/:cat_id?/section/:keywords?',
         component: mySection,
         meta: {
             auth: false,
@@ -138,7 +137,7 @@ const routes = [
     },
     {
         name: 'sort',
-        path: '/store/catalog/:cat_id?/section/sort',
+        path: '/store/catalog/:cat_id?/section/:keywords?/sort',
         component: mySort,
         meta: {
             auth: false,
@@ -146,7 +145,7 @@ const routes = [
     },
     {
         name: 'filter',
-        path: '/store/catalog/:cat_id?/section/filter',
+        path: '/store/catalog/:cat_id?/section/:keywords?/filter',
         component: myFilter,
         meta: {
             auth: false,
@@ -154,7 +153,7 @@ const routes = [
     },
     {
         name: 'parameters',
-        path: '/store/catalog/:cat_id?/section/filter/:filter_id/parameters',
+        path: '/store/catalog/:cat_id?/section/:keywords?/filter/:filter_id/parameters',
         component: myParameters,
         meta: {
             auth: false,
@@ -162,7 +161,7 @@ const routes = [
     },
     {
         name: 'result',
-        path: '/result/:id',
+        path: '/store/catalog/result/:keywords',
         component: myResult,
         meta: {
             auth: false,

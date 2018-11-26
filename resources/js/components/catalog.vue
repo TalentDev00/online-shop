@@ -2,24 +2,19 @@
     <section class="catalog">
         <div class="wrapper-16">
             <div class="items">
-                <div class="search">
-                    <form class="search__form search__form-static" action="catalog.html">
-                        <input class="search__form__input" type="text" placeholder="поиск по каталогу"
-                               :value="searchValue"
-                               @input="search($event)"
-                        >
-                        <a v-show="searchValue !== ''" class="search__form__cancel" href=""
-                           @click.prevent="searchValue = ''"
-                        ><img src="../../images/icons/close.svg" alt=""></a>
-                    </form>
-                </div>
+                <my-search :value="keywords"
+                           :formClass="'search__form-static'"
+                           @onchange="updateInput($event)"
+                           @onclear="keywords = null"
+                ></my-search>
                 <ul class="list">
-                    <li v-if="searchValue !== ''"
-                        class="list__item">
-                        <p class="list__item__name list__item__name-reactive">{{ searchValue }}</p>
-                    </li>
-
-                    <template v-if="searchValue === ''">
+                    <router-link v-if="!emptyInput"
+                                 tag="li"
+                                 :to="{ name: 'section', params: { keywords:  keywords} }"
+                                 class="list__item">
+                        <a class="list__item__name list__item__name-reactive" href="">{{ keywords }}</a>
+                    </router-link>
+                    <template v-if="emptyInput">
                         <router-link v-for="(item, index) in rootCategories"
                                      :key="index"
                                      tag="li"
@@ -27,16 +22,20 @@
                                      class="list__item"
                         >
                             <a class="list__item__name" href="">{{ item.name }}</a>
+                            <img v-if="!item.cat_id"
+                                 class="list__item__catalog" src="../../images/icons/folder.svg" alt="">
                         </router-link>
                     </template>
                     <template v-else>
-                        <router-link v-for="(item, index) in filteredList"
+                        <router-link v-for="(item, index) in results"
                                      :key="index"
                                      tag="li"
-                                     :to="{ name: 'subcatalog', params: { cat_id: item.id } }"
+                                     :to="routeTo(item)"
                                      class="list__item"
                         >
-                            <a class="list__item__name" href="">{{ item.name }}</a>
+                            <a  v-html="highlight(item.name)" class="list__item__name" href="">{{ item.name }}</a>
+                            <img v-if="!item.cat_id"
+                                 class="list__item__catalog" src="../../images/icons/folder.svg" alt="">
                         </router-link>
                     </template>
                 </ul>
@@ -47,7 +46,11 @@
 <script>
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
+    import mySearch from './helpers/search';
     export default {
+        components: {
+            mySearch
+        },
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 vm.changeTitle('КАТАЛОГ');
@@ -55,18 +58,16 @@
         },
         data() {
             return {
-                searchValue: '',
+                keywords: null,
             }
         },
         computed: {
             ...mapGetters('catalog', {
                 catalogItems: 'getCatalogItems'
             }),
-            filteredList() {
-                return this.catalogItems.filter(item => {
-                    return item.name.toLowerCase().includes(this.searchValue.toLowerCase())
-                })
-            },
+            ...mapGetters('search', {
+                results: 'getResults'
+            }),
             rootCategories() {
                 let found = [];
 
@@ -78,14 +79,23 @@
 
                 return found;
             },
+            emptyInput() {
+                return this.keywords === null || this.keywords === '' || this.keywords === ' ';
+            },
+            routeTo() {
+                return (item) => !item.cat_id ? { name: 'subcatalog', params: { cat_id: item.id } } : { name: 'single', params: { item_id: item.id } };
+            }
         },
         methods: {
             ...mapActions('header', {
                 changeTitle: 'setTitle'
             }),
-            search(e) {
-                this.searchValue = e.target.value;
+            highlight(text) {
+                return text.replace(new RegExp(this.keywords, 'gi'), '<span class="highlighted">$&</span>');
             },
+            updateInput(e) {
+                this.keywords = e;
+            }
         }
     }
 </script>

@@ -10,9 +10,6 @@ import VueAxios from 'vue-axios';
 Vue.use(VueAxios, axios);
 Vue.use(VueRouter);
 
-
-
-
 Vue.router = router;
 Vue.use(require('@websanova/vue-auth'), {
     auth: require('@websanova/vue-auth/drivers/auth/bearer.js'),
@@ -30,10 +27,62 @@ Vue.use(require('@websanova/vue-auth'), {
 });
 import router from './routes';
 import store from './store';
-
 import App from './components/App';
 
 App.router = Vue.router;
+
+function debounce(fn, delay = 300) {
+    let timeoutID = null;
+
+    return function () {
+        clearTimeout(timeoutID);
+
+        let args = arguments;
+        let that = this;
+
+        timeoutID = setTimeout(function () {
+            fn.apply(that, args);
+        }, delay);
+    }
+}
+
+Vue.directive('debounce', (el, binding) => {
+    if (binding.value !== binding.oldValue) {
+        el.oninput = debounce(ev => {
+            el.dispatchEvent(new Event('change'));
+        }, parseInt(binding.value) || 300);
+    }
+});
+
+Vue.directive('delayed', {
+    bind(el, options){
+        let timer;
+        let timeout = 0;
+
+        for(let name in options.modifiers){
+            if(!isNaN(+name)){
+                timeout = parseInt(name);
+            }
+        }
+
+        let callback = (e) => {
+            if(timer !== undefined){
+                clearInterval(timer);
+            }
+
+            if(options.modifiers.prevent){
+                e.preventDefault();
+            }
+
+            timer = setTimeout(() => {
+                options.value.call(this, e);
+            }, timeout);
+        };
+
+        el.addEventListener(options.arg, callback);
+    }
+});
+
 const app = new Vue({
     el: '#app',
     components: { App },

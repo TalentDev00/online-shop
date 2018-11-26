@@ -5,11 +5,6 @@
                 <ul class="list">
                     <li v-for="(name, value, index) in currentFilterValues" :key="index"
                         class="list__item">
-                    <!--    <my-checkbox :name="name"
-                                     :value="name"
-                                     :filter="currentFilter"
-                                     @onchange="changeValue($event)"
-                        ></my-checkbox>-->
                         <div class="checkbox">
                             <label class="checkbox__container">{{ name }}
                                 <input class="checkbox__container__input" type="checkbox"
@@ -32,12 +27,8 @@
 <script>
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
-    import myCheckbox from './helpers/checkbox';
 
     export default {
-        components: {
-            myCheckbox
-        },
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 let checked = vm.$store.state.products.checked;
@@ -47,6 +38,12 @@
                     filter.values.forEach(elem => {
                         vm.checkedItems.push(elem);
                     });
+
+                }
+
+                let found = vm.currentFilter;
+                if (found) {
+                    vm.changeTitle(found.name);
                 }
             });
         },
@@ -90,6 +87,9 @@
         methods: {
             ...mapActions('products', {
                 check: 'checkFilter',
+            }),
+            ...mapActions('header', {
+                changeTitle: 'setTitle'
             }),
             changeValue(data) {
                 this.checkedItems = data;

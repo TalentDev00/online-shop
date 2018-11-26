@@ -53,6 +53,7 @@
             next(vm => {
                 const params = {
                     cat_id: to.params.cat_id,
+                    keywords: to.params.keywords
                 };
                 axios.get(`/store/catalog`, {params})
                     .then(data => {

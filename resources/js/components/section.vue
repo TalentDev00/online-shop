@@ -2,33 +2,29 @@
     <div>
         <section class="product-search">
             <div class="wrapper-16">
-                <div class="search">
-                    <form class="search__form search__form-static" action="catalog.html">
-                        <input class="search__form__input" type="text" placeholder="поиск по каталогу"
-                               :value="searchValue"
-                               @input="search($event)"
-                        >
-                        <a v-show="searchValue !== ''" class="search__form__cancel" href=""
-                           @click.prevent="searchValue = ''"
-                        ><img src="../../images/icons/close.svg" alt=""></a>
-                    </form>
-                </div>
+                <my-search :value="keywords"
+                           :formClass="'search__form-static'"
+                           @onchange="updateInput($event)"
+                           @onclear="keywords = null"
+                ></my-search>
             </div>
-            <p class="product-found" v-if="searchValue === ''">Найдено товаров: {{ products.length }}</p>
+            <p class="product-found" v-if="emptyInput">Найдено товаров: {{ products.length }}</p>
         </section>
         <section class="found">
             <div class="wrapper-16">
 
-                <ul v-if="searchValue !== ''" class="list">
+                <ul v-if="!emptyInput" class="list">
                     <li class="list__item">
-                        <p class="list__item__name list__item__name-reactive">{{ searchValue }}</p>
+                        <p class="list__item__name list__item__name-reactive">{{ keywords }}</p>
                     </li>
-                    <router-link v-for="(item, index) in filteredList"
+                    <router-link v-for="(item, index) in results"
                                  :key="index"
                                  tag="li"
                                  :to="'/result/' + item.id"
                                  class="list__item">
-                        <a class="list__item__name" href="">{{ item.name }}</a>
+                        <a  v-html="highlight(item.name)" class="list__item__name" href="">{{ item.name }}</a>
+                        <img v-if="!item.cat_id"
+                             class="list__item__catalog" src="../../images/icons/folder.svg" alt="">
                     </router-link>
                 </ul>
 
@@ -78,6 +74,7 @@
     </div>
 </template>
 <script>
+    import mySearch from './helpers/search';
     import storeProductsModule from '../store/modules/products.js';
     import axios from 'axios';
     import myModal from './modal';
@@ -85,7 +82,17 @@
     import {mapActions} from 'vuex';
 
     const getProducts = (cat_id, sort, min, max, filters, callback) => {
-        const params = { cat_id, sort, min, max, filters };
+        let params = { cat_id, sort, min, max, filters };
+        axios.get('/store/catalog', { params })
+            .then(response => {
+                callback(response.data);
+            }).catch(error => {
+            callback(error.response.data);
+        });
+    };
+
+    const getResults = (keywords, sort, min, max, filters, callback) => {
+        let params = { keywords, sort, min, max, filters };
         axios.get('/store/catalog', { params })
             .then(response => {
                 callback(response.data);
@@ -96,38 +103,58 @@
 
     export default {
         components: {
-            myModal
+            myModal,
+            mySearch
         },
         beforeRouteEnter(to, from, next) {
-           let filters = storeProductsModule.state.checked;
-           let newFilters = [];
-           filters.forEach(item => {
-               item.values.forEach(elem => {
-                   newFilters.push({
-                       name: item.filter,
-                       value: elem
-                   });
-               })
-           });
-            const params = {
+            let filters = storeProductsModule.state.checked;
+            let newFilters = [];
+            filters.forEach(item => {
+                item.values.forEach(elem => {
+                    newFilters.push({
+                        name: item.filter,
+                        value: elem
+                    });
+                })
+            });
+
+            let params = {
                 cat_id: to.params.cat_id,
                 sort: storeProductsModule.state.sort,
                 min : storeProductsModule.state.minRange,
                 max: storeProductsModule.state.maxRange,
                 filters: newFilters.length > 0 ? JSON.stringify(newFilters) : newFilters
             };
-            getProducts(params.cat_id, params.sort, params.min, params.max, params.filters, (data) => {
-                next(vm => {
-                    vm.loadProducts(data);
+            if (params.cat_id) {
+                getProducts(params.cat_id, params.sort, params.min, params.max, params.filters, (data) => {
+                    next(vm => {
+                        vm.loadProducts(data);
 
-                    let found = vm.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
-                    if (found) {
-                        vm.changeTitle(found.name);
-                    }
+                        let found = vm.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
+                        if (found) {
+                            vm.changeTitle(found.name);
+                        }
+                    });
                 });
-            });
+            }
+            else {
+                let params = {
+                    keywords: to.params.keywords,
+                    sort: storeProductsModule.state.sort,
+                    min : storeProductsModule.state.minRange,
+                    max: storeProductsModule.state.maxRange,
+                    filters: newFilters.length > 0 ? JSON.stringify(newFilters) : newFilters
+                };
+                getResults(params.keywords, params.sort, params.min, params.max, params.filters, (data) => {
+                    next(vm => {
+                        vm.loadProducts(data);
+                        vm.changeTitle(params.keywords.toUpperCase());
+                    });
+                });
+            }
+
         },
-        beforeRouteUpdate(to, from, next) {
+/*        beforeRouteUpdate(to, from, next) {
             this.clearProducts();
             axios.get(`/store/catalog?cat_id=${to.params.cat_id}?sort=${this.sort}`)
                 .then(data => {
@@ -141,12 +168,12 @@
                 this.changeTitle(found.name);
             }
             next();
-        },
+        },*/
         data() {
             return {
                 showModal: false,
+                keywords: null,
                 currentProduct: '',
-                searchValue: '',
             }
         },
         computed: {
@@ -162,11 +189,12 @@
                 productsInCart: 'getProducts',
                 countProductsInCart: 'getCountProducts'
             }),
-            filteredList() {
-                return this.products.filter(item => {
-                    return item.name.toLowerCase().includes(this.searchValue.toLowerCase())
-                })
-            },
+            ...mapGetters('search', {
+                results: 'getResults'
+            }),
+            emptyInput() {
+                return this.keywords === null || this.keywords === '' || this.keywords === ' ';
+            }
         },
         methods: {
             ...mapActions('products', {
@@ -185,8 +213,11 @@
                 this.currentProduct = product;
                 this.showModal = !this.showModal;
             },
-            search(e) {
-                this.searchValue = e.target.value;
+            highlight(text) {
+                return text.replace(new RegExp(this.keywords, 'gi'), '<span class="highlighted">$&</span>');
+            },
+            updateInput(e) {
+                this.keywords = e;
             }
         }
     }

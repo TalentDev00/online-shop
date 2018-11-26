@@ -259,6 +259,13 @@ p.greetings {
                 opacity: 0.3;
             }
 
+            &-placehodlercolorwhite {
+                &::placeholder {
+                    color: $white;
+                    opacity: 0.3;
+                }
+            }
+
             &-whitesearchicon{
                 background-image:url("../images/icons/search_white.svg");
                 background-position:12px;
@@ -299,6 +306,8 @@ p.greetings {
         display: flex;
         flex-direction: column;
         border-top: 1px solid $catalog-border;
+        color: $black;
+        position: relative;
         &:first-child {
             border-top: none;
         }
@@ -320,7 +329,7 @@ p.greetings {
             font-style: normal;
             font-stretch: normal;
             letter-spacing: normal;
-            color: $black;
+            color:inherit;
             text-align: left;
 
             &-bold {
@@ -335,6 +344,24 @@ p.greetings {
                 color: $black;
                 text-decoration: none;
             }
+            span.highlighted {
+                color: $azure!important;
+                font-weight: 700!important;
+            }
+
+        }
+
+        &__catalog {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            right:0;
+            top: 12px;
+            fill:red;
+            svg {
+               fill:red;
+            }
+
         }
 
         &__filtercounter {

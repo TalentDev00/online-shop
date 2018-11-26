@@ -3,12 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
+use TeamTNT\TNTSearch\Indexer\TNTIndexer;
 
 class Item extends Model
 {
+    use Searchable;
+
     protected $guarded = [
         'id', 'updated_at', 'created_at'
     ];
+
+    public $asYouType = true;
 
     // Relations
     public function category()
@@ -39,6 +45,21 @@ class Item extends Model
     public function cart_item()
     {
         return $this->belongsTo('App\Models\CartItem');
+    }
+
+
+    public function searchableAs()
+    {
+        return 'items_index';
+    }
+
+    public function toSearchableArray()
+    {
+        $array = $this->only('name');
+        $array['nameNgrams'] = utf8_encode((new TNTIndexer)->buildTrigrams($this->name));
+        $array[$this->getKeyName()] = $this->getKey();
+
+        return $array;
     }
 
 }

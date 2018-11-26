@@ -25,6 +25,9 @@
         components: {
             myRadio
         },
+        beforeRouteEnter(to, from, next) {
+              next(vm => vm.changeTitle('СОРТИРОВКА'));
+        },
         data() {
             return {
                 sortVariants: [
@@ -60,6 +63,9 @@
         methods: {
             ...mapActions('products', {
                 changeSort: 'sortChange'
+            }),
+            ...mapActions('header', {
+                changeTitle: 'setTitle'
             }),
             updateValue(data) {
                 this.checked = data;

@@ -44,4 +44,5 @@ Route::namespace('Api')->group(function () {
 
     Route::get('/store/catalog', 'ItemController@index');
     Route::get('/info', 'CategoryController@index');
+    Route::get('/search', 'SearchController@index');
 });

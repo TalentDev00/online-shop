@@ -2,29 +2,40 @@
     <div>
         <section class="product-search">
             <div class="wrapper-16">
-                <div class="search">
-                    <form class="search__form search__form-static" action="catalog.html">
-                        <input class="search__form__input" type="text" placeholder="поиск по каталогу"
-                               :value="searchValue"
-                               @input="search($event)"
-                        >
-                        <a v-show="searchValue !== ''" class="search__form__cancel" href=""
-                           @click.prevent="searchValue = ''"
-                        ><img src="../../images/icons/close.svg" alt=""></a>
-                    </form>
-                </div>
+                <my-search :value="keywords"
+                           :classList="'search__form-fixed'"
+                           :input-styles="'search__form__input-greenbackground search__form__input-whitefont search__form__input-whitesearchicon search__form__input-placehodlercolorwhite'"
+                           @onchange="updateInput($event)"
+                           @onclear="keywords = null"
+                ></my-search>
             </div>
-            <p class="product-found" v-if="searchValue === ''">Найдено товаров: {{ findByCategoryId.length }}</p>
+            <p class="product-found">Найдено товаров: {{ itemsInResults.length }}</p>
         </section>
         <section class="found">
             <div class="wrapper-16">
+
+         <!--       <ul v-if="!emptyInput" class="list">
+                    <li class="list__item">
+                        <p class="list__item__name list__item__name-reactive">{{ keywords }}</p>
+                    </li>
+                    <router-link v-for="(item, index) in results"
+                                 :key="index"
+                                 tag="li"
+                                 :to="'/result/' + item.id"
+                                 class="list__item">
+                        <a  v-html="highlight(item.name)" class="list__item__name" href="">{{ item.name }}</a>
+                        <img v-if="!item.cat_id"
+                             class="list__item__catalog" src="../../images/icons/folder.svg" alt="">
+                    </router-link>
+                </ul>-->
+
                 <div class="items">
                     <div class="product"
-                         v-for="(product, index) in findByCategoryId"
+                         v-for="(product, index) in itemsInResults"
                          :key="index"
                     >
                         <router-link tag="div" :to="'/catalog/products/' + product.id" class="product__img">
-                            <a href=""><img :src="'../../images/' + product.images[0].large" :alt="product.name"></a>
+                            <a href=""><img :src="'/images/' + product.images[0].large" :alt="product.name"></a>
                         </router-link>
                         <div class="product__prices">
                             <p v-show="product.discount === 0" class="product__prices__nodiscount">{{ product.price }} <span>руб.</span></p>
@@ -57,9 +68,14 @@
                 </div>
             </div>
         </section>
+        <my-modal v-show="showModal"
+                  :product="currentProduct"
+                  @close="showModal = false"
+        ></my-modal>
     </div>
 </template>
 <script>
+    import mySearch from './helpers/search';
     import myModal from './modal';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
@@ -67,16 +83,14 @@
 
     export default {
         components: {
-            myModal
-        },
-        created() {
-            //this.$store.dispatch('products/loadItems')
+            myModal,
+            mySearch
         },
         data() {
             return {
                 showModal: false,
+                keywords: this.$route.params.keywords,
                 currentProduct: '',
-                searchValue: ''
             }
         },
         computed: {
@@ -87,21 +101,17 @@
                 productsInCart: 'getProducts',
                 countProductsInCart: 'getCountProducts'
             }),
-            findByCategoryId() {
-                let found = [];
-                for (let i = 0; i < this.products.length; i++) {
-                    if (this.products[i].id === parseInt(this.$route.params.id)) {
-                        found.push(this.products[i]);
-                    }
-                }
-
-                return found;
+            ...mapGetters('search', {
+                results: 'getResults'
+            }),
+            itemsInResults() {
+                return this.results.filter(item => {
+                    return item.cat_id;
+                });
             },
-            filteredList() {
-                return this.findByCategoryId.filter(item => {
-                    return item.name.toLowerCase().includes(this.searchValue.toLowerCase())
-                })
-            },
+            emptyInput() {
+                return this.keywords === null || this.keywords === '' || this.keywords === ' ';
+            }
 
         },
         methods: {
@@ -117,8 +127,11 @@
                 this.currentProduct = product;
                 this.showModal = !this.showModal;
             },
-            search(e) {
-                this.searchValue = e.target.value;
+            highlight(text) {
+                return text.replace(new RegExp(this.keywords, 'gi'), '<span class="highlighted">$&</span>');
+            },
+            updateInput(e) {
+                this.keywords = e;
             }
         }
     }

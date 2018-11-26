@@ -11,37 +11,6 @@ class ItemController extends Controller
 {
     public function index(Request $request)
     {
-
-
-      /*  if ($request->input('sort') === 'price_asc') {
-            return ItemResource::collection(Item::with(['images', 'item_variants.item_variant_values', 'item_properties'])->where('cat_id', '=', $request->input('cat_id'))->orderBy('price')->get());
-        }
-
-        if ($request->input('sort') === 'price_desc') {
-            return ItemResource::collection(Item::with(['images', 'item_variants.item_variant_values', 'item_properties'])->where('cat_id', '=', $request->input('cat_id'))->orderBy('price', 'desc')->get());
-        }
-
-        if ($request->input('sort') === 'rating') {
-            return ItemResource::collection(Item::with(['images', 'item_variants.item_variant_values', 'item_properties'])->where('cat_id', '=', $request->input('cat_id'))->orderBy('rating', 'desc')->get());
-        }
-
-        if ($request->input('sort') === 'discount') {
-            return ItemResource::collection(Item::with(['images', 'item_variants.item_variant_values', 'item_properties'])->where('cat_id', '=', $request->input('cat_id'))->orderBy('discount', 'desc')->get());
-        }
-
-        if ($request->input('sort') === 'new') {
-            return ItemResource::collection(Item::with(['images', 'item_variants.item_variant_values', 'item_properties'])->where('cat_id', '=', $request->input('cat_id'))->orderBy('created_at', 'desc')->get());
-        }
-
-        if ($request->input('minPrice') !== '' && $request->input('maxPrice') !== '') {
-            return ItemResource::collection(
-                Item::with(['images', 'item_variants.item_variant_values', 'item_properties'])
-                    ->where('cat_id', '=', $request->input('cat_id'))
-                    ->where('price', '>=', $request->input('minPrice'))
-                    ->where('price', '<=', $request->input('maxPrice'))
-                    ->get()
-            );
-        }*/
         if ($request->input('sort') === 'price_asc') {
             $sortMethod = 'price';
             $direction = 'asc';
@@ -88,37 +57,71 @@ class ItemController extends Controller
             $filters = Null;
         }
 
-
-        return ItemResource::collection(
-            Item::whereHas(
-                'item_properties', function($query) use ($filters){
+        if (!$request->has('cat_id') || !$request->filled('cat_id')) {
+            return ItemResource::collection(
+                Item::whereHas(
+                    'item_properties', function($query) use ($filters){
                     if ($filters !== Null) {
-                       //dd(json_decode($filters));
+                        //dd(json_decode($filters));
                         $filters = json_decode($filters, true);
                         $i = 0;
                         foreach ($filters as $filter) {
-                           if ($i === 0) {
-                               $query->where('name', $filter["name"])
+                            if ($i === 0) {
+                                $query->where('name', $filter["name"])
                                     ->where('value', $filter["value"]);
-                           }
-                           else {
-                               $query->orWhere('name', $filter["name"])
+                            }
+                            else {
+                                $query->orWhere('name', $filter["name"])
                                     ->where('value', $filter["value"]);
-                           }
-                           $i++;
+                            }
+                            $i++;
                         }
                     }
                 })
-                ->with([
-                    'images',
-                    'item_variants.item_variant_values',
-                    'item_properties'
-                ])
-                ->where('cat_id', '=', $request->input('cat_id'))
-                ->where('price', '>=', $minPrice)
-                ->where('price', '<=', $maxPrice)
-                ->orderBy($sortMethod, $direction)
-                ->get());
+                    ->with([
+                        'images',
+                        'item_variants.item_variant_values',
+                        'item_properties'
+                    ])
+                    ->where('name', 'like', '%'.$request->input('keywords').'%')
+                    ->where('price', '>=', $minPrice)
+                    ->where('price', '<=', $maxPrice)
+                    ->orderBy($sortMethod, $direction)
+                    ->get());
+        }
+
+        else {
+            return ItemResource::collection(
+                Item::whereHas(
+                    'item_properties', function($query) use ($filters){
+                    if ($filters !== Null) {
+                        //dd(json_decode($filters));
+                        $filters = json_decode($filters, true);
+                        $i = 0;
+                        foreach ($filters as $filter) {
+                            if ($i === 0) {
+                                $query->where('name', $filter["name"])
+                                    ->where('value', $filter["value"]);
+                            }
+                            else {
+                                $query->orWhere('name', $filter["name"])
+                                    ->where('value', $filter["value"]);
+                            }
+                            $i++;
+                        }
+                    }
+                })
+                    ->with([
+                        'images',
+                        'item_variants.item_variant_values',
+                        'item_properties'
+                    ])
+                    ->where('cat_id', '=', $request->input('cat_id'))
+                    ->where('price', '>=', $minPrice)
+                    ->where('price', '<=', $maxPrice)
+                    ->orderBy($sortMethod, $direction)
+                    ->get());
+        }
     }
 }
 

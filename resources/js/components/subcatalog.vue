@@ -2,43 +2,44 @@
     <section class="catalog">
         <div class="wrapper-16">
             <div class="items">
-                <div class="search">
-                    <form class="search__form search__form-static" action="catalog.html">
-                        <input class="search__form__input" type="text" placeholder="поиск по каталогу"
-                               :value="searchValue"
-                               @input="search($event)"
-                        >
-                        <a v-show="searchValue !== ''" class="search__form__cancel" href=""
-                           @click.prevent="searchValue = ''"
-                        ><img src="../../images/icons/close.svg" alt=""></a>
-                    </form>
-                </div>
+                <my-search :value="keywords"
+                           :formClass="'search__form-static'"
+                           @onchange="updateInput($event)"
+                           @onclear="keywords = null"
+                ></my-search>
                 <ul class="list">
-                    <li v-if="searchValue !== ''"
-                        class="list__item">
-                        <p class="list__item__name list__item__name-reactive">{{ searchValue }}</p>
-                    </li>
-                    <router-link tag="li"
-                                 :to="{ name:'section', params: {cat_id: $route.params.cat_id} }"
+                    <router-link v-if="!emptyInput"
+                                 tag="li"
+                                 :to="{ name: 'result'}"
                                  class="list__item">
-                        <a class="list__item__name list__item__name">Показать все товары раздела</a>
+                        <a class="list__item__name list__item__name-reactive" href="">{{ keywords }}</a>
                     </router-link>
-                    <template v-if="searchValue === ''">
+                    <template v-if="emptyInput">
+                        <router-link tag="li"
+                                     :to="{ name:'section', params: {cat_id: $route.params.cat_id} }"
+                                     class="list__item">
+                            <a class="list__item__name list__item__name">Показать все товары раздела</a>
+                        </router-link>
+
                         <router-link v-for="(item, index) in childrenCategories"
                                      :key="index"
                                      tag="li"
-                                     :to="item.children_count > 0 ? { name: 'subcatalog', params: { cat_id: item.id } } : { name:'section', params: {cat_id: item.id} }"
+                                     :to="routeTo(item)"
                                      class="list__item">
                             <a class="list__item__name" href="">{{ item.name }}</a>
+                            <img v-if="!item.cat_id"
+                                 class="list__item__catalog" src="../../images/icons/folder.svg" alt="">
                         </router-link>
                     </template>
                     <template v-else>
-                        <router-link v-for="(item, index) in filteredList"
+                        <router-link v-for="(item, index) in results"
                                      :key="index"
                                      tag="li"
-                                     :to="item.children_count > 0 ? { name: 'subcatalog', params: { cat_id: item.id } } : { name:'section', params: {cat_id: item.id} }"
+                                     :to="routeTo(item)"
                                      class="list__item">
-                            <a class="list__item__name" href="">{{ item.name }}</a>
+                            <a v-html="highlight(item.name)" class="list__item__name" href="">{{ item.name }}</a>
+                            <img v-if="!item.cat_id"
+                                 class="list__item__catalog" src="../../images/icons/folder.svg" alt="">
                         </router-link>
                     </template>
                 </ul>
@@ -47,10 +48,14 @@
     </section>
 </template>
 <script>
+    import mySearch from './helpers/search';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
 
     export default {
+        components: {
+            mySearch
+        },
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 let found = vm.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
@@ -68,7 +73,7 @@
         },
         data() {
             return {
-                searchValue: '',
+                keywords: null,
                 cat_id: parseInt(this.$route.params.cat_id)
             }
         },
@@ -76,10 +81,11 @@
             ...mapGetters('catalog', {
                 catalogItems: 'getCatalogItems',
             }),
-            filteredList() {
-                return this.childrenCategories.filter(item => {
-                    return item.name.toLowerCase().includes(this.searchValue.toLowerCase())
-                })
+            ...mapGetters('search', {
+                results: 'getResults'
+            }),
+            emptyInput() {
+                return this.keywords === null || this.keywords === '' || this.keywords === ' ';
             },
             childrenCategories() {
                 let found = [];
@@ -90,15 +96,21 @@
                 }
 
                 return found;
+            },
+            routeTo() {
+                return (item) => item.children_count && item.children_count > 0 ? { name: 'subcatalog', params: { cat_id: item.id } } : { name:'section', params: {cat_id: item.id} }
             }
         },
         methods: {
             ...mapActions('header', {
                 changeTitle: 'setTitle',
             }),
-            search(e) {
-                this.searchValue = e.target.value;
+            highlight(text) {
+                return text.replace(new RegExp(this.keywords, 'gi'), '<span class="highlighted">$&</span>');
             },
+            updateInput(e) {
+                this.keywords = e;
+            }
         }
     }
 </script>
