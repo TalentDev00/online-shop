@@ -1,26 +1,16 @@
 import Vue from 'vue';
-import axios from "axios";
 
 export default {
     namespaced: true,
     state: {
         items: [],
         sort: 'price_asc',
-
-        /*
-        *
-        * FILTER
-        *
-        * */
-
         checked: [],
-        filteredItems: [],
         minRange: '',
         maxRange: '',
         slider: {
-            startMin: 0,
-            startMax: 0,
-            maxValues: [],
+            startMin: '',
+            startMax: '',
         }
     },
     getters: {
@@ -42,9 +32,6 @@ export default {
         getCheckedCount(state) {
             return state.checked.length;
         },
-        getFilteredItems(state) {
-            return state.filteredItems;
-        },
         getSliderMinRange(state) {
             return state.minRange;
         },
@@ -57,8 +44,6 @@ export default {
         getSliderStartMax(state) {
             return state.slider.startMax;
         },
-
-
     },
     mutations: {
         mutateCheckFilters(state, data) {
@@ -75,9 +60,7 @@ export default {
                     values: data.values
                 });
             }
-
         },
-
         mutateClearItems(state) {
             state.items = [];
         },
@@ -117,20 +100,6 @@ export default {
                 state.checked.splice(index, 1);
             }
         },
-        mutateAddToFiltered(state, product) {
-            let found = state.filteredItems.find(item => item.id === product.id);
-
-            if (!found) {
-                state.filteredItems.push(product);
-            }
-        },
-        mutateRemoveFromFiltered(state, product) {
-            let found = state.filteredItems.find(item => item.id === product.id);
-            let index = state.filteredItems.indexOf(found);
-            if (index > -1) {
-                state.filteredItems.splice(index, 1);
-            }
-        },
         mutateMinRange(state, value) {
             state.minRange = value;
         },
@@ -143,8 +112,6 @@ export default {
         mutateStartMax(state, value) {
             state.slider.startMax = value;
         },
-
-
     },
     actions: {
 
@@ -164,10 +131,9 @@ export default {
         sortChange(store, value) {
             store.commit('mutateSort', value);
         },
-
         /*
         *
-        * FILTER MUTATIONS
+        * FILTER ACTIONS
         *
         * */
         clearCheckedParams(store, filter) {
@@ -175,12 +141,6 @@ export default {
         },
         checkFilter(store, data) {
             store.commit('mutateCheckFilters', data);
-        },
-        addToFiltered(store, product) {
-            store.commit('mutateAddToFiltered', product);
-        },
-        removeFromFiltered(store, product) {
-            store.commit('mutateRemoveFromFiltered', product);
         },
         changeMinRange(store, value) {
             store.commit('mutateMinRange', value);
@@ -194,7 +154,5 @@ export default {
         changeStartMin(store, value) {
             store.commit('mutateStartMin', value);
         },
-
-
     }
 }

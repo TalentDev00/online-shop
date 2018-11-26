@@ -7,7 +7,6 @@ import products from './modules/products';
 import cart from './modules/cart';
 import promotions from './modules/promotions';
 import catalog from './modules/catalog';
-import filters from './modules/filters';
 import header from './modules/header';
 
 export default new Vuex.Store({
@@ -16,7 +15,6 @@ export default new Vuex.Store({
         cart,
         promotions,
         catalog,
-        filters,
         header
     },
     strict: process.env.NODE_ENV !== 'production',

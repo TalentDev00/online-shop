@@ -29,7 +29,7 @@
             </div>
             <div class="filter-actions">
                 <p class="product-found">
-                    Отобрано {{ countByParams.length }} товаров из {{ products.length }}
+                    Отобрано {{ countItemsByFilters.length }} товаров из {{ products.length }}
                 </p>
                 <div class="action-buttons">
                     <button class="btn clear"
@@ -44,61 +44,68 @@
     </section>
 </template>
 <script>
+    import axios from 'axios';
     import Vue from 'vue';
     import {mapActions, mapGetters} from 'vuex';
 
     export default {
         beforeRouteEnter(to, from, next) {
             next(vm => {
-                let products = vm.$store.state.products.items;
-                if (products.length > 0) {
-                    let prices = [];
-                    products.forEach(item => {
-                        prices.push(item.price);
-                    });
+                const params = {
+                    cat_id: to.params.cat_id,
+                };
+                axios.get(`/store/catalog`, {params})
+                    .then(data => {
+                        vm.setData(data.data);
+                        let products = data.data;
+                        if (products.length > 0) {
+                            let prices = [];
+                            products.forEach(item => {
+                                prices.push(item.price);
+                            });
 
-                    let minPrice = Math.min(...prices);
-                    let maxPrice = Math.max(...prices);
+                            let minPrice = Math.min(...prices);
+                            let maxPrice = Math.max(...prices);
 
-                    vm.changeTitle('ФИЛЬТР');
-                    vm.slider.min = 0;
-                    vm.slider.max = maxPrice;
-                    vm.minRange = minPrice;
-                    vm.maxRange = maxPrice;
-                    vm.slider.startMin = minPrice;
-                    vm.slider.startMax = maxPrice;
-                }
-                else {
-                    vm.changeTitle('ФИЛЬТР');
-                }
+                            vm.changeTitle('ФИЛЬТР');
+                            vm.slider.min = 0;
+                            vm.slider.max = maxPrice;
+                            if (vm.sliderMinRange === "" || vm.sliderMaxRange === "") {
+                                vm.minRange = minPrice;
+                                vm.maxRange = maxPrice;
+                            }
+                            else {
+                                vm.minRange = vm.sliderMinRange;
+                                vm.maxRange = vm.sliderMaxRange;
+                            }
+
+                            vm.slider.startMin = vm.minRange;
+                            vm.slider.startMax = vm.maxRange;
+                            vm.installSlider();
+                        }
+                        else {
+                            vm.changeTitle('ФИЛЬТР');
+                        }
+                    })
+                    .catch(error => console.log(error));
             });
-        },
-        created() {
-            Vue.nextTick(function() {
-                this.installSlider();
-            }.bind(this));
         },
         data() {
             return {
-                sorted: [],
+                products: [],
                 minRange: 0,
                 maxRange: 0,
                 slider: {
                     startMin: 0,
                     startMax: 0,
                     min: 0,
-                    max: 10000,
                     step:1
                 }
             }
         },
         computed: {
             ...mapGetters('products', {
-                products: 'getItems',
-
-                // FILTERS
                 paramsChecked: 'getChecked',
-                filteredProducts: 'getFilteredItems',
                 sliderMinRange: 'getSliderMinRange',
                 sliderMaxRange: 'getSliderMaxRange',
                 sliderStartMin: 'getSliderStartMin',
@@ -130,24 +137,23 @@
             countActiveParams() {
                 return (filter) => this.hasActiveParams(filter) ? this.filterParams(filter).values.length : 0;
             },
-            countSortedProducts() {
-                return this.products.filter(item => {
-                    let totalPrice = item.price - item.discount;
-
-                    if (this.paramsChecked && this.paramsChecked.length > 0) {
-                        return (
-                            totalPrice >= parseInt(this.minRange)
-                            && totalPrice <= parseInt(this.maxRange)
-                        );
-                    }
-
-                    return (
-                        totalPrice >= parseInt(this.minRange)
-                        && totalPrice <= parseInt(this.maxRange)
-                    );
+            lowestPrice() {
+                let prices = [];
+                this.products.forEach(item => {
+                    prices.push(item.price);
                 });
+
+                return Math.min(...prices);
             },
-            countByParams() {
+            highestPrice() {
+                let prices = [];
+                this.products.forEach(item => {
+                    prices.push(item.price);
+                });
+
+                return Math.max(...prices);
+            },
+            countItemsByFilters() {
                 let newFilters = [];
                 this.paramsChecked.forEach(item => {
                     item.values.forEach(elem => {
@@ -178,7 +184,6 @@
                             sorted.push(item);
                         }
                     }
-
                 });
 
                 return sorted;
@@ -190,10 +195,7 @@
                 changeSliderMaxRange: 'changeMaxRange',
                 changeSliderStartMax: 'changeStartMax',
                 changeSliderStartMin: 'changeStartMin',
-                addToFilteredProducts: 'addToFiltered',
-                removeFromFilteredProducts: 'removeFromFiltered',
                 clearFilterParameters: 'clearCheckedParams',
-
             }),
             ...mapActions('header', {
                 changeTitle: 'setTitle'
@@ -208,13 +210,12 @@
                     connect: true,
                     range: {
                         'min': this.slider.min,
-                        'max': this.slider.max
+                        'max': this.highestPrice
                     },
                     format: wNumb({
                         decimals: 0,
                         thousand: '',
                     })
-
                 });
 
                 this.$refs.slider.noUiSlider.on('update',(values, handle) => {
@@ -223,6 +224,9 @@
                     this.startMin = values[0];
                     this.startMax = values[1];
                 });
+            },
+            setData(data) {
+                this.products = data;
             },
             clearParams(filter) {
                 this.clearFilterParameters(filter);
@@ -233,24 +237,15 @@
                 this.changeSliderStartMax(this.slider.startMax);
                 this.changeSliderStartMin(this.slider.startMin);
                 this.$router.go(-1);
-
             },
             clear() {
-                this.minRange = '';
-                this.maxRange = '';
-                //this.$refs.slider.noUiSlider.set([this.minRange, this.maxRange]);
+                this.minRange = this.lowestPrice;
+                this.maxRange = this.highestPrice;
+                this.$refs.slider.noUiSlider.set([this.minRange, this.maxRange]);
                 this.filters.forEach(item => {
                     this.clearFilterParameters(item);
                 });
-
-
             }
         },
-
     }
 </script>
-<style scoped lang="scss">
-    .vue-slider-component {
-        padding: 0px;
-    }
-</style>

@@ -80,9 +80,9 @@
                 filtersActiveCount: 'getCheckedCount'
 
             }),
-            ...mapGetters('filters', {
+         /*   ...mapGetters('filters', {
                 allFilters: 'getFilterItems'
-            }),
+            }),*/
             currentScreenChat(){
                 return this.$route.name === 'chat';
             },
