@@ -277,6 +277,36 @@ p.greetings {
                 color: $white!important;
             }
 
+            &-green {
+                color: $white!important;
+
+                background-image:url("../images/icons/search_white.svg");
+                background-position:12px;
+                background-repeat: no-repeat;
+                background-size: 16px, 16px, contain;
+
+                background-color: $dark-lime!important;
+                &::placeholder {
+                    color: $white;
+                    opacity: 0.3;
+                }
+            }
+
+            &-gray {
+                background: rgba(0, 0, 0, 0.05);
+                //background-color: $gray!important;
+
+                background-image:url("../images/icons/search_.svg");
+                background-position:12px;
+                background-repeat: no-repeat;
+                background-size: 16px, 16px, contain;
+
+                &::placeholder {
+                    color: $black;
+                    opacity: 0.3;
+                }
+            }
+
             &-graybackground {
                 background-color: $gray!important;
             }

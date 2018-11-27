@@ -85,15 +85,21 @@ export default {
                 state.products.splice(index, 1);
             }
         },
-        mutateProductCondition(state, obj) {
-            let found = state.products.find(item => item.product_id === obj.product.product_id);
+        mutateProductVariant(state, obj) {
+            let found = state.products.find(item => item.item.id === obj.product.id);
             if (found) {
-                let foundCondition = found.product_conditions.find(item => item.name === obj.condition.name);
 
-                if (foundCondition) {
-                    foundCondition.selected = obj.selected;
+                let foundVariant = found.item.variants.find(item => item.name === obj.variant);
 
+                if (foundVariant) {
+                    if (foundVariant.selected) {
+                        foundVariant.selected = obj.value;
+                    }
+                    else {
+                        Vue.set(foundVariant, 'selected', obj.value)
+                    }
                 }
+
             }
         },
         mutatePromocodeAppliedChangeStatus(state) {
@@ -119,8 +125,8 @@ export default {
         promocodeAdd(store, amount) {
             store.commit('mutatePromoCodeDiscountChange', amount);
         },
-        productConditionSelect(store, obj) {
-            store.commit('mutateProductCondition', obj);
+        setProductSelectedVariantInCart(store, obj) {
+            store.commit('mutateProductVariant', obj);
         }
     }
 }

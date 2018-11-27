@@ -15,15 +15,16 @@
                         <button class="product__actions__counter__remove"
                                 @click.prevent="removeFromCartAndClose(product)"
                         ><span>-</span></button>
-                        <div class="product__actions__counter__count">{{ product.product_quantity }}</div>
+                        <div class="product__actions__counter__count">{{ productQty(product) }}</div>
                         <button class="product__actions__counter__add"
                                 @click.prevent="add(product)"
                         ><span>+</span></button>
                     </div>
                     <button class="btn"
-                            @click.prevent="close"
+                            @click.prevent="close(product)"
                     >сохранить</button>
                 </div>
+
                 <button v-else
                         class="btn"
                         @click.prevent="addToCartAndClose(product)"
@@ -43,7 +44,7 @@
         props: ['product'],
         data() {
             return {
-
+                selected: []
             }
         },
         computed: {
@@ -52,6 +53,9 @@
             }),
             routeCart() {
                 return this.$route.name === 'cart';
+            },
+            productQty() {
+                return (product) => this.productsInCart.find(item => item.item.id === product.id) ? this.productsInCart.find(item => item.item.id === product.id).qty : null;
             }
         },
         methods: {
@@ -59,28 +63,53 @@
                 add: 'addToCart',
                 remove: 'removeFromCart',
                 removeWithAllCounts: 'removeFromCartWithAllCounts',
-                changeCondition: 'productConditionSelect'
+                setProductVariantInCart: 'setProductSelectedVariantInCart'
             }),
             ...mapActions('products', {
-                changeProductCondition: 'productConditionSelect'
+                changeProductCondition: 'productConditionSelect',
+                setProductVariantInProducts: 'setProductSelectedVariantInProducts'
             }),
             updateValue(e) {
-                if (this.routeCart) {
-                    this.changeCondition(e);
+                let found = this.selected.find(item => item.name === e.name);
+                if (!found) {
+                    this.selected.push(e);
                 }
+
                 else {
-                    this.changeProductCondition(e);
+                    found.value = e.value;
                 }
             },
-            close() {
+            close(product) {
+                product.variants.forEach(item => {
+                    this.selected.forEach(elem => {
+                        if (item.name === elem.name) {
+                            this.setProductVariantInCart({
+                                product: product,
+                                variant: item.name,
+                                value: elem.value
+                            });
+                        }
+                    });
+                });
                 this.$emit('close');
             },
             addToCartAndClose(product) {
+                product.variants.forEach(item => {
+                    this.selected.forEach(elem => {
+                        if (item.name === elem.name) {
+                            this.setProductVariantInProducts({
+                                product: product,
+                                variant: item.name,
+                                value: elem.value
+                            })
+                        }
+                    });
+                });
                 this.add(product);
                 this.$emit('close');
             },
             removeFromCartAndClose(product) {
-                if (product.product_quantity > 1)
+                if (this.productQty(product) > 1)
                     this.remove(product);
                 else {
                     this.close();

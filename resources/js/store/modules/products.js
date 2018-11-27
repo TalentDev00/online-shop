@@ -74,6 +74,28 @@ export default {
                 Vue.set(product, 'product_favorite', false);
             }
         },
+
+
+        mutateProductSelectedVariant(state, obj) {
+              let found = state.items.find(item => item.id === obj.product.id);
+              if (found) {
+
+                  let foundVariant = found.variants.find(item => item.name === obj.variant);
+
+                  if (foundVariant) {
+                      if (foundVariant.selected) {
+                          foundVariant.selected = obj.value;
+                      }
+                      else {
+                          Vue.set(foundVariant, 'selected', obj.value)
+                      }
+                  }
+
+              }
+        },
+
+
+
         mutateProductCondition(state, obj) {
             let found = state.items.find(item => item.id === obj.product.id);
             if (found) {
@@ -114,7 +136,9 @@ export default {
         },
     },
     actions: {
-
+        setProductSelectedVariantInProducts(store, obj) {
+            store.commit('mutateProductSelectedVariant', obj);
+        },
         like(store, product) {
             store.commit('mutateFavorite', product);
         },

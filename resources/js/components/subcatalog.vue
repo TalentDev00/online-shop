@@ -10,7 +10,7 @@
                 <ul class="list">
                     <router-link v-if="!emptyInput"
                                  tag="li"
-                                 :to="{ name: 'result'}"
+                                 :to="{ name: 'section', params: { keywords:  keywords} }"
                                  class="list__item">
                         <a class="list__item__name list__item__name-reactive" href="">{{ keywords }}</a>
                     </router-link>

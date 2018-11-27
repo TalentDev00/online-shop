@@ -7,8 +7,10 @@ import wNumb from 'wnumb';
 import Snap from 'snapjs';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import VueScrollTo from 'vue-scrollto';
 Vue.use(VueAxios, axios);
 Vue.use(VueRouter);
+Vue.use(VueScrollTo);
 
 Vue.router = router;
 Vue.use(require('@websanova/vue-auth'), {

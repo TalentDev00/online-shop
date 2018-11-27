@@ -5,18 +5,39 @@
                 <my-search :value="keywords"
                            :formClass="'search__form-static'"
                            @onchange="updateInput($event)"
-                           @onclear="keywords = null"
+                           @onclear="resetSearch"
                 ></my-search>
             </div>
-            <p class="product-found" v-if="emptyInput">Найдено товаров: {{ products.length }}</p>
+            <p class="product-found" v-if="emptyInput || routeHasKeywords && keywords === $route.params.keywords">Найдено товаров: {{ routeHasKeywords && emptyInput ? results.length : products.length }}</p>
         </section>
         <section class="found">
             <div class="wrapper-16">
 
-                <ul v-if="!emptyInput" class="list">
-                    <li class="list__item">
-                        <p class="list__item__name list__item__name-reactive">{{ keywords }}</p>
-                    </li>
+                <ul v-if="!emptyInput && !routeHasKeywords" class="list">
+                    <router-link
+                                 tag="li"
+                                 :to="{ name: 'section', params: { keywords:  keywords ? keywords : null} }"
+                                 class="list__item">
+                        <a class="list__item__name list__item__name-reactive" href="">{{ keywords }}</a>
+                    </router-link>
+                    <router-link v-for="(item, index) in results"
+                                 :key="index"
+                                 tag="li"
+                                 :to="'/result/' + item.id"
+                                 class="list__item">
+                        <a  v-html="highlight(item.name)" class="list__item__name" href="">{{ item.name }}</a>
+                        <img v-if="!item.cat_id"
+                             class="list__item__catalog" src="../../images/icons/folder.svg" alt="">
+                    </router-link>
+                </ul>
+
+                <ul v-else-if="$route.params.keywords && $route.params.keywords !== keywords" class="list">
+                    <router-link
+                                 tag="li"
+                                 :to="{ name: 'section', params: { keywords:  keywords ? keywords : null} }"
+                                 class="list__item">
+                        <a class="list__item__name list__item__name-reactive" href="">{{ keywords }}</a>
+                    </router-link>
                     <router-link v-for="(item, index) in results"
                                  :key="index"
                                  tag="li"
@@ -50,14 +71,14 @@
                                 <img v-if="!product.favorite" src="../../images/icons/favorite.svg" alt="">
                                 <img v-else src="../../images/icons/favorite_fill.svg" alt="">
                             </button>
-                            <button v-if="!productsInCart.find(item => item.item.id === product.id)" class="product__actions__buy"
+                            <button v-if="!inCart(product)" class="product__actions__buy"
                                     @click="popModal(product)"
                             >купить</button>
                             <div v-else class="product__actions__counter">
                                 <button class="product__actions__counter__remove"
                                         @click="remove(product)"
                                 ><span>-</span></button>
-                                <div class="product__actions__counter__count">{{ productsInCart.find(item => item.item.id === product.id).qty }}</div>
+                                <div class="product__actions__counter__count">{{ productQty(product) }}</div>
                                 <button class="product__actions__counter__add"
                                         @click="add(product)"
                                 ><span>+</span></button>
@@ -80,6 +101,16 @@
     import myModal from './modal';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
+
+    const scrollToTop = (scrollDuration) => {
+        let scrollStep = -window.scrollY / (scrollDuration / 15),
+        scrollInterval = setInterval(() => {
+            if (window.scrollY !== 0) {
+                window.scrollBy(0, scrollStep);
+            }
+            else clearInterval(scrollInterval);
+        }, 15);
+    };
 
     const getProducts = (cat_id, sort, min, max, filters, callback) => {
         let params = { cat_id, sort, min, max, filters };
@@ -148,31 +179,62 @@
                 getResults(params.keywords, params.sort, params.min, params.max, params.filters, (data) => {
                     next(vm => {
                         vm.loadProducts(data);
-                        vm.changeTitle(params.keywords.toUpperCase());
+                        vm.changeTitle('ПОИСК');
+                        vm.keywords = params.keywords;
                     });
                 });
             }
-
         },
-/*        beforeRouteUpdate(to, from, next) {
-            this.clearProducts();
-            axios.get(`/store/catalog?cat_id=${to.params.cat_id}?sort=${this.sort}`)
-                .then(data => {
-                    this.loadProducts(data.data);
-                }).catch(error => {
-                console.log(error);
+        beforeRouteUpdate(to, from, next) {
+            let filters = storeProductsModule.state.checked;
+            let newFilters = [];
+            filters.forEach(item => {
+                item.values.forEach(elem => {
+                    newFilters.push({
+                        name: item.filter,
+                        value: elem
+                    });
+                })
             });
+            this.clearProducts();
+            let params = {
+                cat_id: to.params.cat_id,
+                sort: storeProductsModule.state.sort,
+                min : storeProductsModule.state.minRange,
+                max: storeProductsModule.state.maxRange,
+                filters: newFilters.length > 0 ? JSON.stringify(newFilters) : newFilters
+            };
+            if (params.cat_id) {
+                getProducts(params.cat_id, params.sort, params.min, params.max, params.filters, (data) => {
+                        this.loadProducts(data);
 
-            let found = this.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
-            if (found) {
-                this.changeTitle(found.name);
+                        let found = this.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
+                        if (found) {
+                            this.changeTitle(found.name);
+                        }
+                });
+            }
+            else {
+                let params = {
+                    keywords: to.params.keywords,
+                    sort: storeProductsModule.state.sort,
+                    min : storeProductsModule.state.minRange,
+                    max: storeProductsModule.state.maxRange,
+                    filters: newFilters.length > 0 ? JSON.stringify(newFilters) : newFilters
+                };
+                getResults(params.keywords, params.sort, params.min, params.max, params.filters, (data) => {
+                    this.loadProducts(data);
+                    this.changeTitle('ПОИСК');
+                    this.keywords = params.keywords;
+                });
+
             }
             next();
-        },*/
+        },
         data() {
             return {
                 showModal: false,
-                keywords: null,
+                keywords: this.$route.params.keywords ? this.$route.params.keywords : null,
                 currentProduct: '',
             }
         },
@@ -194,6 +256,15 @@
             }),
             emptyInput() {
                 return this.keywords === null || this.keywords === '' || this.keywords === ' ';
+            },
+            routeHasKeywords() {
+                return this.$route.params.keywords;
+            },
+            inCart() {
+                return (product) => this.productsInCart.find(item => item.item.id === product.id);
+            },
+            productQty() {
+                return (product) => this.productsInCart.find(item => item.item.id === product.id) ? this.productsInCart.find(item => item.item.id === product.id).qty : null;
             }
         },
         methods: {
@@ -210,14 +281,30 @@
                 changeTitle: 'setTitle'
             }),
             popModal(product) {
-                this.currentProduct = product;
-                this.showModal = !this.showModal;
+                if (product.variants && product.variants.length > 0) {
+                    this.currentProduct = product;
+                    this.showModal = !this.showModal;
+                }
+                else {
+                    this.add(product);
+                }
+
             },
             highlight(text) {
                 return text.replace(new RegExp(this.keywords, 'gi'), '<span class="highlighted">$&</span>');
             },
             updateInput(e) {
                 this.keywords = e;
+            },
+            resetSearch() {
+                if (this.routeHasKeywords) {
+                    this.$router.push({ name: 'catalog' });
+                   // scrollToTop(500);
+                }
+
+                else {
+                    this.keywords = null;
+                }
             }
         }
     }

@@ -4,47 +4,47 @@
             <div class="items">
                 <div class="incart">
                     <div class="cart-item"
-                         v-for="(product, index) in productsInCart"
+                         v-for="(cartItem, index) in productsInCart"
                          :key="index"
                     >
                         <div class="cart-item__body swipable">
                             <div class="cart-item__body__product">
-                                <router-link tag="div" :to="'/catalog/products/' + product.product_id" class="cart-item__body__product__img">
-                                    <a href=""><img :src="'../../images/' + product.product_image" alt=""></a>
+                                <router-link tag="div" :to="'/catalog/products/' + cartItem.item.id" class="cart-item__body__product__img">
+                                    <a href=""><img :src="'/images/' + cartItem.item.images[0].large" alt=""></a>
                                 </router-link>
                                 <div class="cart-item__body__product__details">
-                                    <p class="cart-item__body__product__details__name">{{ product.product_name }}</p>
+                                    <p class="cart-item__body__product__details__name">{{ cartItem.item.name }}</p>
                                     <div class="cart-item__body__product__details__prices">
-                                        <p v-show="product.product_nodiscount !== ''" class="cart-item__body__product__details__prices__nodiscount">{{ product.product_nodiscount }} <span>руб.</span></p>
-                                        <p v-show="product.product_oldprice !== ''" class="cart-item__body__product__details__prices__odlprice">{{ product.product_oldprice }}</p>
-                                        <p v-show="product.product_newprice !== ''" class="cart-item__body__product__details__prices__newprice">{{ product.product_newprice }} <span>руб.</span></p>
-                                        <p class="cart-item__body__product__details__prices__amount">x {{ product.product_quantity }} шт</p>
+                                        <p v-show="cartItem.item.discount === 0" class="cart-item__body__product__details__prices__nodiscount">{{ cartItem.item.price }} <span>руб.</span></p>
+                                        <p v-show="cartItem.item.discount !== 0" class="cart-item__body__product__details__prices__odlprice">{{ cartItem.item.price }}</p>
+                                        <p v-show="cartItem.item.discount !== 0" class="cart-item__body__product__details__prices__newprice">{{ cartItem.item.price - cartItem.item.discount }} <span>руб.</span></p>
+                                        <p class="cart-item__body__product__details__prices__amount">x {{ cartItem.qty }} шт</p>
                                     </div>
                                 </div>
                                 <div class="cart-item__body__product__actions">
                                     <button class="cart-item__body__product__actions__menu"
-                                            @click="popModal(product)"
+                                            @click="popModal(cartItem.item)"
                                     ><img src="../../images/icons/product_menu.svg" alt=""></button>
-                                    <button v-show="product.product_favorite" class="cart-item__body__product__actions__like"><img src="../../images/icons/favorite_fill.svg" alt=""></button>
+                                    <button v-show="cartItem.item.product_favorite" class="cart-item__body__product__actions__like"><img src="../../images/icons/favorite_fill.svg" alt=""></button>
                                 </div>
                             </div>
                             <ul class="cart-item__body__conditions">
                                 <li class="cart-item__body__conditions__item"
-                                    v-for="(condition, index) in product.product_conditions"
-                                >{{ condition.name }}: <span> {{ condition.selected }}</span></li>
+                                    v-for="(variant, index) in cartItem.item.variants"
+                                >{{ variant.name }}: <span> {{ variant.selected }}</span></li>
                             </ul>
                         </div>
                         <div class="cart-item__buttons">
-                            <button v-if="product.product_favorite"
+                            <button v-if="cartItem.item.product_favorite"
                                     class="cart-item__buttons__like"
-                                    @click="addOrRemoveLike(product)"
+                                    @click="addOrRemoveLike(cartItem.item)"
                             ><img src="../../images/icons/favorite_snow_fill.svg" alt=""></button>
                             <button v-else
                                     class="cart-item__buttons__like"
-                                    @click="addOrRemoveLike(product)"
+                                    @click="addOrRemoveLike(cartItem.item)"
                             ><img src="../../images/icons/favorite_snow.svg" alt=""></button>
                             <button class="cart-item__buttons__close"
-                                    @click="removeWithAllCounts(product)"
+                                    @click="removeWithAllCounts(cartItem.item)"
                             ><img src="../../images/icons/close_snow.svg" alt=""></button>
                         </div>
                     </div>
@@ -68,9 +68,9 @@
                 <div class="cartsum-wrapper">
                     <div class="wrapper-16">
                         <div class="cartsum">
-                            <p class="cartsum__products"><span class="cartsum__products__count">{{ countProductsInCart }}</span> {{ wordEndings }} на сумму <span class="cartsum__products__price">{{ withoutDiscountPrice }} руб.</span></p>
-                            <p class="cartsum__discount">Скидка: <span class="cartsum__discount__amount">{{ discount }} руб.</span></p>
-                            <p class="cartsum__final">Итого: <span class="cartsum__final__num">{{ totalPrice }} руб.</span></p>
+                            <p class="cartsum__products"><span class="cartsum__products__count">{{  }}</span> {{ wordEndings }} на сумму <span class="cartsum__products__price">{{  }} руб.</span></p>
+                            <p class="cartsum__discount">Скидка: <span class="cartsum__discount__amount">{{}} руб.</span></p>
+                            <p class="cartsum__final">Итого: <span class="cartsum__final__num">{{  }} руб.</span></p>
                         </div>
                     </div>
                 </div>
@@ -166,7 +166,7 @@
             ...mapGetters('promotions', {
                 promotions: 'getPromotions'
             }),
-            withoutDiscountPrice() {
+/*            withoutDiscountPrice() {
                 let total = 0;
 
                 for (let item of this.productsInCart) {
@@ -231,7 +231,7 @@
             totalPrice() {
                 return this.withoutDiscountPrice - this.discount;
 
-            },
+            },*/
             wordEndings() {
                 return wordEnds(this.countProductsInCart, 'товаров', 'товар', 'товара');
             },
