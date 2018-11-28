@@ -1,5 +1,5 @@
 <template>
-        <input class="promocode__item promocode__input"
+        <input :class="styleClasses"
                :type="type"
                :name="name"
                :placeholder="placeholder"
@@ -9,23 +9,21 @@
 </template>
 <script>
     export default {
-        props: ['type', 'name', 'placeholder', 'value'],
+        props: ['value', 'type', 'name', 'placeholder', 'styleClasses'],
         data() {
             return {
-
             }
         },
         computed: {
-
         },
         methods: {
             updateValue(e) {
-                this.$emit('changeValue', e.target.value);
+                this.$emit('oninput', e.target.value)
             }
         },
-        watch: {
-
-        }
     }
 
 </script>
+<style scoped lang="scss">
+
+</style>

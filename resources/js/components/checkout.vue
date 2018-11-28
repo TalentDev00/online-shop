@@ -5,21 +5,15 @@
                 <div class="wrapper-16">
                     <h2 class="options">Оплата</h2>
                     <ul class="list payment">
-                        <li class="list__item">
-                            <div class="radiobutton">
-                                <label class="radiobutton__container">Наличными
-                                    <input class="radiobutton__container__input" type="radio" checked="checked" name="radio1">
-                                    <span class="radiobutton__container__checkmark"></span>
-                                </label>
-                            </div>
-                        </li>
-                        <li class="list__item">
-                            <div class="radiobutton">
-                                <label class="radiobutton__container">Картой
-                                    <input class="radiobutton__container__input" type="radio" name="radio1">
-                                    <span class="radiobutton__container__checkmark"></span>
-                                </label>
-                            </div>
+
+                        <li v-for="(item, index) in paymentMethods" :key="index"
+                            class="list__item">
+                            <my-radio :label="item.name"
+                                      :index="index"
+                                      name="payment"
+                                      :value="item.name"
+                                      @onchange="updatePayment($event)"
+                            ></my-radio>
                         </li>
                     </ul>
                 </div>
@@ -28,21 +22,14 @@
                 <div class="wrapper-16">
                     <h2 class="options">Доставка</h2>
                     <ul class="list delivery">
-                        <li class="list__item">
-                            <div class="radiobutton">
-                                <label class="radiobutton__container">Курьером — 300 рублей
-                                    <input class="radiobutton__container__input" type="radio" checked="checked" name="radio2">
-                                    <span class="radiobutton__container__checkmark"></span>
-                                </label>
-                            </div>
-                        </li>
-                        <li class="list__item">
-                            <div class="radiobutton">
-                                <label class="radiobutton__container">Самовывоз — бесплатно
-                                    <input class="radiobutton__container__input" type="radio" name="radio2">
-                                    <span class="radiobutton__container__checkmark"></span>
-                                </label>
-                            </div>
+                        <li v-for="(item, index) in deliveryMethods" :key="index"
+                            class="list__item">
+                            <my-radio :label="item.name"
+                                      :index="index"
+                                      name="delivery"
+                                      :value="item.name"
+                                      @onchange="updateDelivery($event)"
+                            ></my-radio>
                         </li>
                     </ul>
                 </div>
@@ -53,7 +40,13 @@
                     <ul class="list address">
                         <li class="list__item">
                             <div class="inputfield">
-                                <input value="111111, Москва, ул. Ленина, д.1, кв.1" class="inputfield__input" type="text" placeholder="индекс, город, улица, дом, квартира">
+                                <my-input style-classes="inputfield__input"
+                                          type="text"
+                                          name="address"
+                                          placeholder="индекс, город, улица, дом, квартира"
+                                          :value="address"
+                                          @oninput="updateAddress($event)"
+                                ></my-input>
                             </div>
                         </li>
                     </ul>
@@ -65,13 +58,95 @@
                     <ul class="list comment">
                         <li class="list__item">
                             <div class="inputfield">
-                                <input class="inputfield__input" type="text" placeholder="подъезд, номер домофона, ...">
+                                <my-input style-classes="inputfield__input"
+                                          type="text"
+                                          name="comment"
+                                          placeholder="подъезд, номер домофона, ..."
+                                          :value="comment"
+                                          @oninput="updateComment($event)"
+                                ></my-input>
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-        <button class="btn btn__fixed">заказать</button>
+        <button class="btn btn__fixed"
+                @click="checkout(productsInCart)"
+        >заказать</button>
     </section>
 </template>
+<script>
+    import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
+    import myRadio from './helpers/radio';
+    import myInput from './helpers/input';
+    export default {
+        components: {
+            myRadio,
+            myInput
+        },
+        beforeRouteEnter(to, from, next) {
+            next(vm => {
+                vm.changeTitle('ОФОРМЛЕНИЕ ЗАКАЗА');
+                vm.payment = vm.paymentMethod;
+                vm.delivery = vm.deliveryMethod;
+                vm.address = vm.deliveryAddress;
+                vm.comment = vm.orderComment;
+            });
+        },
+        data() {
+            return {
+                payment: '',
+                delivery: '',
+                address: '',
+                comment: ''
+            }
+        },
+        computed: {
+            ...mapGetters({
+                paymentMethods: 'allPaymentMethods',
+                deliveryMethods: 'allDeliveryMethods'
+            }),
+            ...mapGetters('cart', {
+                productsInCart: 'getProducts',
+                paymentMethod: 'getPaymentMethod',
+                deliveryMethod: 'getDeliveryMethod',
+                deliveryAddress: 'getDeliveryAddress',
+                orderComment: 'getComment'
+            }),
+        },
+        methods: {
+            ...mapActions('cart', {
+                changePaymentMethod: 'setPaymentMethod',
+                changeDeliveryMethod: 'setDeliveryMethod',
+                changeDeliveryAddress: 'setDeliveryAddress',
+                changeComment: 'setComment',
+                placeOrderAndCheckout: 'checkout'
+            }),
+            ...mapActions('header', {
+                changeTitle: 'setTitle'
+            }),
+            updatePayment(value) {
+                this.payment = value;
+                this.changePaymentMethod(value);
+            },
+            updateDelivery(value) {
+                this.delivery = value;
+                this.changeDeliveryMethod(value);
+            },
+            updateAddress(value) {
+                this.address = value;
+                this.changeDeliveryAddress(value);
+            },
+            updateComment(value) {
+                this.comment = value;
+                this.changeComment(value);
+            },
+            checkout(products) {
+                this.placeOrderAndCheckout(products);
+                this.$router.push({ name: 'catalog' });
+            }
+        }
+    }
+</script>

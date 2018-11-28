@@ -80,7 +80,7 @@ export default {
               let found = state.items.find(item => item.id === obj.product.id);
               if (found) {
 
-                  let foundVariant = found.variants.find(item => item.name === obj.variant);
+                  let foundVariant = found.variants.find(item => item.name === obj.variant.name);
 
                   if (foundVariant) {
                       if (foundVariant.selected) {
@@ -96,16 +96,6 @@ export default {
 
 
 
-        mutateProductCondition(state, obj) {
-            let found = state.items.find(item => item.id === obj.product.id);
-            if (found) {
-                let foundCondition = found.product_conditions.find(item => item.name === obj.condition.name);
-
-                if (foundCondition) {
-                    foundCondition.selected = obj.selected;
-                }
-            }
-        },
         mutateSort(state, value) {
             state.sort = value;
         },
@@ -142,10 +132,6 @@ export default {
         like(store, product) {
             store.commit('mutateFavorite', product);
         },
-        productConditionSelect(store, obj) {
-            store.commit('mutateProductCondition', obj);
-        },
-
         loadItems(store, data){
             store.commit('mutateLoadItems', data);
         },

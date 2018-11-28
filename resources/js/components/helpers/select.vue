@@ -6,12 +6,11 @@
                     :value="value"
                     :name="'slct_' + variant.name"
                     :id="'slct_' + variant.name"
+                    v-model="selected"
                     @change="onSelect($event)"
             >
-
                 <option v-for="(option, index) in variant.values" :key="index"
                         class="select__slct__opt"
-                        :selected="variant.selected === option"
                         :value="option"
                 >{{ option }}</option>
             </select>
@@ -21,10 +20,16 @@
 <script>
     export default {
         props: ['variant', 'value', 'product' ],
+        data() {
+            return {
+                selected: this.variant.selected ? this.variant.selected : this.variant.values[0]
+            }
+        },
         methods: {
             onSelect(e) {
                 this.$emit('onchange', {
-                    name: this.value,
+                    product: this.product,
+                    variant: this.variant,
                     value: e.target.value
                 });
             },
@@ -32,7 +37,6 @@
                 console.log(name);
                     console.log(index);
             },
-
         },
         computed: {
             indexVal() {

@@ -70,41 +70,24 @@
                 setProductVariantInProducts: 'setProductSelectedVariantInProducts'
             }),
             updateValue(e) {
-                let found = this.selected.find(item => item.name === e.name);
-                if (!found) {
-                    this.selected.push(e);
-                }
-
-                else {
-                    found.value = e.value;
+                if (this.routeCart) {
+                    this.setProductVariantInCart({
+                        product: e.product,
+                        variant: e.variant,
+                        value: e.value
+                    })
+                } else {
+                    this.setProductVariantInProducts({
+                        product: e.product,
+                        variant: e.variant,
+                        value: e.value
+                    })
                 }
             },
-            close(product) {
-                product.variants.forEach(item => {
-                    this.selected.forEach(elem => {
-                        if (item.name === elem.name) {
-                            this.setProductVariantInCart({
-                                product: product,
-                                variant: item.name,
-                                value: elem.value
-                            });
-                        }
-                    });
-                });
+            close() {
                 this.$emit('close');
             },
             addToCartAndClose(product) {
-                product.variants.forEach(item => {
-                    this.selected.forEach(elem => {
-                        if (item.name === elem.name) {
-                            this.setProductVariantInProducts({
-                                product: product,
-                                variant: item.name,
-                                value: elem.value
-                            })
-                        }
-                    });
-                });
                 this.add(product);
                 this.$emit('close');
             },

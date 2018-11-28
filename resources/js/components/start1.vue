@@ -34,18 +34,26 @@
             getCatalog(data => {
                 next(vm => {
                     vm.loadItems(data.categories);
+                    vm.payments(data.payment_methods);
+                    vm.delivery(data.delivery_methods);
+                    vm.name(data.name);
+                    vm.logo(data.logo);
+                    vm.description(data.description);
                 });
             });
-        },
-        computed: {
-            ...mapGetters('catalog', {
-                allCatalogs: 'getCatalogItems'
-            })
         },
         methods: {
             ...mapActions('catalog', {
                 loadItems: 'loadNewItems'
             }),
-        }
+            ...mapActions({
+                payments: 'loadPaymentMethods',
+                delivery: 'loadDeliveryMethods',
+                name: 'loadShopName',
+                logo: 'loadShopLogo',
+                description: 'loadShopDescription'
+            })
+        },
+
     }
 </script>

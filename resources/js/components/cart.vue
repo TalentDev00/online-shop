@@ -31,7 +31,7 @@
                             <ul class="cart-item__body__conditions">
                                 <li class="cart-item__body__conditions__item"
                                     v-for="(variant, index) in cartItem.item.variants"
-                                >{{ variant.name }}: <span> {{ variant.selected }}</span></li>
+                                >{{ variant.name }}: <span> {{ variant.selected ? variant.selected : variant.values[0] }}</span></li>
                             </ul>
                         </div>
                         <div class="cart-item__buttons">
@@ -49,17 +49,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="promocode-wrapper" v-show="!promoApplyStatus">
+                <div class="promocode-wrapper">
                     <div class="wrapper-16">
                         <div class="promocode" >
                             <my-input type="text"
+                                      styleClasses="promocode__item promocode__input"
                                       name="promocode"
                                       placeholder="промокод"
-                                      :value="promoCode"
-                                      @changeValue="updateValue($event)"
                             ></my-input>
                             <button class="promocode__item promocode__apply"
-                                    @click="checkPromoCode"
                             >применить</button>
                         </div>
 
@@ -68,9 +66,9 @@
                 <div class="cartsum-wrapper">
                     <div class="wrapper-16">
                         <div class="cartsum">
-                            <p class="cartsum__products"><span class="cartsum__products__count">{{  }}</span> {{ wordEndings }} на сумму <span class="cartsum__products__price">{{  }} руб.</span></p>
-                            <p class="cartsum__discount">Скидка: <span class="cartsum__discount__amount">{{}} руб.</span></p>
-                            <p class="cartsum__final">Итого: <span class="cartsum__final__num">{{  }} руб.</span></p>
+                            <p class="cartsum__products"><span class="cartsum__products__count">{{ countProductsInCart }}</span> {{ wordEndings }} на сумму <span class="cartsum__products__price">{{ totalPrice }} руб.</span></p>
+                            <p class="cartsum__discount">Скидка: <span class="cartsum__discount__amount">{{ discountPrice }} руб.</span></p>
+                            <p class="cartsum__final">Итого: <span class="cartsum__final__num">{{ finalPrice }} руб.</span></p>
                         </div>
                     </div>
                 </div>
@@ -139,12 +137,17 @@
             myInput,
             myModal
         },
-        created() {
-            this.loadPromocodes();
+        beforeRouteEnter(to, from, next) {
+            next(vm => {
+                vm.changeTitle('КОРЗИНА');
+                vm.installSwipers();
+            });
+        },
+     /*   created() {
             Vue.nextTick(function() {
                 this.installSwipers();
             }.bind(this));
-        },
+        },*/
         data() {
           return {
               promoCode: '',
@@ -160,78 +163,11 @@
             ...mapGetters('cart', {
                 productsInCart: 'getProducts',
                 countProductsInCart: 'getCountProducts',
-                promoApplyStatus: 'getPromoCodeAppliedStatus',
-                promoCodeDiscount: 'getPromoCodeAmount'
+                totalPrice: 'cartTotalPrice',
+                discountPrice: 'cartDiscountPrice',
+                finalPrice: 'cartFinalPrice'
             }),
-            ...mapGetters('promotions', {
-                promotions: 'getPromotions'
-            }),
-/*            withoutDiscountPrice() {
-                let total = 0;
 
-                for (let item of this.productsInCart) {
-                    total += item.product_totalPrice;
-                }
-
-                return total;
-            },
-            discount() {
-                let discount = 0;
-                let discount1 = 0;
-                let discount2 = 0;
-
-
-
-                if (this.promoCodeDiscount !== '' || this.promoCodeDiscount !== null) {
-
-                    if (typeof this.promoCodeDiscount === 'string' || this.promoCodeDiscount instanceof  String){
-                        let promo = this.promoCodeDiscount;
-                        if (promo.split('%').length > 1) {
-                            promo = parseInt(promo.replace("%", ""));
-
-                            discount1 = this.withoutDiscountPrice * promo / 100;
-
-                            for (let item of this.productsInCart) {
-                                discount2 += (item.product_oldprice * item.product_quantity - item.product_newprice * item.product_quantity);
-                            }
-
-                            discount = discount1 + discount2;
-
-                        } else {
-
-
-                            discount1 = this.promoCodeDiscount;
-
-                            for (let item of this.productsInCart) {
-                                discount2 += (item.product_oldprice * item.product_quantity - item.product_newprice * item.product_quantity);
-                            }
-
-                            discount = discount1 + discount2;
-                        }
-
-                    } else {
-
-                        discount1 = this.promoCodeDiscount;
-
-                        for (let item of this.productsInCart) {
-                            discount2 += (item.product_oldprice * item.product_quantity - item.product_newprice * item.product_quantity);
-                        }
-
-                        discount = discount1 + discount2;
-                    }
-
-                } else {
-                    for (let item of this.productsInCart) {
-                        discount += (item.product_oldprice * item.product_quantity - item.product_newprice * item.product_quantity);
-                    }
-                }
-
-                return discount;
-            },
-            totalPrice() {
-                return this.withoutDiscountPrice - this.discount;
-
-            },*/
             wordEndings() {
                 return wordEnds(this.countProductsInCart, 'товаров', 'товар', 'товара');
             },
@@ -245,29 +181,10 @@
                 add: 'addToCart',
                 remove: 'removeFromCart',
                 removeWithAllCounts: 'removeFromCartWithAllCounts',
-                promoChangeStatus: 'promocodeApply',
-                promoAddToCart: 'promocodeAdd'
             }),
-            ...mapActions('promotions', {
-                loadPromocodes: 'loadPromotions',
-                promoCodeUsed: 'promotionUsed'
+            ...mapActions('header', {
+                changeTitle: 'setTitle'
             }),
-            checkPromoCode() {
-                for (let i = 0; i < this.promotions.length; i++) {
-                    if (this.promoCode === this.promotions[i].code && this.promotions[i].used !== true && this.promoApplyStatus === false) {
-                        this.promoAddToCart(this.promotions[i].discount);
-                        this.promoCodeUsed(i);
-                        this.promoChangeStatus();
-                        return;
-                    }
-                }
-
-                alert('This promo code already used!');
-            },
-
-            updateValue(value) {
-                this.promoCode = value;
-            },
             toDiscounts(){
                 this.$router.push({name: 'action'});
             },
@@ -299,6 +216,3 @@
         }
     }
 </script>
-<style scoped>
-
-</style>

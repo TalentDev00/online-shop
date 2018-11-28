@@ -5,7 +5,10 @@
                 <ul class="list">
                     <li v-for="(item, index) in sortVariants" :key="index"
                         class="list__item">
-                        <my-radio :variant="item"
+                        <my-radio :index="index"
+                                  name="radio"
+                                  :label="item.name"
+                                  :value="item.value"
                                   @onchange="updateValue($event)"
                         ></my-radio>
                     </li>

@@ -92,8 +92,6 @@ body {
     to{transform: translateX(100%);}
 }
 
-
-
 .btn {
     height: 40px;
     width: 100%;
@@ -124,6 +122,8 @@ body {
     &__fixed {
         position: fixed;
         bottom: 39px;
+        left: 0;
+        right:0;
         z-index:10001;
         &:after {
             display:none;
