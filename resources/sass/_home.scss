@@ -86,7 +86,9 @@ header {
         padding: 24px 8px 8px 8px!important;
 
         &__form {
+            width:calc(100% - 16px);
             &__input {
+                //width:calc(100% - 32px);
                 height: 32px;
                 background:$white;
 

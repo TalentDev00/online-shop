@@ -39,6 +39,7 @@
                     vm.name(data.name);
                     vm.logo(data.logo);
                     vm.description(data.description);
+                    vm.loadPromotions(data.vouchers);
                 });
             });
         },
@@ -52,6 +53,9 @@
                 name: 'loadShopName',
                 logo: 'loadShopLogo',
                 description: 'loadShopDescription'
+            }),
+            ...mapActions('promotions', {
+                loadPromotions: 'setPromotions'
             })
         },
 

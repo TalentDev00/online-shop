@@ -3,16 +3,23 @@ import axios from "axios";
 export default {
     namespaced: true,
     state: {
-        results: []
+        results: [],
+        searchKeywords: null,
     },
     getters: {
         getResults(state) {
             return state.results;
         },
+        getKeywords(state) {
+            return state.searchKeywords;
+        }
     },
     mutations: {
         mutateSetResults(state, data) {
             state.results = data;
+        },
+        mutateSearchKeywords(state, keywords) {
+            state.searchKeywords = keywords;
         }
     },
     actions: {
@@ -22,6 +29,9 @@ export default {
                     store.commit('mutateSetResults', response.data);
                 })
                 .catch(error => console.log(error))
+        },
+        syncKeywords(store, keywords) {
+            store.commit('mutateSearchKeywords', keywords);
         }
     }
 }

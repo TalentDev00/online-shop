@@ -1,11 +1,16 @@
 <template>
     <header>
-        <div class="search" v-if="currentScreenHome">
+      <!--  <div class="search" v-if="currentScreenHome">
             <form class="search__form" action="">
                 <input class="search__form__input" type="text" placeholder="поиск по каталогу">
                 <a class="search__form__cancel search__form__cancel-removed" href=""><img src="../../images/icons/close.svg" alt=""></a>
             </form>
-        </div>
+        </div>-->
+        <my-search v-if="currentScreenHome"
+                   :value="keywords"
+                   @onchange="updateInput($event)"
+                   @onclear="resetSearch"
+        ></my-search>
         <div v-else-if="currentScreenWithFilters">
             <div class="commercial">
                 <button class="back"><img src="../../images/icons/back.svg" alt=""
@@ -45,18 +50,25 @@
 </template>
 <script>
     import Vue from 'vue';
+    import mySearch from './helpers/search';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
     export default {
         components: {
+            mySearch
         },
         data(){
             return {
+                keywords: this.$route.params.keywords ? this.$route.params.keywords : null,
             }
         },
         methods: {
             ...mapActions('header', {
-                changeAnimationName: 'setAnimationName'
+                changeAnimationName: 'setAnimationName',
+
+            }),
+            ...mapActions('search', {
+                setKeywords: 'syncKeywords'
             }),
             back() {
                 this.changeAnimationName('swipe-right');
@@ -72,7 +84,19 @@
             },
             toFilter() {
                 this.$router.push({name: 'filter', params: {cat_id: this.$route.params.cat_id, keywords: this.$route.params.keywords} })
-            }
+            },
+            updateInput(e) {
+                this.keywords = e;
+                this.setKeywords(e);
+            },
+            resetSearch() {
+                if (this.routeHasKeywords) {
+                    this.$router.push({ name: 'catalog' });
+                }
+                else {
+                    this.keywords = null;
+                }
+            },
         },
         computed: {
             ...mapGetters('products', {

@@ -31,6 +31,9 @@ class DatabaseSeeder extends Seeder
             CartItemsOrdersTableSeeder::class,
             CartItemsCartsTableSeeder::class,
             VouchersTableSeeder::class,
+            ItemsVouchersTableSeeder::class,
+            UsersVouchersTableSeeder::class,
+            ShopInformationVouchersTableSeeder::class,
         ]);
     }
 }

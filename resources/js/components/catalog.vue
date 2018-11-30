@@ -54,7 +54,6 @@
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 vm.changeTitle('КАТАЛОГ');
-
             });
         },
         data() {

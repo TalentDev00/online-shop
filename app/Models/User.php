@@ -48,4 +48,14 @@ class User extends Authenticatable
             'item_id'
             )->withTimestamps();
     }
+
+    public function vouchers()
+    {
+        return $this->belongsToMany(
+            'App\Models\Voucher',
+            'user_voucher',
+            'user_id',
+            'voucher_id'
+        );
+    }
 }

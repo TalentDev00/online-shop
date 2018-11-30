@@ -57,6 +57,16 @@ class Item extends Model
         )->withTimestamps();
     }
 
+    public function vouchers()
+    {
+        return $this->belongsToMany(
+            'App\Models\Voucher',
+            'item_voucher',
+            'item_id',
+            'voucher_id'
+        );
+    }
+
     public function searchableAs()
     {
         return 'items_index';

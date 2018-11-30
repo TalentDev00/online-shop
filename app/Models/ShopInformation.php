@@ -42,4 +42,14 @@ class ShopInformation extends Model
             'category_id'
         );
     }
+
+    public function vouchers()
+    {
+        return $this->belongsToMany(
+            'App\Models\Voucher',
+            'shop_information_voucher',
+            'shop_information_id',
+            'voucher_id'
+        );
+    }
 }

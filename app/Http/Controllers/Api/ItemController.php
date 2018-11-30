@@ -64,7 +64,6 @@ class ItemController extends Controller
             Item::whereHas(
                 'item_properties', function($query) use ($filters){
                     if ($filters !== Null) {
-                        //dd(json_decode($filters));
                         $filters = json_decode($filters, true);
                         $i = 0;
                         foreach ($filters as $filter) {
@@ -82,20 +81,25 @@ class ItemController extends Controller
 
                 }
             )
-
-                ->with([
-                    'images',
-                    'item_variants.item_variant_values',
-                    'item_properties'
-                ])
-                ->where(
-                    !$request->has('cat_id') || !$request->filled('cat_id') ? 'name' : 'cat_id',
-                    !$request->has('cat_id') || !$request->filled('cat_id') ? 'like' : '=',
-                    !$request->has('cat_id') || !$request->filled('cat_id') ? ('%'.$request->input('keywords').'%') : $request->input('cat_id'))
-                ->where('price', '>=', $minPrice)
-                ->where('price', '<=', $maxPrice)
-                ->orderBy($sortMethod, $direction)
-                ->get());
+            ->with([
+                'images',
+                'item_variants.item_variant_values',
+                'item_properties'
+            ])
+            ->where(
+                !$request->has('cat_id') || !$request->filled('cat_id') ? 'name' : 'cat_id',
+                !$request->has('cat_id') || !$request->filled('cat_id') ? 'like' : '=',
+                !$request->has('cat_id') || !$request->filled('cat_id') ? ('%'.$request->input('keywords').'%') : $request->input('cat_id'))
+            ->where('price', '>=', $minPrice)
+            ->where('price', '<=', $maxPrice)
+            ->orderBy($sortMethod, $direction)
+            ->when($request->has('popular'), function($query) use ($request) {
+                return $query->take($request->input('popular'));
+            })
+            ->when($request->has('fresh'), function($query) use ($request) {
+                return $query->take($request->input('fresh'));
+            })
+            ->get());
 
     }
 

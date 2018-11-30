@@ -39,7 +39,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        return new ShopInformationResource(ShopInformation::with('categories')->first());
+        return new ShopInformationResource(ShopInformation::with(['categories', 'vouchers'])->first());
     }
 
     public function show(Request $request, $path = Null)

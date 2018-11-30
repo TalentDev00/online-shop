@@ -6,6 +6,8 @@ export default {
     namespaced: true,
     state: {
         items: [],
+        freshItems: [],
+        popularItems: [],
         sort: 'price_asc',
         checked: [],
         minRange: '',
@@ -18,6 +20,12 @@ export default {
     getters: {
         getItems(state) {
             return state.items;
+        },
+        getPopularItems(state) {
+            return state.popularItems;
+        },
+        getFreshItems(state) {
+            return state.freshItems;
         },
         getSort(state) {
             return state.sort;
@@ -68,6 +76,12 @@ export default {
         },
         mutateLoadItems(state, data) {
             state.items = data;
+        },
+        mutateLoadFreshItems(state, data) {
+            state.freshItems = data;
+        },
+        mutateLoadPopularItems(state, data) {
+            state.popularItems = data;
         },
         mutateProductSelectedVariant(state, obj) {
               let found = state.items.find(item => item.id === obj.product.id);
@@ -173,6 +187,36 @@ export default {
             getProductItems('/store/catalog', options, state.checked,
                 (data) => {
                     commit('mutateLoadItems', data);
+                }
+            );
+        },
+        setProductPopularItems({commit, state}, param) {
+            let options = {
+                sort: 'rating',
+                min : state.minRange,
+                max: state.maxRange,
+            };
+
+            options = { ...param, ...options };
+
+            getProductItems('/store/catalog', options, state.checked,
+                (data) => {
+                    commit('mutateLoadPopularItems', data);
+                }
+            );
+        },
+        setProductFreshItems({commit, state}, param) {
+            let options = {
+                sort: 'new',
+                min : state.minRange,
+                max: state.maxRange,
+            };
+
+            options = { ...param, ...options };
+
+            getProductItems('/store/catalog', options, state.checked,
+                (data) => {
+                    commit('mutateLoadFreshItems', data);
                 }
             );
         }

@@ -1,48 +1,35 @@
-import Vue from 'vue';
-import axios from "axios";
+
 export default {
     namespaced: true,
     state: {
-        promotions: []
+        items: []
     },
     getters: {
         getPromotions(state) {
-            return state.promotions;
+            return state.items;
         },
+        getActions(state, getters) {
+            return getters.getPromotions.filter(item => {
+                return item.type === 1;
+            });
+        },
+        getPromocodes(state, getters) {
+            return getters.getPromotions.filter(item => {
+                return item.type === 2;
+            });
+        }
     },
     mutations: {
         mutateClearPromotions(state) {
-            state.promotions = [];
+            state.items = [];
         },
-        mutateLoadPromotions(state, data) {
-            state.promotions = data;
+        mutateSetPromotions(state, data) {
+            state.items = data;
         },
-        mutatePromoUse(state, index) {
-            if (state.promotions[index].used !== true) {
-                Vue.set(state.promotions[index], 'used', true);
-            }
-
-        }
     },
     actions: {
-        loadPromotions(store) {
-
-          //  store.commit('mutateClearPromotions');
-
-           /* Vue.http.get('anystore_promotions.php')
-                .then(response => response.json())
-                .then(data => {
-                    store.commit('mutateLoadPromotions', data);
-                });*/
-            axios.get('http://localhost/api/anystore_promotions.php')
-                .then(({ data }) => {
-                    store.commit('mutateLoadPromotions', data);
-                }).catch(error => {
-                console.log(error)
-            })
+        setPromotions({commit, state}, data) {
+            commit('mutateSetPromotions', data);
         },
-        promotionUsed(store, index) {
-            store.commit('mutatePromoUse', index);
-        }
     }
 }

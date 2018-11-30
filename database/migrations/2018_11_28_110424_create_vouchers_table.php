@@ -16,7 +16,8 @@ class CreateVouchersTable extends Migration
         Schema::create('vouchers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('code')->nullable();
-            $table->string('name');
+            $table->string('name', 255);
+            $table->string('image', 255)->nullable();
             $table->text('description')->nullable();
             // The number of uses currently
             $table->integer('uses')->unsigned()->nullable();
