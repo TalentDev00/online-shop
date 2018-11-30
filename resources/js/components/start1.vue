@@ -19,13 +19,13 @@
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
 
-    const getCatalog = (callback) => {
+    const getCatalog = (cb, errorCb) => {
         axios
             .get('/info')
             .then(response => {
-                callback(response.data);
+                cb(response.data);
             }).catch(error => {
-            callback(error.response.data);
+            errorCb(error.response.data);
         });
     };
 

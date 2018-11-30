@@ -6,7 +6,7 @@
                     <router-link v-for="(action, index) in actions"
                                  :key="index"
                                  tag="div"
-                                 :to="{name: 'action'}"
+                                 :to="{name: 'action', params: { action_id: action.id } }"
                                  class="carousel-item"
                     >
                         <a href="">

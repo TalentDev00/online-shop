@@ -13,6 +13,9 @@ export default {
                 return item.type === 1;
             });
         },
+        getSpecificAction(state, getters) {
+            return (id) => getters.getPromotions.find(item => item.id === id);
+        },
         getPromocodes(state, getters) {
             return getters.getPromotions.filter(item => {
                 return item.type === 2;
