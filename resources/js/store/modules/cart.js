@@ -18,6 +18,12 @@ export default {
         getCountProducts(state) {
             return state.items.length;
         },
+        itemQty(state, getters) {
+            return (product) => getters.getProducts.find(item => item.item.id === product.id) ? getters.getProducts.find(item => item.item.id === product.id).qty : null;
+        },
+        inCart(state, getters) {
+            return (product) => getters.getProducts.find(item => item.item.id === product.id)
+        },
         cartTotalPrice(state, getters) {
             return getters.getProducts.reduce((total, cartItem) => {
                 return total + cartItem.item.price * cartItem.qty
@@ -149,12 +155,10 @@ export default {
                 comment: state.comment
                 })
                 .then(response => {
-                    console.log(response);
                     commit('mutateCheckoutStatus', 'successful')
 
                 })
                 .catch(error => {
-                    console.log(error);
                     commit('mutateCheckoutStatus', 'failed');
                     commit('mutateSetCartItems', savedCartItems)
                 })

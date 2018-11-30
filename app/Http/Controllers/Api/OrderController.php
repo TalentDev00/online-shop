@@ -28,6 +28,7 @@ class OrderController extends Controller
         dump($cartItemIds);
         $order = new Order;
         $order->status = $request->input('status');
+        $order->delivery_address = $request->input('delivery_address');
         $order->payment_method_id = $paymentMethod->id;
         $order->delivery_method_id = $deliveryMethod->id;
         $order->comment = $request->input('comment') ?? null;

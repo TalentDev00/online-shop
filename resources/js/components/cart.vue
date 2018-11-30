@@ -25,7 +25,7 @@
                                     <button class="cart-item__body__product__actions__menu"
                                             @click="popModal(cartItem.item)"
                                     ><img src="../../images/icons/product_menu.svg" alt=""></button>
-                                    <button v-show="cartItem.item.product_favorite" class="cart-item__body__product__actions__like"><img src="../../images/icons/favorite_fill.svg" alt=""></button>
+                                    <button v-show="isFavorite(cartItem.item)" class="cart-item__body__product__actions__like"><img src="../../images/icons/favorite_fill.svg" alt=""></button>
                                 </div>
                             </div>
                             <ul class="cart-item__body__conditions">
@@ -35,13 +35,13 @@
                             </ul>
                         </div>
                         <div class="cart-item__buttons">
-                            <button v-if="cartItem.item.product_favorite"
+                            <button v-if="isFavorite(cartItem.item)"
                                     class="cart-item__buttons__like"
-                                    @click="addOrRemoveLike(cartItem.item)"
+                                    @click="likeUnLike(cartItem.item)"
                             ><img src="../../images/icons/favorite_snow_fill.svg" alt=""></button>
                             <button v-else
                                     class="cart-item__buttons__like"
-                                    @click="addOrRemoveLike(cartItem.item)"
+                                    @click="likeUnLike(cartItem.item)"
                             ><img src="../../images/icons/favorite_snow.svg" alt=""></button>
                             <button class="cart-item__buttons__close"
                                     @click="removeWithAllCounts(cartItem.item)"
@@ -143,11 +143,6 @@
                 vm.installSwipers();
             });
         },
-     /*   created() {
-            Vue.nextTick(function() {
-                this.installSwipers();
-            }.bind(this));
-        },*/
         data() {
           return {
               promoCode: '',
@@ -167,7 +162,9 @@
                 discountPrice: 'cartDiscountPrice',
                 finalPrice: 'cartFinalPrice'
             }),
-
+            ...mapGetters('favorites', {
+                isFavorite: 'isFavoriteItem'
+            }),
             wordEndings() {
                 return wordEnds(this.countProductsInCart, 'товаров', 'товар', 'товара');
             },
@@ -175,12 +172,14 @@
         methods: {
             ...mapActions('products', {
                 loadProducts: 'loadItems',
-                addOrRemoveLike: 'like'
             }),
             ...mapActions('cart', {
                 add: 'addToCart',
                 remove: 'removeFromCart',
                 removeWithAllCounts: 'removeFromCartWithAllCounts',
+            }),
+            ...mapActions('favorites', {
+                likeUnLike: 'addOrRemoveFavorite',
             }),
             ...mapActions('header', {
                 changeTitle: 'setTitle'
@@ -196,23 +195,34 @@
             },
             installSwipers() {
                 let products = document.querySelectorAll('.swipable');
+                let likeButtons = document.querySelectorAll('.cart-item__buttons__like');
                 if (products !== null) {
-                    for (let i = 0; i < products.length; i++) {
+                    products.forEach(item => {
                         let snapper = new Snap({
-                            element: products[i],
+                            element: item,
                             maxPosition: 56,
                             minPosition: -56,
                             hyperextensible: true,
                             minDragDistance: 25,
                             flickThreshold: 200,
                         });
-                    }
+                        likeButtons.forEach(item => {
+                            item.addEventListener('click', () => {
+                                if (snapper.state().state === 'left') {
+                                    snapper.close();
+                                }
+                                if (snapper.state().state === 'right') {
+                                    snapper.close();
+                                }
+                            });
+                        })
+                    });
                 }
             },
             popModal(product) {
                 this.currentProduct = product;
                 this.showModal = !this.showModal;
-            }
+            },
         }
     }
 </script>

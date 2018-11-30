@@ -5,7 +5,7 @@
                 <ul class="list">
                     <li v-for="(filter, index) in filters" :key="index"
                         class="list__item">
-                        <router-link tag="a" :to="{ name:'parameters', params: {cat_id: $route.params.cat_id, filter_id: filter.id} }">
+                        <router-link tag="a" :to="{ name:'parameters', params: {cat_id: $route.params.cat_id, keywords: $route.params.keywords, filter_id: filter.id} }" replace>
                             <div class="item-wrapper">
                                 <div class="name-wrapper">
                                     <span class="list__item__name">{{ filter.name }}</span>
@@ -50,12 +50,29 @@
 
     export default {
         beforeRouteEnter(to, from, next) {
+            console.log(from);
             next(vm => {
-                const params = {
-                    cat_id: to.params.cat_id,
-                    keywords: to.params.keywords
-                };
-                axios.get(`/store/catalog`, {params})
+
+                let url;
+                let params;
+
+                if (from.name === 'favorite' || (from.name === 'parameters' && from.params.keywords === undefined && from.params.cat_id === undefined) ) {
+                    params = {
+                        user_id: vm.$auth.user().id
+                    };
+
+                    url = '/store/favorite';
+                }
+                else {
+                    params = {
+                        cat_id: to.params.cat_id,
+                        keywords: to.params.keywords
+                    };
+
+                    url = '/store/catalog';
+                }
+
+                axios.get(url, {params})
                     .then(data => {
                         vm.setData(data.data);
                         let products = data.data;

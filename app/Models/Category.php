@@ -46,7 +46,7 @@ class Category extends Model
     }
 
 
-    public function generatePath()
+  /*  public function generatePath()
     {
         $slug = $this->slug;
 
@@ -58,7 +58,7 @@ class Category extends Model
     public function getUrl()
     {
         return '/store/catalog/'.$this->path;
-    }
+    }*/
 
     public function searchableAs()
     {

@@ -46,7 +46,6 @@ const routes = [
         path: '/info',
         component: start1,
         meta: {
-            auth: false,
         }
     },
     {
@@ -54,7 +53,7 @@ const routes = [
         path: '/user',
         component: start2,
         meta: {
-            auth: false,
+            //auth: false,
         }
     },
     {
@@ -68,7 +67,7 @@ const routes = [
         component: myAction,
         meta: {
             title: 'АКЦИИ',
-            auth: false
+            //auth: true
         }
     },
 
@@ -83,7 +82,7 @@ const routes = [
         path: '/store/catalog/products/:item_id',
         component: myItem,
         meta: {
-            auth: false,
+            //auth: true,
         }
     },
     {
@@ -91,7 +90,7 @@ const routes = [
         path: '/catalog/products/:id/gallery',
         component: myGallery,
         meta: {
-            auth: false,
+           // auth: true,
         }
     },
     {
@@ -100,7 +99,7 @@ const routes = [
         component: myChat,
         meta: {
             title: 'МЫ ВСЕГДА НА СВЯЗИ!',
-            auth: false,
+           // auth: true,
         }
     },
     /*
@@ -114,8 +113,8 @@ const routes = [
         path: '/store/catalog',
         component: myCatalog,
         meta: {
-            auth: false,
-            title: 'КАТАЛОГ'
+            auth: true,
+           // title: 'КАТАЛОГ'
         },
     },
     {
@@ -123,7 +122,7 @@ const routes = [
         path: '/store/catalog/:cat_id?',
         component: mySubcatalog,
         meta: {
-            auth: false,
+            //auth: true,
         },
 
     },
@@ -132,31 +131,35 @@ const routes = [
         path: '/store/catalog/:cat_id?/section/:keywords?',
         component: mySection,
         meta: {
-            auth: false,
+           // auth: true,
         }
     },
     {
         name: 'sort',
-        path: '/store/catalog/:cat_id?/section/:keywords?/sort',
+        //path: '/store/catalog/:cat_id?/section/:keywords?/sort',
+        path: 'sort',
         component: mySort,
         meta: {
-            auth: false,
+            //auth: true,
         }
     },
     {
         name: 'filter',
-        path: '/store/catalog/:cat_id?/section/:keywords?/filter',
+       // path: '/store/catalog/:cat_id?/section/:keywords?/filter',
+        path: 'filter',
         component: myFilter,
         meta: {
-            auth: false,
+           // auth: true,
         },
+
     },
     {
         name: 'parameters',
-        path: '/store/catalog/:cat_id?/section/:keywords?/filter/:filter_id/parameters',
+        //path: '/store/catalog/:cat_id?/section/:keywords?/filter/:filter_id/parameters',
+        path: 'parameters',
         component: myParameters,
         meta: {
-            auth: false,
+           // auth: true,
         }
     },
     {
@@ -164,7 +167,7 @@ const routes = [
         path: '/store/catalog/result/:keywords',
         component: myResult,
         meta: {
-            auth: false,
+           // auth: true,
         }
     },
 
@@ -173,7 +176,7 @@ const routes = [
         path: '/home',
         component: myHome,
         meta: {
-            auth: false,
+           // auth: true,
         }
     },
     /*
@@ -187,7 +190,7 @@ const routes = [
         path: '/store/cart',
         component: myCart,
         meta: {
-            auth: false,
+          //  auth: true,
             title: 'КОРЗИНА'
         }
     },
@@ -196,7 +199,7 @@ const routes = [
         path: '/store/cart/checkout',
         component: myCheckout,
         meta: {
-            auth: false,
+          //  auth: true,
             title: 'ОФОРМЛЕНИЕ ЗАКАЗА'
         }
     },
@@ -205,7 +208,7 @@ const routes = [
         path: '/store/favorite',
         component: myFavorite,
         meta: {
-            auth: false,
+         //   auth: true,
             title: 'ИЗБРАННОЕ'
         }
     },
@@ -219,7 +222,7 @@ const routes = [
         path: '/menu',
         component: myMenu,
         meta: {
-            auth: false,
+          //  auth: true,
             title: 'ЛИЧНЫЙ КАБИНЕТ'
         }
     },
@@ -228,7 +231,7 @@ const routes = [
         path: '/store/orders',
         component: myOrders,
         meta: {
-            auth: false,
+          //  auth: true,
             title: 'МОИ ЗАКАЗЫ'
         }
     },
@@ -237,7 +240,7 @@ const routes = [
         path: '/store/orders/:id',
         component: myOrder,
         meta: {
-            auth: false,
+          //  auth: true,
             title: ':order-id'
         }
     },
@@ -246,7 +249,7 @@ const routes = [
         path: '/menu/settings',
         component: mySettings,
         meta: {
-            auth: false,
+          //  auth: true,
             title: 'НАСТРОЙКИ'
         }
     },
@@ -255,7 +258,7 @@ const routes = [
         path: '/menu/settings/edit',
         component: myEdit,
         meta: {
-            auth: false,
+          //  auth: true,
             title: 'НАСТРОЙКИ'
         }
     },
@@ -264,7 +267,7 @@ const routes = [
         path: '/menu/about',
         component: myAbout,
         meta: {
-            auth: false,
+          //  auth: true,
             title: 'О КОМПАНИИ'
         }
     },
@@ -273,7 +276,7 @@ const routes = [
         path: '/menu/delivery',
         component: myDelivery,
         meta: {
-            auth: false,
+          //  auth: true,
             title: 'ДОСТАВКА И ОПЛАТА'
         }
     },
@@ -282,7 +285,7 @@ const routes = [
         path: '/menu/contacts',
         component: myContacts,
         meta: {
-            auth: false,
+         //   auth: true,
             title: 'КОНТАКТЫ'
         }
     },

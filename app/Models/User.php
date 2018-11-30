@@ -38,4 +38,14 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Models\Cart');
     }
+
+    public function favorites()
+    {
+        return $this->belongsToMany(
+            'App\Models\Item',
+            'favorites',
+            'user_id',
+            'item_id'
+            )->withTimestamps();
+    }
 }

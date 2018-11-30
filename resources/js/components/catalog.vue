@@ -54,6 +54,7 @@
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 vm.changeTitle('КАТАЛОГ');
+
             });
         },
         data() {
@@ -63,22 +64,12 @@
         },
         computed: {
             ...mapGetters('catalog', {
-                catalogItems: 'getCatalogItems'
+                catalogItems: 'getCatalogItems',
+                rootCategories: 'rootCategoryItems'
             }),
             ...mapGetters('search', {
                 results: 'getResults'
             }),
-            rootCategories() {
-                let found = [];
-
-                for (let i = 0; i < this.catalogItems.length; i++) {
-                    if (this.catalogItems[i].parent_id === null) {
-                        found.push(this.catalogItems[i]);
-                    }
-                }
-
-                return found;
-            },
             emptyInput() {
                 return this.keywords === null || this.keywords === '' || this.keywords === ' ';
             },
@@ -90,6 +81,7 @@
             ...mapActions('header', {
                 changeTitle: 'setTitle'
             }),
+
             highlight(text) {
                 return text.replace(new RegExp(this.keywords, 'gi'), '<span class="highlighted">$&</span>');
             },

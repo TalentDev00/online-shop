@@ -9,6 +9,7 @@ import promotions from './modules/promotions';
 import catalog from './modules/catalog';
 import header from './modules/header';
 import search from './modules/search';
+import favorites from './modules/favorites';
 
 export default new Vuex.Store({
     modules: {
@@ -17,7 +18,8 @@ export default new Vuex.Store({
         promotions,
         catalog,
         header,
-        search
+        search,
+        favorites
     },
     strict: process.env.NODE_ENV !== 'production',
     state: {

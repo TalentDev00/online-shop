@@ -4,22 +4,27 @@ import axios from 'axios';
 export default {
     namespaced: true,
     state: {
-        catalogItems: [],
+        items: [],
 
 
     },
     getters: {
         getCatalogItems(state) {
-            return state.catalogItems;
+            return state.items;
         },
+        rootCategoryItems(state, getters) {
+            return getters.getCatalogItems.filter(item => {
+                return item.parent_id === null;
+            });
+        }
 
     },
     mutations: {
         mutateLoadCatalogItems(state, data) {
-            state.catalogItems = data;
+            state.items = data;
         },
         mutateClearCatalog(state) {
-            state.catalogItems = [];
+            state.items = [];
         },
 
     },

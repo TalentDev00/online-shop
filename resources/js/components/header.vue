@@ -60,7 +60,7 @@
             }),
             back() {
                 this.changeAnimationName('swipe-right');
-                this.$router.go(-1);
+                this.$route.name === 'parameters' ? this.$router.replace({name: 'filter', params: {cat_id: this.$route.params.cat_id, keywords: this.$route.params.keywords} }) : this.$router.go(-1);
 
                 //this.changeAnimationName('swipe-left');
             },

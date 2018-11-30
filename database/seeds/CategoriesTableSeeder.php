@@ -11,7 +11,7 @@ class CategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Models\Category::class, 5)->create([
+       /* factory(App\Models\Category::class, 5)->create([
         ])->each(function($cat){
             $cat->save([
                 'path' => $cat->generatePath()
@@ -21,24 +21,6 @@ class CategoriesTableSeeder extends Seeder
 
         $catIds = App\Models\Category::pluck('id')->toArray();
         $categories = App\Models\Category::all();
-
-
-       /* $categories->each(function($category) use($catIds) {
-            $category->saveMany(factory(App\Models\Category::class, 15)
-                ->create(['parent_id' => $category->id])
-                ->each(function($category) {
-                    $category->items()->saveMany(factory(App\Models\Item::class, 15))
-                        ->create(['cat_id' => $category->id]);
-                })
-            );
-        });*/
-
-
-       /* $categories->each(function($category) use ($catIds) {
-            $category->items()->saveMany(factory(App\Models\Item::class, 15))->create(['cat_id' => $category->id]);
-        });*/
-
-       //;
 
         $categories->each(function($category){
             $category->children()->saveMany(factory(App\Models\Category::class, 3)->create([
@@ -72,7 +54,34 @@ class CategoriesTableSeeder extends Seeder
             }));
         });
 
-        //factory(App\Models\Category::class, 15)->states('children')->make();
+
+        $allCats = App\Models\Category::all();
+
+        $allCats->each(function($cat){
+            $cat->items()->saveMany(factory(App\Models\Item::class, 8))
+                ->create(['cat_id' => $cat->id]);
+        });*/
+
+        factory(App\Models\Category::class, 5)->create();
+        $categories = App\Models\Category::all();
+
+        $categories->each(function($category){
+            $category->children()->saveMany(factory(App\Models\Category::class, 3)->create([
+                'parent_id' => $category->id,
+            ])
+                ->each(function($cat) {
+                    $cat->children()->saveMany(factory(App\Models\Category::class, 2)->create([
+                        'parent_id' => $cat->id,
+                    ])
+                        ->each(function($c){
+                            $c->children()->saveMany(factory(App\Models\Category::class, 1)->create([
+                                'parent_id' => $c->id,
+                                ])
+                            );
+                        }));
+                }));
+        });
+
 
         $allCats = App\Models\Category::all();
 

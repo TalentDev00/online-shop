@@ -65,13 +65,13 @@
                         </div>
                         <p class="product__name">{{ product.name }}</p>
                         <div class="product__actions">
-                            <button class="product__actions__like product__actions__like-active"
-                                    @click="addOrRemoveLike(product)"
-                            >
-                                <img v-if="!product.favorite" src="../../images/icons/favorite.svg" alt="">
-                                <img v-else src="../../images/icons/favorite_fill.svg" alt="">
-                            </button>
-                            <button v-if="!inCart(product)" class="product__actions__buy"
+                            <button v-if="isFavorite(product)" class="product__actions__like product__actions__like-active"
+                                    @click="$auth.check() ? likeUnLike(product) : $router.push({ name: 'start2' })"
+                            ><img src="../../images/icons/favorite_fill.svg" alt=""></button>
+                            <button v-else class="product__actions__like product__actions__like-active"
+                                    @click="$auth.check() ? likeUnLike(product) : $router.push({ name: 'start2' })"
+                            ><img src="../../images/icons/favorite.svg" alt=""></button>
+                            <button v-if="!productInCart(product)" class="product__actions__buy"
                                     @click="popModal(product)"
                             >купить</button>
                             <div v-else class="product__actions__counter">
@@ -96,41 +96,9 @@
 </template>
 <script>
     import mySearch from './helpers/search';
-    import storeProductsModule from '../store/modules/products.js';
-    import axios from 'axios';
     import myModal from './modal';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
-
-    const scrollToTop = (scrollDuration) => {
-        let scrollStep = -window.scrollY / (scrollDuration / 15),
-        scrollInterval = setInterval(() => {
-            if (window.scrollY !== 0) {
-                window.scrollBy(0, scrollStep);
-            }
-            else clearInterval(scrollInterval);
-        }, 15);
-    };
-
-    const getProducts = (cat_id, sort, min, max, filters, callback) => {
-        let params = { cat_id, sort, min, max, filters };
-        axios.get('/store/catalog', { params })
-            .then(response => {
-                callback(response.data);
-            }).catch(error => {
-            callback(error.response.data);
-        });
-    };
-
-    const getResults = (keywords, sort, min, max, filters, callback) => {
-        let params = { keywords, sort, min, max, filters };
-        axios.get('/store/catalog', { params })
-            .then(response => {
-                callback(response.data);
-            }).catch(error => {
-            callback(error.response.data);
-        });
-    };
 
     export default {
         components: {
@@ -138,97 +106,45 @@
             mySearch
         },
         beforeRouteEnter(to, from, next) {
-            let filters = storeProductsModule.state.checked;
-            let newFilters = [];
-            filters.forEach(item => {
-                item.values.forEach(elem => {
-                    newFilters.push({
-                        name: item.filter,
-                        value: elem
-                    });
-                })
+            next(vm => {
+                let obj;
+                if (to.params.cat_id) {
+                    obj = { cat_id: to.params.cat_id };
+                }
+                else {
+                    obj = { keywords: to.params.keywords };
+                    vm.keywords = obj.keywords;
+                }
+
+                if (vm.$auth.check()) {
+                    vm.loadFavorites();
+                }
+
+                vm.getSectionProducts(obj);
+
+                let found = vm.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
+                found ? vm.changeTitle(found.name) : vm.changeTitle('ПОИСК');
             });
-
-            let params = {
-                cat_id: to.params.cat_id,
-                sort: storeProductsModule.state.sort,
-                min : storeProductsModule.state.minRange,
-                max: storeProductsModule.state.maxRange,
-                filters: newFilters.length > 0 ? JSON.stringify(newFilters) : newFilters
-            };
-            if (params.cat_id) {
-                getProducts(params.cat_id, params.sort, params.min, params.max, params.filters, (data) => {
-                    next(vm => {
-                        vm.loadProducts(data);
-
-                        let found = vm.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
-                        if (found) {
-                            vm.changeTitle(found.name);
-                        }
-                    });
-                });
-            }
-            else {
-                let params = {
-                    keywords: to.params.keywords,
-                    sort: storeProductsModule.state.sort,
-                    min : storeProductsModule.state.minRange,
-                    max: storeProductsModule.state.maxRange,
-                    filters: newFilters.length > 0 ? JSON.stringify(newFilters) : newFilters
-                };
-                getResults(params.keywords, params.sort, params.min, params.max, params.filters, (data) => {
-                    next(vm => {
-                        vm.loadProducts(data);
-                        vm.changeTitle('ПОИСК');
-                        vm.keywords = params.keywords;
-                    });
-                });
-            }
         },
         beforeRouteUpdate(to, from, next) {
-            let filters = storeProductsModule.state.checked;
-            let newFilters = [];
-            filters.forEach(item => {
-                item.values.forEach(elem => {
-                    newFilters.push({
-                        name: item.filter,
-                        value: elem
-                    });
-                })
-            });
-            this.clearProducts();
-            let params = {
-                cat_id: to.params.cat_id,
-                sort: storeProductsModule.state.sort,
-                min : storeProductsModule.state.minRange,
-                max: storeProductsModule.state.maxRange,
-                filters: newFilters.length > 0 ? JSON.stringify(newFilters) : newFilters
-            };
-            if (params.cat_id) {
-                getProducts(params.cat_id, params.sort, params.min, params.max, params.filters, (data) => {
-                        this.loadProducts(data);
-
-                        let found = this.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
-                        if (found) {
-                            this.changeTitle(found.name);
-                        }
-                });
+            let obj;
+            if (to.params.cat_id) {
+                obj = {
+                    cat_id: to.params.cat_id
+                };
             }
             else {
-                let params = {
-                    keywords: to.params.keywords,
-                    sort: storeProductsModule.state.sort,
-                    min : storeProductsModule.state.minRange,
-                    max: storeProductsModule.state.maxRange,
-                    filters: newFilters.length > 0 ? JSON.stringify(newFilters) : newFilters
+                obj = {
+                    keywords: to.params.keywords
                 };
-                getResults(params.keywords, params.sort, params.min, params.max, params.filters, (data) => {
-                    this.loadProducts(data);
-                    this.changeTitle('ПОИСК');
-                    this.keywords = params.keywords;
-                });
-
+                this.changeTitle('ПОИСК');
+                this.keywords = obj.keywords;
             }
+            this.clearProducts();
+            this.getSectionProducts(obj);
+
+            let found = this.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
+            found ? this.changeTitle(found.name) : this.changeTitle('ПОИСК');
             next();
         },
         data() {
@@ -241,18 +157,19 @@
         computed: {
             ...mapGetters('catalog', {
                 catalogItems: 'getCatalogItems',
-
             }),
             ...mapGetters('products', {
                 products: 'getItems',
-                sort:'getSort'
             }),
             ...mapGetters('cart', {
-                productsInCart: 'getProducts',
-                countProductsInCart: 'getCountProducts'
+                productQty: 'itemQty',
+                productInCart: 'inCart',
             }),
             ...mapGetters('search', {
                 results: 'getResults'
+            }),
+            ...mapGetters('favorites', {
+                isFavorite: 'isFavoriteItem'
             }),
             emptyInput() {
                 return this.keywords === null || this.keywords === '' || this.keywords === ' ';
@@ -260,18 +177,11 @@
             routeHasKeywords() {
                 return this.$route.params.keywords;
             },
-            inCart() {
-                return (product) => this.productsInCart.find(item => item.item.id === product.id);
-            },
-            productQty() {
-                return (product) => this.productsInCart.find(item => item.item.id === product.id) ? this.productsInCart.find(item => item.item.id === product.id).qty : null;
-            }
         },
         methods: {
             ...mapActions('products', {
-                loadProducts: 'loadItems',
-                addOrRemoveLike: 'like',
-                clearProducts: 'clearItems'
+                clearProducts: 'clearItems',
+                getSectionProducts: 'setProductItems'
             }),
             ...mapActions('cart', {
                 add: 'addToCart',
@@ -279,6 +189,10 @@
             }),
             ...mapActions('header', {
                 changeTitle: 'setTitle'
+            }),
+            ...mapActions('favorites', {
+                likeUnLike: 'addOrRemoveFavorite',
+                loadFavorites: 'getFavoriteItems'
             }),
             popModal(product) {
                 if (product.variants && product.variants.length > 0) {
@@ -288,7 +202,6 @@
                 else {
                     this.add(product);
                 }
-
             },
             highlight(text) {
                 return text.replace(new RegExp(this.keywords, 'gi'), '<span class="highlighted">$&</span>');
@@ -299,13 +212,11 @@
             resetSearch() {
                 if (this.routeHasKeywords) {
                     this.$router.push({ name: 'catalog' });
-                   // scrollToTop(500);
                 }
-
                 else {
                     this.keywords = null;
                 }
-            }
+            },
         }
     }
 </script>

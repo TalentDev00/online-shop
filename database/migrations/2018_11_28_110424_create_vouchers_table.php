@@ -30,8 +30,8 @@ class CreateVouchersTable extends Migration
             $table->integer('discount_amount');
             // Whether or not the voucher is a percentage or a fixed price.
             $table->boolean('is_fixed')->default(true);
-            $table->timestamp('starts_at');
-            $table->timestamp('expires_at');
+            $table->timestamp('starts_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
             //$table->softDeletes();
         });

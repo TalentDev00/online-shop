@@ -46,4 +46,9 @@ Route::namespace('Api')->group(function () {
     Route::get('/info', 'CategoryController@index');
     Route::get('/search', 'SearchController@index');
     Route::post('/store/order', 'OrderController@index');
+
+
+    //Favorites
+    Route::post('/store/favorite', 'ItemController@favorite');
+    Route::get('/store/favorite', 'ItemController@favorite');
 });

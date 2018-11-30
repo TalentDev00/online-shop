@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import {gets as getProductItems} from '../../api';
+import axios from "axios";
 
 export default {
     namespaced: true,
@@ -67,15 +69,6 @@ export default {
         mutateLoadItems(state, data) {
             state.items = data;
         },
-        mutateFavorite(state, product) {
-            if (product.product === false) {
-                Vue.set(product, 'product_favorite', true);
-            } else {
-                Vue.set(product, 'product_favorite', false);
-            }
-        },
-
-
         mutateProductSelectedVariant(state, obj) {
               let found = state.items.find(item => item.id === obj.product.id);
               if (found) {
@@ -124,13 +117,16 @@ export default {
         mutateStartMax(state, value) {
             state.slider.startMax = value;
         },
+
+        /*
+        *
+        * FAVORITE
+        *
+        * */
     },
     actions: {
         setProductSelectedVariantInProducts(store, obj) {
             store.commit('mutateProductSelectedVariant', obj);
-        },
-        like(store, product) {
-            store.commit('mutateFavorite', product);
         },
         loadItems(store, data){
             store.commit('mutateLoadItems', data);
@@ -164,5 +160,21 @@ export default {
         changeStartMin(store, value) {
             store.commit('mutateStartMin', value);
         },
+
+        setProductItems({commit, state}, param) {
+            let options = {
+                sort: state.sort,
+                min : state.minRange,
+                max: state.maxRange,
+            };
+
+            options = { ...param, ...options };
+
+            getProductItems('/store/catalog', options, state.checked,
+                (data) => {
+                    commit('mutateLoadItems', data);
+                }
+            );
+        }
     }
 }

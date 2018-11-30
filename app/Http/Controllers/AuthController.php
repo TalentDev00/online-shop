@@ -39,13 +39,13 @@ class AuthController extends Controller
             ], 400);
         }
         return response([
-            'status' => 'success'
+            'status' => 'success',
         ])->header('Authorization', $token);
     }
 
     public function user(Request $request)
     {
-        $user = User::with(['cart', 'orders'])->find(Auth::user()->id);
+        $user = User::with(['cart', 'orders:id', 'favorites:item_id'])->find(Auth::user()->id);
 
         return response([
             'status' => 'success',

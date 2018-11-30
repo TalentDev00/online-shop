@@ -47,6 +47,15 @@ class Item extends Model
         return $this->belongsTo('App\Models\CartItem');
     }
 
+    public function favorites()
+    {
+        return $this->belongsToMany(
+            'App\Models\User',
+            'favorites',
+            'item_id',
+            'user_id'
+        )->withTimestamps();
+    }
 
     public function searchableAs()
     {

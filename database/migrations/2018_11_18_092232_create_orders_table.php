@@ -38,6 +38,7 @@ class CreateOrdersTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
+            $table->string('delivery_address', 255);
             $table->string('comment', 255);
             $table->timestamps();
         });

@@ -8,7 +8,7 @@ $factory->define(App\Models\Category::class, function (Faker $faker) {
     $word = $faker->word;
     return [
         'name' => $word,
-        'slug' => $word,
+        //'slug' => $word,
         'parent_id' => null
     ];
 });
