@@ -50,6 +50,7 @@
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 if (vm.$auth.check()) {
+
                     vm.loadFavorites();
                 }
 
@@ -72,7 +73,7 @@
             ...mapActions('favorites', {
                 syncFavoriteItems: 'syncFavorite',
                 likeUnLike: 'addOrRemoveFavorite',
-                loadFavorites: 'getFavoriteItems'
+                loadFavorites: 'getFavoriteItems',
             }),
             ...mapActions('cart', {
                 add: 'addToCart',

@@ -116,9 +116,9 @@
                     vm.keywords = obj.keywords;
                 }
 
-                if (vm.$auth.check()) {
+             /*   if (vm.$auth.check()) {
                     vm.loadFavorites();
-                }
+                }*/
 
                 vm.getSectionProducts(obj);
 
@@ -184,8 +184,8 @@
                 getSectionProducts: 'setProductItems'
             }),
             ...mapActions('cart', {
-                add: 'addToCart',
-                remove: 'removeFromCart',
+                add: 'addCartItem',
+                remove: 'removeCartItem'
             }),
             ...mapActions('header', {
                 changeTitle: 'setTitle'

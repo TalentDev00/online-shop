@@ -3,12 +3,15 @@
         <my-header v-show="!showHeader">
             <h2 class="head" slot="title">{{ headerTitle }}</h2>
         </my-header>
-        <div class="transition-wrapper">
+        <div class="transition-wrapper" v-if="$auth.ready()">
             <transition :name="animationName" mode="out-in"
                         v-on:leave="leave"
             >
                 <router-view :key="$route.fullPath"></router-view>
             </transition>
+        </div>
+        <div v-if="!$auth.ready()">
+            Loading ...
         </div>
 
         <div class="nav" v-show="startScreen">
@@ -42,11 +45,25 @@
             myFooter,
             myHeader,
         },
+        created() {
+            this.$auth.ready(() => {
+                if (this.$auth.check()) {
+                    this.loadFavorites(this.$auth.user().favorites)
+                    this.loadCart(this.$auth.user().cart.cart_items)
+                }
+            });
+        },
         data(){
             return {
             }
         },
         methods: {
+            ...mapActions('favorites', {
+                loadFavorites: 'setItems'
+            }),
+            ...mapActions('cart', {
+                loadCart: 'setCartItems'
+            }),
             leave: function (el, done) {
                 this.changeAnimationName = 'swipe-left';
                 done();

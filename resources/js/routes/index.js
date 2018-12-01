@@ -53,7 +53,7 @@ const routes = [
         path: '/user',
         component: start2,
         meta: {
-            //auth: false,
+            auth: false,
         }
     },
     {

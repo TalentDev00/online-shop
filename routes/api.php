@@ -51,4 +51,9 @@ Route::namespace('Api')->group(function () {
     //Favorites
     Route::post('/store/favorite', 'ItemController@favorite');
     Route::get('/store/favorite', 'ItemController@favorite');
+
+
+    //Cart
+    Route::post('/store/cart', 'CartController@index');
+    Route::get('/store/cart', 'CartController@index');
 });

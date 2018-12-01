@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterFormRequest;
+use App\Http\Resources\UserResource;
 use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -48,8 +49,8 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        $user = User::with(['cart', 'orders:id', 'favorites:item_id'])->find(Auth::user()->id);
-
+        //$user = User::with(['cart', 'orders:id', 'favorites:item_id'])->find(Auth::user()->id);
+        $user = new UserResource(User::with(['cart.cart_items', 'orders', 'favorites'])->find(Auth::user()->id));
         return response([
             'status' => 'success',
             'data' => $user

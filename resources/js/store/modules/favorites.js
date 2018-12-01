@@ -15,8 +15,9 @@ export default {
             return state.items.length;
         },
         isFavoriteItem(state) {
-            return (item) =>  state.items.find(elem => elem.id === item.id);
-        }
+            return (product) => state.items.find(elem => elem.id === product.id || elem.item_id === product.id);
+        },
+
     },
     mutations: {
         changeSyncStatus(state, status) {
@@ -81,12 +82,19 @@ export default {
             };
             loadFavoriteItems('/store/favorite', options, rootState.products.checked,
                 (data) => {
+
                     commit('setFavoriteItems', data);
                 },
                 (error) => {
                     console.log(error)
                 }
             );
+        },
+        setItems({commit, state}, data) {
+            commit('setFavoriteItems', data);
+        },
+        clearItems({commit, state}) {
+            commit('clearFavoriteItems');
         }
     }
 }

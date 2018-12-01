@@ -17,11 +17,11 @@
                         ><span>-</span></button>
                         <div class="product__actions__counter__count">{{ productQty(product) }}</div>
                         <button class="product__actions__counter__add"
-                                @click.prevent="add(product)"
+                                @click.prevent="addWithoutSync(product)"
                         ><span>+</span></button>
                     </div>
                     <button class="btn"
-                            @click.prevent="close(product)"
+                            @click.prevent="closeWithSync(product)"
                     >сохранить</button>
                 </div>
 
@@ -60,10 +60,13 @@
         },
         methods: {
             ...mapActions('cart', {
-                add: 'addToCart',
-                remove: 'removeFromCart',
+                add: 'addCartItem',
+                remove: 'removeCartItem',
+                addWithoutSync: 'addToCart',
+                removeWithoutSync: 'removeFromCart',
                 removeWithAllCounts: 'removeFromCartWithAllCounts',
-                setProductVariantInCart: 'setProductSelectedVariantInCart'
+                setProductVariantInCart: 'setProductSelectedVariantInCart',
+                syncItem: 'syncCartItem'
             }),
             ...mapActions('products', {
                 changeProductCondition: 'productConditionSelect',
@@ -87,13 +90,17 @@
             close() {
                 this.$emit('close');
             },
+            closeWithSync(product) {
+                this.syncItem(product);
+                this.$emit('close');
+            },
             addToCartAndClose(product) {
                 this.add(product);
                 this.$emit('close');
             },
             removeFromCartAndClose(product) {
                 if (this.productQty(product) > 1)
-                    this.remove(product);
+                    this.removeWithoutSync(product);
                 else {
                     this.close();
                     this.remove(product);

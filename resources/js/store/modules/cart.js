@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import axios from 'axios';
+import {post as changeCartItem} from '../../api';
 
 export default {
     namespaced: true,
@@ -19,10 +20,10 @@ export default {
             return state.items.length;
         },
         itemQty(state, getters) {
-            return (product) => getters.getProducts.find(item => item.item.id === product.id) ? getters.getProducts.find(item => item.item.id === product.id).qty : null;
+            return (product) => getters.getProducts.find(item => item.item.id === product.id || item.item.item_id === product.id) ? getters.getProducts.find(item => item.item.id === product.id || item.item.item_id === product.id).qty : null;
         },
         inCart(state, getters) {
-            return (product) => getters.getProducts.find(item => item.item.id === product.id)
+            return (product) => getters.getProducts.find(item => item.item.id === product.id || item.item.item_id === product.id)
         },
         cartTotalPrice(state, getters) {
             return getters.getProducts.reduce((total, cartItem) => {
@@ -135,6 +136,14 @@ export default {
         },
         removeFromCartWithAllCounts(store, product){
             store.commit('mutateRemoveFromCartWithAllCounts', product);
+            if (Vue.auth.check()) {
+                changeCartItem('/store/cart', {
+                        user_id: Vue.auth.user().id,
+                        item_id: product.id,
+                        qty: null
+                    }
+                );
+            }
         },
         setProductSelectedVariantInCart(store, obj) {
             store.commit('mutateProductVariant', obj);
@@ -174,6 +183,41 @@ export default {
         },
         setComment(store, data) {
             store.commit('mutateComment', data);
+        },
+        setCartItems({state, commit}, data) {
+            commit('mutateSetCartItems', data);
+        },
+        addCartItem({state, getters, commit}, product) {
+            commit('mutateAddToCart', product);
+            if (Vue.auth.check()) {
+                changeCartItem('/store/cart', {
+                        user_id: Vue.auth.user().id,
+                        item_id: product.id,
+                        qty: getters.itemQty(product)
+                    }
+                );
+            }
+        },
+        removeCartItem({state, getters, commit}, product) {
+            commit('mutateRemoveFromCart', product);
+            if (Vue.auth.check()) {
+                changeCartItem('/store/cart', {
+                        user_id: Vue.auth.user().id,
+                        item_id: product.id,
+                        qty: getters.itemQty(product)
+                    }
+                );
+            }
+        },
+        syncCartItem({state, commit, getters}, product) {
+            if (Vue.auth.check()) {
+                changeCartItem('/store/cart', {
+                        user_id: Vue.auth.user().id,
+                        item_id: product.id,
+                        qty: getters.itemQty(product)
+                    }
+                );
+            }
         }
     }
 }

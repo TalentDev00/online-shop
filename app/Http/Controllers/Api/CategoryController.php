@@ -14,32 +14,9 @@ use App\Http\Controllers\Controller;
 
 class CategoryController extends Controller
 {
-/*    public function index($path = Null)
-    {
-
-        if ($path === Null) {
-            return CategoryResource::collection(Category::all()->where('parent_id', Null));
-        }
-
-        $path = explode('/', $path);
-
-        if (count($path) === 1) {
-            return new CategoryResource(Category::with('children')->find($path[0]));
-        }
-
-        if (count($path) === 2) {
-            return ItemResource::collection((Item::with(['images', 'item_variants.item_variant_values', 'item_properties', 'category']))
-                ->where('cat_id', $path[1])->get());
-
-        }
-
-        //return new CategoryResource(Category::with('children')->find($path[count($path) - 1]));
-
-    }*/
-
     public function index()
     {
-        return new ShopInformationResource(ShopInformation::with(['categories', 'vouchers'])->first());
+        return new ShopInformationResource(ShopInformation::with( ['categories', 'vouchers'])->first());
     }
 
     public function show(Request $request, $path = Null)

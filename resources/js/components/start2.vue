@@ -70,10 +70,19 @@
 
 <script>
     import axios from "axios";
-
+    import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
     export default {
         name: 'app',
         components: {
+        },
+        beforeRouteEnter(to, from, next) {
+            next(vm => {
+                if (vm.$auth.check()) {
+                    vm.loadFavorites(vm.$auth.user().favorites)
+                }
+            });
+      next();
         },
         data(){
             return {
@@ -86,13 +95,18 @@
             }
         },
         methods: {
+            ...mapActions('favorites', {
+                loadFavorites: 'setItems'
+            }),
             login() {
                 this.$auth.login({
                     params: {
                         email: this.email,
                         password: this.password
                     },
-                    success: function () {},
+                    success: function () {
+                        this.loadFavorites(this.$auth.user().favorites);
+                    },
                     error: function () {},
                     fetchUser: true,
                 });
@@ -117,7 +131,10 @@
             }
         },
         computed: {
-            ///
+            ...mapGetters('favorites', {
+                favoriteItems: 'allFavoriteItems',
+
+            }),
 
         }
     }

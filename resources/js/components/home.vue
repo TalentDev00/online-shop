@@ -168,6 +168,7 @@
                 productInCart: 'inCart',
             }),
             ...mapGetters('favorites', {
+                favoriteItems: 'allFavoriteItems',
                 isFavorite: 'isFavoriteItem'
             }),
         },
@@ -178,8 +179,10 @@
                 loadFresh: 'setProductFreshItems'
             }),
             ...mapActions('cart', {
-                add: 'addToCart',
-                remove: 'removeFromCart'
+              /*  add: 'addToCart',
+                remove: 'removeFromCart'*/
+                add: 'addCartItem',
+                remove: 'removeCartItem'
             }),
             ...mapActions('favorites', {
                 likeUnLike: 'addOrRemoveFavorite',
