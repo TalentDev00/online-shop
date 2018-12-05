@@ -23,7 +23,7 @@
                     <router-link v-for="(item, index) in results"
                                  :key="index"
                                  tag="li"
-                                 :to="'/result/' + item.id"
+                                 :to="routeTo(item)"
                                  class="list__item">
                         <a  v-html="highlight(item.name)" class="list__item__name" href="">{{ item.name }}</a>
                         <img v-if="!item.cat_id"
@@ -41,7 +41,7 @@
                     <router-link v-for="(item, index) in results"
                                  :key="index"
                                  tag="li"
-                                 :to="'/result/' + item.id"
+                                 :to="routeTo(item)"
                                  class="list__item">
                         <a  v-html="highlight(item.name)" class="list__item__name" href="">{{ item.name }}</a>
                         <img v-if="!item.cat_id"
@@ -55,7 +55,7 @@
                          v-for="(product, index) in products"
                          :key="index"
                     >
-                        <router-link tag="div" :to="'/catalog/products/' + product.id" class="product__img">
+                        <router-link tag="div" :to="{ name: 'product', params: { item_id: product.id } }" class="product__img">
                             <a href=""><img :src="'/images/' + product.images[0].large" :alt="product.name"></a>
                         </router-link>
                         <div class="product__prices">
@@ -116,10 +116,6 @@
                     vm.keywords = obj.keywords;
                 }
 
-             /*   if (vm.$auth.check()) {
-                    vm.loadFavorites();
-                }*/
-
                 vm.getSectionProducts(obj);
 
                 let found = vm.catalogItems.find(item => item.id === parseInt(to.params.cat_id));
@@ -177,6 +173,9 @@
             routeHasKeywords() {
                 return this.$route.params.keywords;
             },
+            routeTo() {
+                return (item) => !item.cat_id ? { name: 'subcatalog', params: { cat_id: item.id } } : { name: 'product', params: { item_id: item.id } };
+            }
         },
         methods: {
             ...mapActions('products', {

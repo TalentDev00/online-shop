@@ -17,7 +17,6 @@ export default {
         isFavoriteItem(state) {
             return (product) => state.items.find(elem => elem.id === product.id || elem.item_id === product.id);
         },
-
     },
     mutations: {
         changeSyncStatus(state, status) {
@@ -47,7 +46,6 @@ export default {
             });
             syncItems('/store/favorite', {
                     items: itemIds.length > 0 ? JSON.stringify(itemIds) : itemIds,
-                    user_id: Vue.auth.user().id
                 },
                 () => {
                     commit('changeSyncStatus', 'success')
@@ -61,7 +59,6 @@ export default {
         addOrRemoveFavorite({state, commit}, product) {
             syncItems('/store/favorite', {
                     item_id: product.id,
-                    user_id: Vue.auth.user().id
                 },
             );
             let found = state.items.find(item => item.id === product.id);
@@ -75,7 +72,6 @@ export default {
         },
         getFavoriteItems({commit, state, rootState}) {
             let options = {
-                user_id: Vue.auth.user().id,
                 sort: rootState.products.sort,
                 min: rootState.products.minRange,
                 max: rootState.products.maxRange,

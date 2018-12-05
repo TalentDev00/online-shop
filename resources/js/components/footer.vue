@@ -20,16 +20,10 @@
         </div>
     </footer>
 </template>
-
 <script>
     import {mapGetters} from 'vuex';
+
     export default {
-        components: {
-        },
-        data(){
-            return {
-            }
-        },
         methods: {
             toHome(){
                 this.$router.push({name: 'home'});

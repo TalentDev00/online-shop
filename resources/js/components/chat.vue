@@ -23,3 +23,17 @@
         </div>
     </section>
 </template>
+<script>
+    import {mapActions} from 'vuex';
+
+    export default {
+        beforeRouteEnter(to, from, next) {
+            next(vm => vm.changeTitle('МЫ ВСЕГДА НА СВЯЗИ!'));
+        },
+        methods: {
+            ...mapActions('header', {
+                changeTitle: 'setTitle'
+            })
+        }
+    }
+</script>

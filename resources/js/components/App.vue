@@ -34,12 +34,12 @@
         ></my-footer>
     </div>
 </template>
-
 <script>
     import myHeader from './header';
     import myFooter from './footer';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
+
     export default {
         components: {
             myFooter,
@@ -52,10 +52,6 @@
                     this.loadCart(this.$auth.user().cart.cart_items)
                 }
             });
-        },
-        data(){
-            return {
-            }
         },
         methods: {
             ...mapActions('favorites', {
@@ -75,7 +71,6 @@
                 if (this.currentScreenStart1) {
                     this.$router.push({name: 'start2'});
                 }
-
                 else {
                     this.$router.push({name: 'start3'});
                 }

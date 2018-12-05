@@ -81,6 +81,7 @@
     import {mapActions} from 'vuex';
     import myRadio from './helpers/radio';
     import myInput from './helpers/input';
+
     export default {
         components: {
             myRadio,
@@ -93,6 +94,7 @@
                 vm.delivery = vm.deliveryMethod;
                 vm.address = vm.deliveryAddress;
                 vm.comment = vm.orderComment;
+                vm.loadCart();
             });
         },
         data() {
@@ -100,7 +102,7 @@
                 payment: '',
                 delivery: '',
                 address: '',
-                comment: ''
+                comment: '',
             }
         },
         computed: {
@@ -113,7 +115,7 @@
                 paymentMethod: 'getPaymentMethod',
                 deliveryMethod: 'getDeliveryMethod',
                 deliveryAddress: 'getDeliveryAddress',
-                orderComment: 'getComment'
+                orderComment: 'getComment',
             }),
         },
         methods: {
@@ -122,7 +124,8 @@
                 changeDeliveryMethod: 'setDeliveryMethod',
                 changeDeliveryAddress: 'setDeliveryAddress',
                 changeComment: 'setComment',
-                placeOrderAndCheckout: 'checkout'
+                placeOrderAndCheckout: 'checkout',
+                loadCart: 'loadUserCart'
             }),
             ...mapActions('header', {
                 changeTitle: 'setTitle'
@@ -143,8 +146,8 @@
                 this.comment = value;
                 this.changeComment(value);
             },
-            checkout(products) {
-                this.placeOrderAndCheckout(products);
+            checkout(cartItems) {
+                this.placeOrderAndCheckout(cartItems);
                 this.$router.push({ name: 'catalog' });
             }
         }

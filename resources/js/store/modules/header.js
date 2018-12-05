@@ -11,7 +11,6 @@ export default {
         getAnimationName(state) {
             return state.animationName;
         },
-
     },
     mutations: {
         mutateSetTitle(state, title) {
@@ -20,8 +19,6 @@ export default {
         mutateSetAnimationName(state, name) {
             state.animationName = name;
         },
-
-
     },
     actions: {
         setTitle(store, title) {

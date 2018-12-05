@@ -1,6 +1,5 @@
 import Vue from 'vue';
-import {gets as getProductItems} from '../../api';
-import axios from "axios";
+import {gets as getProductItems, get as getProductData} from '../../api';
 
 export default {
     namespaced: true,
@@ -8,6 +7,7 @@ export default {
         items: [],
         freshItems: [],
         popularItems: [],
+        boughtWithItems: [],
         sort: 'price_asc',
         checked: [],
         minRange: '',
@@ -21,11 +21,17 @@ export default {
         getItems(state) {
             return state.items;
         },
+        getProductById(state) {
+            return (id) => state.items.find(item => item.id === parseInt(id));
+        },
         getPopularItems(state) {
             return state.popularItems;
         },
         getFreshItems(state) {
             return state.freshItems;
+        },
+        getBoughtWithItems(state) {
+            return state.boughtWithItems;
         },
         getSort(state) {
             return state.sort;
@@ -83,6 +89,9 @@ export default {
         mutateLoadPopularItems(state, data) {
             state.popularItems = data;
         },
+        mutateLoadBoughtWithItems(state, data) {
+            state.boughtWithItems = data;
+        },
         mutateProductSelectedVariant(state, obj) {
               let found = state.items.find(item => item.id === obj.product.id);
               if (found) {
@@ -97,12 +106,8 @@ export default {
                           Vue.set(foundVariant, 'selected', obj.value)
                       }
                   }
-
               }
         },
-
-
-
         mutateSort(state, value) {
             state.sort = value;
         },
@@ -193,13 +198,11 @@ export default {
         setProductPopularItems({commit, state}, param) {
             let options = {
                 sort: 'rating',
-                min : state.minRange,
-                max: state.maxRange,
             };
 
             options = { ...param, ...options };
 
-            getProductItems('/store/catalog', options, state.checked,
+            getProductData('/store/catalog', options,
                 (data) => {
                     commit('mutateLoadPopularItems', data);
                 }
@@ -208,15 +211,21 @@ export default {
         setProductFreshItems({commit, state}, param) {
             let options = {
                 sort: 'new',
-                min : state.minRange,
-                max: state.maxRange,
             };
 
             options = { ...param, ...options };
 
-            getProductItems('/store/catalog', options, state.checked,
+            getProductData('/store/catalog', options,
                 (data) => {
                     commit('mutateLoadFreshItems', data);
+                }
+            );
+        },
+        setProductBoughtWithItems({commit, state}, param) {
+
+            getProductData('/store/catalog', param,
+                (data) => {
+                    commit('mutateLoadBoughtWithItems', data);
                 }
             );
         }

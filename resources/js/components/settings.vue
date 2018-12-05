@@ -7,7 +7,7 @@
                         <div class="list__item__name">
                             <div class="credentials">
                                 <p class="credentials__field">Имя</p>
-                                <p class="credentials__value">Иван Иванович</p>
+                                <p class="credentials__value">{{ user.name ? user.name : 'не указано' }}</p>
                             </div>
                         </div>
                     </li>
@@ -15,7 +15,7 @@
                         <div class="list__item__name">
                             <div class="credentials">
                                 <p class="credentials__field">Почта</p>
-                                <p class="credentials__value">mail@site.com</p>
+                                <p class="credentials__value">{{ user.email }}</p>
                             </div>
                         </div>
                     </li>
@@ -23,7 +23,7 @@
                         <div class="list__item__name">
                             <div class="credentials">
                                 <p class="credentials__field">Телефон</p>
-                                <p class="credentials__value">+7 916 123 45 67</p>
+                                <p class="credentials__value">{{ user.phone ? user.phone : 'не указан'}}</p>
                             </div>
                         </div>
                     </li>
@@ -31,7 +31,7 @@
                         <div class="list__item__name">
                             <div class="credentials">
                                 <p class="credentials__field">Адрес доставки</p>
-                                <p class="credentials__value">111111, Москва, ул. Ленина, д. 1, кв. 1</p>
+                                <p class="credentials__value">{{ user.address ? user.address : 'не указан' }}</p>
                             </div>
                         </div>
                     </li>
@@ -43,3 +43,28 @@
         </div>
     </section>
 </template>
+<script>
+    import {mapActions} from 'vuex';
+
+    export default {
+        beforeRouteEnter(to, from, next) {
+            next(vm => {
+                vm.changeTitle('НАСТРОЙКИ');
+                vm.setData(vm.$auth.user());
+            });
+        },
+        data() {
+            return {
+                user: ''
+            }
+        },
+        methods: {
+            ...mapActions('header', {
+                changeTitle: 'setTitle'
+            }),
+            setData(data) {
+                this.user = data;
+            }
+        }
+    }
+</script>

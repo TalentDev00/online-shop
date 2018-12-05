@@ -24,6 +24,7 @@
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
     import myRadio from './helpers/radio';
+
     export default {
         components: {
             myRadio

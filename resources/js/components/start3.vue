@@ -17,10 +17,17 @@
     </section>
 </template>
 <script>
+    import {mapGetters} from 'vuex';
+
     export default {
+        computed: {
+            ...mapGetters('promotions', {
+                actions: 'getActions'
+            }),
+        },
         methods: {
             toDiscounts(){
-                this.$router.push({name: 'actions'});
+                this.$router.push({name: 'action', params:{ action_id: this.actions[0].id } });
             },
             toCatalog(){
                 this.$router.push({name: 'catalog'});

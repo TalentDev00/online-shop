@@ -1,6 +1,7 @@
 import axios from 'axios';
 export {
-    scrollToTop
+    scrollToTop,
+    wordEnds
 }
 
 const scrollToTop = (scrollDuration) => {
@@ -32,3 +33,28 @@ const getResults = (keywords, sort, min, max, filters, callback) => {
         callback(error.response.data);
     });
 };
+
+function wordEnds(number, variant1, variant2, variant3){
+
+    let h1 = number % 10;
+    let h2 = number % 100;
+    let result;
+
+    if (h2 >= 5 && h2 <= 20) {
+        result = variant1;
+    }
+
+    else if (h1 === 1) {
+        result = variant2;
+    }
+
+    else if (h1 >= 2 && h1 <= 4) {
+        result = variant3;
+    }
+
+    else {
+        result = variant1;
+    }
+
+    return result;
+}

@@ -1,6 +1,7 @@
 section.cart-active {
-
+    padding: 64px 0 79px 0;
     .items {
+        min-height: calc(100vh - 201px);
         .incart {
             .list {
                 width: 100%;

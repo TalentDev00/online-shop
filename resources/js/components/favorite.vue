@@ -7,7 +7,7 @@
                      :key="index"
                      class="product"
                 >
-                    <router-link tag="div" :to="'/catalog/products/' + product.id" class="product__img">
+                    <router-link tag="div" :to="{ name: 'product', params: { item_id: product.id } }" class="product__img">
                         <a href=""><img :src="'/images/' + product.images[0].large" alt=""></a>
                     </router-link>
                     <div class="product__prices">
@@ -49,11 +49,6 @@
     export default {
         beforeRouteEnter(to, from, next) {
             next(vm => {
-                if (vm.$auth.check()) {
-
-                    vm.loadFavorites();
-                }
-
                 vm.changeTitle('ИЗБРАННОЕ');
             });
         },

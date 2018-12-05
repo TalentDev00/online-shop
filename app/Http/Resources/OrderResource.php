@@ -20,6 +20,7 @@ class OrderResource extends JsonResource
             'delivery_address' => $this->delivery_address,
             'comment' => $this->comment,
             'cart_items' => CartItemResource::collection($this->whenLoaded('cart_items')),
+            'updated_at' => getRusDate($this->updated_at, 'd %MONTH% Y')
         ];
     }
 }

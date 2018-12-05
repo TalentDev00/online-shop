@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ItemController extends Controller
 {
@@ -78,7 +77,6 @@ class ItemController extends Controller
                             $i++;
                         }
                     }
-
                 }
             )
             ->with([
@@ -99,13 +97,15 @@ class ItemController extends Controller
             ->when($request->has('fresh'), function($query) use ($request) {
                 return $query->take($request->input('fresh'));
             })
+            ->when($request->has('boughtWith'), function($query) use ($request) {
+                return $query->inRandomOrder()->take($request->input('boughtWith'));
+            })
             ->get());
-
     }
 
     public function favoriteItem(Request $request)
     {
-        $user = User::find($request->input('user_id'));
+        $user = User::find(Auth::user()->id);
         $user->favorites()->attach($request->input('item_id'));
 
         return response([
@@ -124,8 +124,9 @@ class ItemController extends Controller
 
     public function favorite(Request $request)
     {
-        if ($request->post('item_id') && $request->filled('item_id') && $request->post('user_id') && $request->filled('user_id')) {
-            $user = User::find($request->post('user_id'));
+        if ($request->post('item_id') && $request->filled('item_id')) {
+            //$user = User::find($request->post('user_id'));
+            $user = Auth::user();
             $favoriteItem = $user->favorites()->where('item_id', $request->post('item_id'))->first();
             if ($favoriteItem) {
                 $user->favorites()->detach($favoriteItem->id);
@@ -139,8 +140,9 @@ class ItemController extends Controller
             ], 200);
         }
 
-        if ($request->post('items') && $request->filled('items') && $request->post('user_id') && $request->filled('user_id')) {
-            $user = User::find($request->post('user_id'));
+        if ($request->post('items') && $request->filled('items')) {
+            //$user = User::find($request->post('user_id'));
+            $user = Auth::user();
             $user->favorites()->sync(json_decode($request->post('items'), true));
         }
 
@@ -213,7 +215,7 @@ class ItemController extends Controller
                 }
             )
             ->whereHas('favorites', function($query) use ($request) {
-                $query->where('user_id', $request->input('user_id'));
+                $query->where('user_id', Auth::user()->id);
             })
             ->with([
                 'images',
@@ -224,6 +226,24 @@ class ItemController extends Controller
             ->where('price', '<=', $maxPrice)
             ->orderBy($sortMethod, $direction)
             ->get());
+    }
+
+    public function single(Request $request)
+    {
+        if ($request->has('item_id') && $request->filled('item_id')) {
+           return new ItemResource(Item::with(
+               [
+                   'item_properties',
+                   'images',
+                   'item_variants.item_variant_values'
+               ]
+           )->findOrFail($request->get('item_id')));
+        }
+
+        return response([
+            'status' => 'failed',
+            'message' => 'Item not found'
+        ], 400);
     }
 
 }

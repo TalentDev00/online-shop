@@ -50,7 +50,15 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         //$user = User::with(['cart', 'orders:id', 'favorites:item_id'])->find(Auth::user()->id);
-        $user = new UserResource(User::with(['cart.cart_items', 'orders', 'favorites'])->find(Auth::user()->id));
+        $user = new UserResource(User::with(
+            [
+                'cart.cart_items.item.item_properties',
+                'cart.cart_items.item.item_variants.item_variant_values',
+                'cart.cart_items.item.images',
+                'favorites',
+            ]
+        )->find(Auth::user()->id));
+
         return response([
             'status' => 'success',
             'data' => $user

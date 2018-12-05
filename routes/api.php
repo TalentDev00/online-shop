@@ -13,13 +13,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-/*Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});*/
-
-
-
 Route::post('/user/register', 'AuthController@register')->name('register');
 Route::post('/user/login', 'AuthController@login')->name('login');
 
@@ -27,33 +20,38 @@ Route::group(['middleware' => 'jwt.auth'], function() {
     Route::get('/user', 'AuthController@user');
     Route::post('/user/logout', 'AuthController@logout');
 
+    Route::namespace('Api')->group(function () {
+
+        //Orders
+        Route::post('/store/order', 'OrderController@index');
+        Route::get('/store/order', 'OrderController@orders');
+        Route::delete('/store/order/{order_id}', 'OrderController@delete');
+
+        //Favorites
+        Route::post('/store/favorite', 'ItemController@favorite');
+        Route::get('/store/favorite', 'ItemController@favorite');
+
+
+        //Cart
+        Route::post('/store/cart', 'CartController@syncItem');
+        Route::get('/store/cart', 'CartController@index');
+
+        //User
+        Route::post('/menu/settings', 'UserController@index');
+    });
+
 });
 Route::group(['middleware' => 'jwt.refresh'], function(){
     Route::get('/refresh', 'AuthController@refresh');
 });
 
-
 Route::namespace('Api')->group(function () {
-    //Route::get('/store/catalog', 'CategoryController@show');
-    //Route::get('/store/catalog/{path}', 'CategoryController@index')
-   //     ->where('path', '[a-zA-Z0-9\-/_]+');
-
-   /* Route::get('/store/catalog/{path?}', 'CategoryController@show')
-        ->where('path', '[a-zA-Z0-9\-/_]+');*/
-
-
-    Route::get('/store/catalog', 'ItemController@index');
     Route::get('/info', 'CategoryController@index');
+    Route::get('/store/catalog', 'ItemController@index');
+    Route::get('/store/catalog/items', 'ItemController@single');
     Route::get('/search', 'SearchController@index');
-    Route::post('/store/order', 'OrderController@index');
 
-
-    //Favorites
-    Route::post('/store/favorite', 'ItemController@favorite');
-    Route::get('/store/favorite', 'ItemController@favorite');
-
-
-    //Cart
-    Route::post('/store/cart', 'CartController@index');
-    Route::get('/store/cart', 'CartController@index');
 });
+
+
+

@@ -38,12 +38,14 @@
                     filter.values.forEach(elem => {
                         vm.checkedItems.push(elem);
                     });
-
                 }
 
                 let found = vm.currentFilter;
                 if (found) {
                     vm.changeTitle(found.name);
+                }
+                else {
+                    vm.changeTitle('ПАРАМЕТРЫ');
                 }
             });
         },

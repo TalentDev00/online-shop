@@ -454,9 +454,7 @@ p.greetings {
         font-style: normal;
         font-size: 14px;
         line-height: 18px;
-
         font-weight: 500;
-
         &__number {
             color: $black;
             margin-top: 1px;
@@ -466,6 +464,8 @@ p.greetings {
         &__price {
             color:rgba(0,0,0,0.3);
             margin-bottom: -1px;
+            display:flex;
+            flex-wrap: wrap;
         }
     }
 
@@ -478,7 +478,6 @@ p.greetings {
         padding: 2px 8px;
         box-sizing: border-box;
         text-align: center;
-
         &-inprocess {
             background: $yellow-orange!important;
         }

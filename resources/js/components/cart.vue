@@ -9,7 +9,7 @@
                     >
                         <div class="cart-item__body swipable">
                             <div class="cart-item__body__product">
-                                <router-link tag="div" :to="'/catalog/products/' + cartItem.item.id" class="cart-item__body__product__img">
+                                <router-link tag="div" :to="{ name: 'product', params: { item_id: cartItem.item.id } }" class="cart-item__body__product__img">
                                     <a href=""><img :src="'/images/' + cartItem.item.images[0].large" alt=""></a>
                                 </router-link>
                                 <div class="cart-item__body__product__details">
@@ -30,7 +30,7 @@
                             </div>
                             <ul class="cart-item__body__conditions">
                                 <li class="cart-item__body__conditions__item"
-                                    v-for="(variant, index) in cartItem.item.variants"
+                                    v-for="(variant, index) in cartItem.item.variants" :key="index"
                                 >{{ variant.name }}: <span> {{ variant.selected ? variant.selected : variant.values[0] }}</span></li>
                             </ul>
                         </div>
@@ -101,32 +101,7 @@
     </div>
 </template>
 <script>
-
-    function wordEnds(number, variant1, variant2, variant3){
-
-        let h1 = number % 10;
-        let h2 = number % 100;
-        let result;
-
-        if (h2 >= 5 && h2 <= 20) {
-            result = variant1;
-        }
-
-        else if (h1 === 1) {
-            result = variant2;
-        }
-
-        else if (h1 >= 2 && h1 <= 4) {
-            result = variant3;
-        }
-
-        else {
-                result = variant1;
-        }
-
-        return result;
-    }
-    import Vue from 'vue';
+    import {wordEnds} from '../includes';
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
     import myInput from './helpers/input';
@@ -139,6 +114,7 @@
         },
         beforeRouteEnter(to, from, next) {
             next(vm => {
+               // vm.loadCart();
                 vm.changeTitle('КОРЗИНА');
                 vm.installSwipers();
             });
@@ -155,6 +131,9 @@
             ...mapGetters('products', {
                 products: 'getItems'
             }),
+            ...mapGetters('promotions', {
+                actions: 'getActions'
+            }),
             ...mapGetters('cart', {
                 productsInCart: 'getProducts',
                 countProductsInCart: 'getCountProducts',
@@ -170,13 +149,11 @@
             },
         },
         methods: {
-            ...mapActions('products', {
-                loadProducts: 'loadItems',
-            }),
             ...mapActions('cart', {
-                add: 'addToCart',
-                remove: 'removeFromCart',
+                add: 'addCartItem',
+                remove: 'removeCartItem',
                 removeWithAllCounts: 'removeFromCartWithAllCounts',
+                loadCart: 'loadUserCart'
             }),
             ...mapActions('favorites', {
                 likeUnLike: 'addOrRemoveFavorite',
@@ -185,7 +162,7 @@
                 changeTitle: 'setTitle'
             }),
             toDiscounts(){
-                this.$router.push({name: 'action'});
+                this.$router.push({name: 'action', params: {action_id: this.actions[0].id } });
             },
             toCatalog(){
                 this.$router.push({name: 'catalog'});

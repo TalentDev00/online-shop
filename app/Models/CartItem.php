@@ -13,7 +13,7 @@ class CartItem extends Model
     // Relations
     public function item()
     {
-        return $this->hasOne('App\Models\Item');
+        return $this->belongsTo('App\Models\Item');
     }
 
     public function orders()

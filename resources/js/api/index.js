@@ -3,6 +3,7 @@ import axios from 'axios';
 const post = (url, data, cb = null, errorCb = null) => {
     axios.post(url, data)
         .then(response => {
+            console.log(response.data);
             cb !== null ? cb(response.data) : {}
         })
         .catch(error => {
@@ -10,8 +11,18 @@ const post = (url, data, cb = null, errorCb = null) => {
         })
 };
 
-const get = (url, params, cb = null, errorCb = null) => {
+const get = (url, params = null, cb = null, errorCb = null) => {
     axios.get(url, {params})
+        .then(response => {
+            cb !== null ? cb(response.data) : {}
+        })
+        .catch(error => {
+            errorCb !== null ? errorCb(error.response.data) : console.log(error)
+        })
+};
+
+const deleteMethod = (url, params = null, cb = null, errorCb = null) => {
+    axios.delete(url, {params})
         .then(response => {
             cb !== null ? cb(response.data) : {}
         })
@@ -53,5 +64,6 @@ const gets = (url, options, filters = null, cb = null, errorCb = null) => {
 export {
     post,
     get,
-    gets
+    gets,
+    deleteMethod
 }

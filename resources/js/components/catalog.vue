@@ -47,6 +47,7 @@
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
     import mySearch from './helpers/search';
+
     export default {
         components: {
             mySearch
@@ -73,7 +74,7 @@
                 return this.keywords === null || this.keywords === '' || this.keywords === ' ';
             },
             routeTo() {
-                return (item) => !item.cat_id ? { name: 'subcatalog', params: { cat_id: item.id } } : { name: 'single', params: { item_id: item.id } };
+                return (item) => !item.cat_id ? { name: 'subcatalog', params: { cat_id: item.id } } : { name: 'product', params: { item_id: item.id } };
             }
         },
         methods: {

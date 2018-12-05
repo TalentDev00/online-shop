@@ -88,14 +88,9 @@
                 return this.keywords === null || this.keywords === '' || this.keywords === ' ';
             },
             childrenCategories() {
-                let found = [];
-                for (let i = 0; i < this.catalogItems.length; i++) {
-                    if (this.catalogItems[i].parent_id === this.cat_id) {
-                        found.push(this.catalogItems[i]);
-                    }
-                }
-
-                return found;
+                return this.catalogItems.filter(item => {
+                    return item.parent_id === this.cat_id;
+                });
             },
             routeTo() {
                 return (item) => item.children_count && item.children_count > 0 ? { name: 'subcatalog', params: { cat_id: item.id } } : { name:'section', params: {cat_id: item.id} }

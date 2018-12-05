@@ -26,16 +26,12 @@ import mySort from '../components/sort';
 import myFilter from '../components/filter';
 import myGallery from '../components/gallery';
 import myParameters from '../components/parameters';
-import myResult from '../components/result';
 Vue.use(VueRouter);
-
 
 const routes = [
 
     /*
-    *
-    *  Real Routes
-    *
+    *  Root Routes
     * */
     {
         path: '',
@@ -45,8 +41,6 @@ const routes = [
         name: 'start1',
         path: '/info',
         component: start1,
-        meta: {
-        }
     },
     {
         name: 'start2',
@@ -65,231 +59,124 @@ const routes = [
         name: 'action',
         path: '/discounts',
         component: myAction,
-        meta: {
-            title: 'АКЦИИ',
-            //auth: true
-        }
-    },
-
-    /*
-    *
-    *
-    *  Route for Single product
-    *
-    * */
-    {
-        name: 'single',
-        path: '/store/catalog/products/:item_id',
-        component: myItem,
-        meta: {
-            //auth: true,
-        }
     },
     {
-        name: 'gallery',
-        path: '/catalog/products/:id/gallery',
-        component: myGallery,
-        meta: {
-           // auth: true,
-        }
+        name: 'home',
+        path: '/home',
+        component: myHome,
     },
     {
         name: 'chat',
         path: '/chat',
         component: myChat,
-        meta: {
-            title: 'МЫ ВСЕГДА НА СВЯЗИ!',
-           // auth: true,
-        }
     },
     /*
-    *
-    *
+    *  Route for Single product
+    * */
+    {
+        name: 'product',
+        path: '/store/catalog/items/:item_id?',
+        component: myItem,
+    },
+    {
+        name: 'gallery',
+        path: '/store/catalog/items/:item_id?/gallery',
+        component: myGallery,
+    },
+    /*
     *  Routes for Catalog
-    *
     * */
     {
         name: 'catalog',
         path: '/store/catalog',
         component: myCatalog,
-        meta: {
-            auth: true,
-           // title: 'КАТАЛОГ'
-        },
     },
     {
         name: 'subcatalog',
         path: '/store/catalog/:cat_id?',
         component: mySubcatalog,
-        meta: {
-            //auth: true,
-        },
-
     },
     {
         name: 'section',
         path: '/store/catalog/:cat_id?/section/:keywords?',
         component: mySection,
-        meta: {
-           // auth: true,
-        }
     },
     {
         name: 'sort',
-        //path: '/store/catalog/:cat_id?/section/:keywords?/sort',
         path: 'sort',
         component: mySort,
-        meta: {
-            //auth: true,
-        }
     },
     {
         name: 'filter',
-       // path: '/store/catalog/:cat_id?/section/:keywords?/filter',
         path: 'filter',
         component: myFilter,
-        meta: {
-           // auth: true,
-        },
-
     },
     {
         name: 'parameters',
-        //path: '/store/catalog/:cat_id?/section/:keywords?/filter/:filter_id/parameters',
         path: 'parameters',
         component: myParameters,
-        meta: {
-           // auth: true,
-        }
-    },
-    {
-        name: 'result',
-        path: '/store/catalog/result/:keywords',
-        component: myResult,
-        meta: {
-           // auth: true,
-        }
-    },
-
-    {
-        name: 'home',
-        path: '/home',
-        component: myHome,
-        meta: {
-           // auth: true,
-        }
     },
     /*
-    *
-    *
     *  Routes for Cart
-    *
     * */
     {
         name: 'cart',
         path: '/store/cart',
         component: myCart,
-        meta: {
-          //  auth: true,
-            title: 'КОРЗИНА'
-        }
     },
     {
         name: 'checkout',
         path: '/store/cart/checkout',
         component: myCheckout,
-        meta: {
-          //  auth: true,
-            title: 'ОФОРМЛЕНИЕ ЗАКАЗА'
-        }
     },
     {
         name: 'favorite',
         path: '/store/favorite',
         component: myFavorite,
-        meta: {
-         //   auth: true,
-            title: 'ИЗБРАННОЕ'
-        }
     },
     /*
-    *
     *  Routes for Menu
-    *
     * */
     {
         name: 'menu',
         path: '/menu',
         component: myMenu,
-        meta: {
-          //  auth: true,
-            title: 'ЛИЧНЫЙ КАБИНЕТ'
-        }
     },
     {
         name: 'orders',
-        path: '/store/orders',
+        path: '/store/order',
         component: myOrders,
-        meta: {
-          //  auth: true,
-            title: 'МОИ ЗАКАЗЫ'
-        }
     },
     {
         name: 'order',
-        path: '/store/orders/:id',
+        path: '/store/order/:order_id?',
         component: myOrder,
-        meta: {
-          //  auth: true,
-            title: ':order-id'
-        }
     },
     {
         name: 'settings',
         path: '/menu/settings',
         component: mySettings,
-        meta: {
-          //  auth: true,
-            title: 'НАСТРОЙКИ'
-        }
     },
     {
         name: 'edit',
         path: '/menu/settings/edit',
         component: myEdit,
-        meta: {
-          //  auth: true,
-            title: 'НАСТРОЙКИ'
-        }
     },
     {
         name: 'about',
         path: '/menu/about',
         component: myAbout,
-        meta: {
-          //  auth: true,
-            title: 'О КОМПАНИИ'
-        }
     },
     {
         name: 'delivery',
         path: '/menu/delivery',
         component: myDelivery,
-        meta: {
-          //  auth: true,
-            title: 'ДОСТАВКА И ОПЛАТА'
-        }
     },
     {
         name: 'contacts',
         path: '/menu/contacts',
         component: myContacts,
-        meta: {
-         //   auth: true,
-            title: 'КОНТАКТЫ'
-        }
     },
-
 ];
 
 export default new VueRouter({

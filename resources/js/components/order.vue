@@ -1,121 +1,99 @@
 <template>
     <section class="cart-active">
-        <div class="order__status order__status-inprocess">в обработке</div>
+        <div class="order__status" :class="statusColor(order)">{{ order.status }}</div>
         <div class="items">
             <div class="incart">
-                <div class="cart-item">
+                <div class="cart-item"
+                     v-for="(cartItem, index) in order.cart_items"
+                     :key="index"
+                >
                     <div class="cart-item__body">
                         <div class="cart-item__body__product">
-                            <div class="cart-item__body__product__img">
-                                <a href=""><img src="../../images/pie@3x.jpg" alt=""></a>
-                            </div>
+                            <router-link tag="div" :to="{ name: 'product', params: { item_id: cartItem.item.id } }" class="cart-item__body__product__img">
+                                <a href=""><img :src="'/images/' + cartItem.item.images[0].large" alt=""></a>
+                            </router-link>
                             <div class="cart-item__body__product__details">
                                 <p class="cart-item__body__product__details__name">Вафли с вареньем на завтрак</p>
                                 <div class="cart-item__body__product__details__prices">
-                                    <p class="cart-item__body__product__details__prices__odlprice">440</p>
-                                    <p class="cart-item__body__product__details__prices__newprice">320 руб.</p>
-                                    <p class="cart-item__body__product__details__prices__amount">x 1 шт</p>
+                                    <p v-show="cartItem.item.discount === 0" class="cart-item__body__product__details__prices__nodiscount">{{ cartItem.item.price }} <span>руб.</span></p>
+                                    <p v-show="cartItem.item.discount !== 0" class="cart-item__body__product__details__prices__odlprice">{{ cartItem.item.price }}</p>
+                                    <p v-show="cartItem.item.discount !== 0" class="cart-item__body__product__details__prices__newprice">{{ cartItem.item.price - cartItem.item.discount }} <span>руб.</span></p>
+                                    <p class="cart-item__body__product__details__prices__amount">x {{ cartItem.qty }} шт</p>
                                 </div>
                             </div>
                             <div class="cart-item__body__product__actions">
                             </div>
                         </div>
                         <ul class="cart-item__body__conditions">
-                            <li class="cart-item__body__conditions__item">Степень запекания: <span>средняя</span></li>
-                            <li class="cart-item__body__conditions__item">Варенье: <span>черничное</span></li>
+                            <li class="cart-item__body__conditions__item"
+                                v-for="(variant, index) in cartItem.item.variants" :key="index"
+                            >{{ variant.name }}: <span> {{ variant.selected ? variant.selected : variant.values[0] }}</span></li>
                         </ul>
-                    </div>
-                    <div class="cart-item__buttons">
-                        <button class="cart-item__buttons__like"><img src="../../images/icons/favorite_snow.svg" alt=""></button>
-                        <button class="cart-item__buttons__close"><img src="../../images/icons/close_snow.svg" alt=""></button>
-                    </div>
-                </div>
-                <div class="cart-item">
-                    <div class="cart-item__body">
-                        <div class="cart-item__body__product">
-                            <div class="cart-item__body__product__img">
-                                <a href=""><img src="../../images/coffe@3x.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-item__body__product__details">
-                                <p class="cart-item__body__product__details__name">Крепкий кофе со сливками</p>
-                                <div class="cart-item__body__product__details__prices">
-                                    <p class="cart-item__body__product__details__prices__nodiscount">320 руб.</p>
-                                    <p class="cart-item__body__product__details__prices__amount">x 1 шт</p>
-                                </div>
-                            </div>
-                            <div class="cart-item__body__product__actions">
-                            </div>
-                        </div>
-                        <ul class="cart-item__body__conditions">
-                            <li class="cart-item__body__conditions__item">Сахар: <span>без сахара совсем&nbsp;&mdash; ни&nbsp;единого кусочка</span></li>
-                        </ul>
-                    </div>
-                    <div class="cart-item__buttons">
-                        <button class="cart-item__buttons__like"><img src="../../images/icons/favorite_snow.svg" alt=""></button>
-                        <button class="cart-item__buttons__close"><img src="../../images/icons/close_snow.svg" alt=""></button>
-                    </div>
-                </div>
-                <div class="cart-item">
-                    <div class="cart-item__body">
-                        <div class="cart-item__body__product">
-                            <div class="cart-item__body__product__img">
-                                <a href=""><img src="../../images/burger@3x.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-item__body__product__details">
-                                <p class="cart-item__body__product__details__name">Бургер</p>
-                                <div class="cart-item__body__product__details__prices">
-                                    <p class="cart-item__body__product__details__prices__odlprice">720</p>
-                                    <p class="cart-item__body__product__details__prices__newprice">560 руб.</p>
-                                    <p class="cart-item__body__product__details__prices__amount">x 1 шт</p>
-                                </div>
-                            </div>
-                            <div class="cart-item__body__product__actions">
-                            </div>
-                        </div>
-                        <ul class="cart-item__body__conditions">
-                        </ul>
-                    </div>
-                    <div class="cart-item__buttons">
-                        <button class="cart-item__buttons__like"><img src="../../images/icons/favorite_snow.svg" alt=""></button>
-                        <button class="cart-item__buttons__close"><img src="../../images/icons/close_snow.svg" alt=""></button>
-                    </div>
-                </div>
-                <div class="cart-item">
-                    <div class="cart-item__body">
-                        <div class="cart-item__body__product">
-                            <div class="cart-item__body__product__img">
-                                <a href=""><img src="../../images/sandwich@3x.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-item__body__product__details">
-                                <p class="cart-item__body__product__details__name">Бутерброд с беконом и овощами</p>
-                                <div class="cart-item__body__product__details__prices">
-                                    <p class="cart-item__body__product__details__prices__nodiscount">780 руб.</p>
-                                    <p class="cart-item__body__product__details__prices__amount">x 1 шт</p>
-                                </div>
-                            </div>
-                            <div class="cart-item__body__product__actions">
-                            </div>
-                        </div>
-                        <ul class="cart-item__body__conditions">
-                            <li class="cart-item__body__conditions__item">Соус: <span>чесночный</span></li>
-                        </ul>
-                    </div>
-                    <div class="cart-item__buttons">
-                        <button class="cart-item__buttons__like"><img src="../../images/icons/favorite_snow.svg" alt=""></button>
-                        <button class="cart-item__buttons__close"><img src="../../images/icons/close_snow.svg" alt=""></button>
                     </div>
                 </div>
             </div>
             <div class="cartsum-wrapper">
                 <div class="wrapper-16">
                     <div class="cartsum">
-                        <p class="cartsum__products"><span class="cartsum__products__count">4</span> товара на сумму <span class="cartsum__products__price">2580 руб.</span></p>
-                        <p class="cartsum__discount">Скидка: <span class="cartsum__discount__amount">- 280 руб.</span></p>
-                        <p class="cartsum__final">Итого: <span class="cartsum__final__num">2300 руб.</span></p>
+                        <p class="cartsum__products"><span class="cartsum__products__count">{{ countOrderProducts(order) }}</span> {{ wordEndings(order) }} на сумму <span class="cartsum__products__price">{{ totalPrice(order) }} руб.</span></p>
+                        <p class="cartsum__discount">Скидка: <span class="cartsum__discount__amount">-{{ discountPrice(order) }} руб.</span></p>
+                        <p class="cartsum__final">Итого: <span class="cartsum__final__num">{{ finalPrice(order) }} руб.</span></p>
                     </div>
                 </div>
             </div>
-            <button class="btn btn__fixed btn__redbg">отменить заказ</button>
+            <button v-show="order.status !== 'выполнен'"
+                    class="btn btn__fixed btn__redbg"
+                    @click="cancelOrder(order)"
+            >отменить заказ</button>
         </div>
     </section>
 </template>
+<script>
+    import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
+    import {wordEnds} from '../includes';
+    import {get as methodGet} from '../api';
+
+    export default {
+        beforeRouteEnter(to, from, next) {
+            next(vm => {
+                let params = { orderId: to.params.order_id };
+                methodGet(
+                    '/store/order',
+                    params,
+                    (data) => vm.setData(data)
+                );
+                vm.changeTitle('ЗАКАЗ #' + to.params.order_id);
+            });
+        },
+        data() {
+            return {
+                order: ''
+            }
+        },
+        computed: {
+            ...mapGetters('orders', {
+                totalPrice: 'orderTotalPrice',
+                discountPrice: 'orderDiscount',
+                finalPrice: 'orderFinalPrice',
+                countOrderProducts: 'countOrderItems',
+                statusColor: 'orderStatusColor'
+            }),
+            wordEndings() {
+                return (order) => wordEnds(this.countOrderProducts(order), 'товаров', 'товар', 'товара');
+            },
+        },
+        methods: {
+            ...mapActions('header', {
+                changeTitle: 'setTitle',
+
+            }),
+            ...mapActions('orders', {
+                cancelOrder: 'removeOrder'
+            }),
+            setData(data) {
+                this.order = data;
+            },
+        }
+    }
+</script>

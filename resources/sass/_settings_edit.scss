@@ -45,10 +45,28 @@ section.settings-edit {
                         text-align: left;
                     }
 
+                    &__error {
+                        font-family: Montserrat, sans-serif;
+                        font-weight: 700;
+                        color: red;
+                        font-size: 10px;
+                        line-height: 12px;
+                        text-align: left;
+                    }
+
                     &__input {
                         margin-top: 7px;
                         margin-bottom: 16px;
+
+                        &-error {
+                            border: 2px solid red;
+                        }
+
+                        &-success {
+                            border: 2px solid rgba(0,0,0, 0.1);
+                        }
                     }
+
                 }
             }
         }

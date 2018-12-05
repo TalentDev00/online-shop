@@ -10,6 +10,8 @@ import catalog from './modules/catalog';
 import header from './modules/header';
 import search from './modules/search';
 import favorites from './modules/favorites';
+import orders from './modules/orders';
+import user from './modules/user';
 
 export default new Vuex.Store({
     modules: {
@@ -19,7 +21,9 @@ export default new Vuex.Store({
         catalog,
         header,
         search,
-        favorites
+        favorites,
+        orders,
+        user,
     },
     strict: process.env.NODE_ENV !== 'production',
     state: {

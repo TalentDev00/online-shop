@@ -5,7 +5,7 @@ use Faker\Generator as Faker;
  * @var \Illuminate\Database\Eloquent\Factory $factory
  */
 $factory->define(App\Models\Order::class, function (Faker $faker) {
-    $statuses = ['выролнен', 'в обработке', 'отменен'];
+    $statuses = ['выполнен', 'в обработке'];
     return [
         'status' => array_random($statuses),
         'comment' => $faker->realText(50),

@@ -1,12 +1,9 @@
-import Vue from 'vue';
-import axios from 'axios';
+import {get as loadData} from '../../api'
 
 export default {
     namespaced: true,
     state: {
         items: [],
-
-
     },
     getters: {
         getCatalogItems(state) {
@@ -17,7 +14,6 @@ export default {
                 return item.parent_id === null;
             });
         }
-
     },
     mutations: {
         mutateLoadCatalogItems(state, data) {
@@ -26,26 +22,18 @@ export default {
         mutateClearCatalog(state) {
             state.items = [];
         },
-
     },
     actions: {
-        loadCatalogItems(store) {
-            axios.get('/store/catalog')
-                .then(({ data }) => {
-                    store.commit('mutateLoadCatalogItems', data);
-                }).catch(error => {
-                console.log(error)
-            })
+        loadCatalogItems({commit}) {
+            loadData('store/catalog', {}, ({data}) => {
+                commit('mutateLoadCatalogItems', data);
+            });
         },
-
         loadNewItems(store, data) {
             store.commit('mutateLoadCatalogItems', data);
         },
         clearCatalog(store) {
             store.commit('mutateClearCatalog');
         },
-
-
-
     }
 }

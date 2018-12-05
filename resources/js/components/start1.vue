@@ -16,7 +16,6 @@
 
 <script>
     import axios from 'axios';
-    import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
 
     const getCatalog = (cb, errorCb) => {
@@ -58,6 +57,5 @@
                 loadPromotions: 'setPromotions'
             })
         },
-
     }
 </script>

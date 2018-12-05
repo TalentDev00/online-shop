@@ -24,7 +24,7 @@
                              :key="index"
                              class="product"
                         >
-                            <router-link tag="div" :to="'/catalog/products/' + product.id" class="product__img">
+                            <router-link tag="div" :to="{ name: 'product', params: { item_id: product.id } }" class="product__img">
                                 <a href=""><img :src="'/images/' + product.images[0].large" alt=""></a>
                             </router-link>
                             <div class="product__prices">
@@ -65,7 +65,7 @@
                              :key="index"
                              class="product"
                         >
-                            <router-link tag="div" :to="'/catalog/products/' + product.id" class="product__img">
+                            <router-link tag="div" :to="{ name: 'product', params: { item_id: product.id } }" class="product__img">
                                 <a href=""><img :src="'/images/' + product.images[0].large" alt=""></a>
                             </router-link>
                             <div class="product__prices">
@@ -111,7 +111,7 @@
                     <router-link v-for="(item, index) in results"
                                  :key="index"
                                  tag="li"
-                                 :to="'/result/' + item.id"
+                                 :to="routeTo(item)"
                                  class="list__item">
                         <a  v-html="highlight(item.name)" class="list__item__name" href="">{{ item.name }}</a>
                         <img v-if="!item.cat_id"
@@ -130,6 +130,7 @@
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
     import myModal from './modal';
+
     export default {
         components: {
           myModal
@@ -171,6 +172,9 @@
                 favoriteItems: 'allFavoriteItems',
                 isFavorite: 'isFavoriteItem'
             }),
+            routeTo() {
+                return (item) => !item.cat_id ? { name: 'subcatalog', params: { cat_id: item.id } } : { name: 'product', params: { item_id: item.id } };
+            }
         },
         methods: {
             ...mapActions('products', {
@@ -179,8 +183,6 @@
                 loadFresh: 'setProductFreshItems'
             }),
             ...mapActions('cart', {
-              /*  add: 'addToCart',
-                remove: 'removeFromCart'*/
                 add: 'addCartItem',
                 remove: 'removeCartItem'
             }),

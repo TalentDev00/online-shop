@@ -9,21 +9,11 @@
 </template>
 <script>
     export default {
-        props: ['value', 'type', 'name', 'placeholder', 'styleClasses'],
-        data() {
-            return {
-            }
-        },
-        computed: {
-        },
+        props: ['value', 'type', 'name', 'placeholder', 'styleClasses', 'pattern'],
         methods: {
             updateValue(e) {
                 this.$emit('oninput', e.target.value)
             }
         },
     }
-
 </script>
-<style scoped lang="scss">
-
-</style>

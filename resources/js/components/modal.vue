@@ -37,6 +37,7 @@
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
     import mySelect from './helpers/select';
+
     export default {
         components: {
             mySelect

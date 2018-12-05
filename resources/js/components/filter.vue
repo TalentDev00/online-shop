@@ -44,8 +44,7 @@
     </section>
 </template>
 <script>
-    import axios from 'axios';
-    import Vue from 'vue';
+    import {get as loadData} from '../api';
     import {mapActions, mapGetters} from 'vuex';
 
     export default {
@@ -71,41 +70,38 @@
 
                     url = '/store/catalog';
                 }
+                let that = this;
+                loadData(url, params, (data) => {
+                    vm.setData(data);
+                    // set slider initial values
+                    let products = data;
+                    if (products.length > 0) {
+                        let prices = products.map(item => item.price);
+                        let minPrice = Math.min(...prices);
+                        let maxPrice = Math.max(...prices);
 
-                axios.get(url, {params})
-                    .then(data => {
-                        vm.setData(data.data);
-                        let products = data.data;
-                        if (products.length > 0) {
-                            let prices = [];
-                            products.forEach(item => {
-                                prices.push(item.price);
-                            });
-
-                            let minPrice = Math.min(...prices);
-                            let maxPrice = Math.max(...prices);
-
-                            vm.changeTitle('ФИЛЬТР');
-                            vm.slider.min = 0;
-                            vm.slider.max = maxPrice;
-                            if (vm.sliderMinRange === "" || vm.sliderMaxRange === "") {
-                                vm.minRange = minPrice;
-                                vm.maxRange = maxPrice;
-                            }
-                            else {
-                                vm.minRange = vm.sliderMinRange;
-                                vm.maxRange = vm.sliderMaxRange;
-                            }
-
-                            vm.slider.startMin = vm.minRange;
-                            vm.slider.startMax = vm.maxRange;
-                            vm.installSlider();
+                        vm.changeTitle('ФИЛЬТР');
+                        vm.slider.min = 0;
+                        vm.slider.max = maxPrice;
+                        if (vm.sliderMinRange === "" || vm.sliderMaxRange === "") {
+                            vm.minRange = minPrice;
+                            vm.maxRange = maxPrice;
                         }
                         else {
-                            vm.changeTitle('ФИЛЬТР');
+                            vm.minRange = vm.sliderMinRange;
+                            vm.maxRange = vm.sliderMaxRange;
                         }
-                    })
-                    .catch(error => console.log(error));
+
+                        vm.slider.startMin = vm.minRange;
+                        vm.slider.startMax = vm.maxRange;
+                        vm.$nextTick(function() {
+                            vm.installSlider();
+                        }.bind(that));
+                    }
+                    else {
+                        vm.changeTitle('ФИЛЬТР');
+                    }
+                });
             });
         },
         data() {
@@ -156,19 +152,11 @@
                 return (filter) => this.hasActiveParams(filter) ? this.filterParams(filter).values.length : 0;
             },
             lowestPrice() {
-                let prices = [];
-                this.products.forEach(item => {
-                    prices.push(item.price);
-                });
-
+                let prices = this.products.map(item => item.price);
                 return Math.min(...prices);
             },
             highestPrice() {
-                let prices = [];
-                this.products.forEach(item => {
-                    prices.push(item.price);
-                });
-
+                let prices = this.products.map(item => item.price);
                 return Math.max(...prices);
             },
             countItemsByFilters() {
@@ -235,7 +223,6 @@
                         thousand: '',
                     })
                 });
-
                 this.$refs.slider.noUiSlider.on('update',(values, handle) => {
                     this.minRange = values[0];
                     this.maxRange = values[1];

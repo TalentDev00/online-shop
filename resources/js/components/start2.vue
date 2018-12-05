@@ -15,7 +15,6 @@
                                 :class=" !showLogin ? 'active' : '' "
                                 @click="showLogin = false"
                         >Регистрация</button>
-
                     </div>
                     <div class="line">
                         <transition name="tab-login">
@@ -24,8 +23,6 @@
                         <transition name="tab-register">
                             <div v-show="showLogin === false" class="line__right line__right-active"></div>
                         </transition>
-
-
                     </div>
 
                         <div class="form">
@@ -69,9 +66,9 @@
 
 
 <script>
-    import axios from "axios";
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
+
     export default {
         name: 'app',
         components: {
@@ -79,10 +76,10 @@
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 if (vm.$auth.check()) {
-                    vm.loadFavorites(vm.$auth.user().favorites)
+                    vm.loadFavorites(vm.$auth.user().favorites);
+                    vm.loadCart(vm.$auth.user().cart.cart_items)
                 }
             });
-      next();
         },
         data(){
             return {
@@ -98,16 +95,20 @@
             ...mapActions('favorites', {
                 loadFavorites: 'setItems'
             }),
+            ...mapActions('cart', {
+                loadCart: 'setCartItems'
+            }),
             login() {
                 this.$auth.login({
                     params: {
                         email: this.email,
                         password: this.password
                     },
-                    success: function () {
+                    success: () => {
                         this.loadFavorites(this.$auth.user().favorites);
+                        this.loadCart(this.$auth.user().cart.cart_items)
                     },
-                    error: function () {},
+                    error: () => {},
                     fetchUser: true,
                 });
             },
@@ -117,10 +118,10 @@
                         email: this.email,
                         password: this.password
                     },
-                    success: function() {
+                    success: () => {
                         this.success = true;
                     },
-                    error: function(resp) {
+                    error: (resp) => {
                         this.error = true;
                         this.errors = resp.response.data.errors;
                     },
@@ -133,9 +134,7 @@
         computed: {
             ...mapGetters('favorites', {
                 favoriteItems: 'allFavoriteItems',
-
             }),
-
         }
     }
 </script>

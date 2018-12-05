@@ -78,6 +78,17 @@
         </div>
     </section>
 </template>
-<style scoped lang="scss">
+<script>
+    import {mapActions} from 'vuex';
 
-</style>
+    export default {
+        beforeRouteEnter(to, from, next) {
+            next(vm => vm.changeTitle('КОНТАКТЫ'));
+        },
+        methods: {
+            ...mapActions('header', {
+                changeTitle: 'setTitle'
+            })
+        }
+    }
+</script>

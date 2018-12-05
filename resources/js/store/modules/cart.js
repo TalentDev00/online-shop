@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import axios from 'axios';
-import {post as changeCartItem} from '../../api';
+import {post as sendData, get as loadData} from '../../api';
 
 export default {
     namespaced: true,
@@ -137,8 +137,7 @@ export default {
         removeFromCartWithAllCounts(store, product){
             store.commit('mutateRemoveFromCartWithAllCounts', product);
             if (Vue.auth.check()) {
-                changeCartItem('/store/cart', {
-                        user_id: Vue.auth.user().id,
+                sendData('/store/cart', {
                         item_id: product.id,
                         qty: null
                     }
@@ -150,27 +149,58 @@ export default {
         },
 
         // Checkout
-        checkout({commit, state}, products) {
+        checkout({commit, state}, cartItems) {
             const savedCartItems = [...state.items];
+            console.log(savedCartItems)
             commit('mutateCheckoutStatus', null);
             commit('mutateClearCartItems');
 
-            axios.post('/store/order', {
-                items: products,
-                payment_method: state.paymentMethod,
-                delivery_method: state.deliveryMethod,
-                delivery_address: state.deliveryAddress,
-                status: 'в обработке',
-                comment: state.comment
-                })
-                .then(response => {
-                    commit('mutateCheckoutStatus', 'successful')
-
-                })
-                .catch(error => {
+         /*   sendData(
+                '/store/order',
+                {
+                    items: products,
+                    payment_method: state.paymentMethod,
+                    delivery_method: state.deliveryMethod,
+                    delivery_address: state.deliveryAddress,
+                    status: 'в обработке',
+                    comment: state.comment
+                },
+                (data) => {
+                    console.log(data.order);
+                    commit('mutateCheckoutStatus', 'successful');
+                    commit('orders/addOrder', data.order, {root: true});
+                },
+                (error) => {
+                    console.log(error);
                     commit('mutateCheckoutStatus', 'failed');
                     commit('mutateSetCartItems', savedCartItems)
-                })
+                }
+            )*/
+            axios.post(
+                '/store/order',
+                {
+                    items: cartItems,
+                    payment_method: state.paymentMethod,
+                    delivery_method: state.deliveryMethod,
+                    delivery_address: state.deliveryAddress,
+                    status: 'в обработке',
+                    comment: state.comment
+                }).then(
+                (data) => {
+                    console.log(data);
+                    commit('mutateCheckoutStatus', 'successful');
+                   // commit('orders/addOrder', data.order, {root: true});
+                    },
+                ).catch(
+                (error) => {
+                    console.log(error);
+                    commit('mutateCheckoutStatus', 'failed');
+                    commit('mutateSetCartItems', savedCartItems)
+                    }
+                );
+
+
+
         },
         setPaymentMethod(store, data) {
             store.commit('mutatePaymentMethod', data);
@@ -190,29 +220,36 @@ export default {
         addCartItem({state, getters, commit}, product) {
             commit('mutateAddToCart', product);
             if (Vue.auth.check()) {
-                changeCartItem('/store/cart', {
-                        user_id: Vue.auth.user().id,
+                sendData('/store/cart', {
                         item_id: product.id,
                         qty: getters.itemQty(product)
-                    }
+                    },
                 );
             }
         },
         removeCartItem({state, getters, commit}, product) {
             commit('mutateRemoveFromCart', product);
             if (Vue.auth.check()) {
-                changeCartItem('/store/cart', {
-                        user_id: Vue.auth.user().id,
+                sendData('/store/cart', {
                         item_id: product.id,
                         qty: getters.itemQty(product)
+                    },
+                );
+            }
+        },
+        loadUserCart({state, commit}) {
+            if (Vue.auth.check()) {
+                loadData('/store/cart', {},
+                    (data) => {
+                    console.log(data);
+                        commit('mutateSetCartItems', data.cart_items);
                     }
                 );
             }
         },
         syncCartItem({state, commit, getters}, product) {
             if (Vue.auth.check()) {
-                changeCartItem('/store/cart', {
-                        user_id: Vue.auth.user().id,
+                sendData('/store/cart', {
                         item_id: product.id,
                         qty: getters.itemQty(product)
                     }

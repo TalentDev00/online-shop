@@ -28,6 +28,7 @@
         "nouislider": "^12.1.0",
         "owl.carousel": "^2.3.4",
         "snapjs": "^1.2.1",
+        "vee-validate": "^2.1.3",
         "vue-scrollto": "^2.13.0",
         "wnumb": "^1.1.0"
     }

@@ -3,25 +3,20 @@
         <div class="wrapper-16">
             <div class="items">
                 <ul class="list">
-                    <router-link tag="li" :to="'/menu/orders/' + '3414244'" class="list__item">
+                    <router-link v-for="(order, index) in orders" :key="index"
+                                 tag="li"
+                                 :to="{ name: 'order', params: { order_id: order.id } }"
+                                 class="list__item"
+                    >
                         <a href="" class="list__item__name">
                             <div class="order">
                                 <div class="order__details">
-                                    <p class="order__details__number">#3414244</p>
-                                    <p class="order__details__price">5 612 ₽ (25 октября 2018)</p>
+                                    <p class="order__details__number">#{{ order.id }}</p>
+                                    <p class="order__details__price"><span>{{ finalPrice(order) }} ₽ </span><span>({{ order.updated_at }})</span></p>
                                 </div>
-                                <div class="order__status order__status-inprocess">в обработке</div>
-                            </div>
-                        </a>
-                    </router-link>
-                    <router-link tag="li" :to="'/menu/orders/' + '3411988'" class="list__item">
-                        <a href="" class="list__item__name">
-                            <div class="order">
-                                <div class="order__details">
-                                    <p class="order__details__number">#3411988</p>
-                                    <p class="order__details__price">2 559 ₽ (10 августа 2018)</p>
-                                </div>
-                                <div class="order__status order__status-complete">выполнен</div>
+                                <div class="order__status "
+                                     :class="statusColor(order)"
+                                >{{ order.status }}</div>
                             </div>
                         </a>
                     </router-link>
@@ -30,3 +25,31 @@
         </div>
     </section>
 </template>
+<script>
+    import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
+
+    export default {
+        beforeRouteEnter(to, from, next) {
+            next(vm => {
+                vm.changeTitle('МОИ ЗАКАЗЫ');
+                vm.loadOrders();
+            });
+        },
+        computed: {
+            ...mapGetters('orders', {
+                orders: 'getOrders',
+                statusColor: 'orderStatusColor',
+                finalPrice: 'orderFinalPrice'
+            }),
+        },
+        methods: {
+           ...mapActions('header', {
+               changeTitle: 'setTitle'
+           }),
+           ...mapActions('orders', {
+                loadOrders: 'loadOrderItems'
+           })
+        }
+    }
+</script>

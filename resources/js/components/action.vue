@@ -18,6 +18,7 @@
 <script>
     import {mapActions} from 'vuex';
     import {mapGetters} from 'vuex';
+
     export default {
         beforeRouteEnter(to, from, next) {
             next(vm => vm.changeTitle('АКЦИЯ'));

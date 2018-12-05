@@ -44,7 +44,7 @@ class Item extends Model
 
     public function cart_item()
     {
-        return $this->belongsTo('App\Models\CartItem');
+        return $this->hasOne('App\Models\CartItem');
     }
 
     public function favorites()
