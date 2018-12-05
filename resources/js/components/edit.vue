@@ -52,6 +52,7 @@
 <script>
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
+
     export default {
         beforeRouteEnter(to, from, next) {
             next(vm => {

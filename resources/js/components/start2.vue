@@ -9,11 +9,11 @@
                     <div class="tabs">
                         <button class="sign-in"
                                 :class=" showLogin ? 'active' : '' "
-                                @click="showLogin = true"
+                                @click="switchTab()"
                         >Вход</button>
                         <button class="sign-up"
                                 :class=" !showLogin ? 'active' : '' "
-                                @click="showLogin = false"
+                                @click="switchTab()"
                         >Регистрация</button>
                     </div>
                     <div class="line">
@@ -31,11 +31,21 @@
                                       v-show="showLogin === true"
                                 >
                                     <input type="email" placeholder="e-mail" name="email"
+                                           :class="fieldHasError('email')"
+                                           data-vv-delay="500"
+                                           v-validate="'required|email'"
                                            v-model="email"
+                                           @input="clearBackErrors('email')"
                                     >
+                                    <span v-if="errors.has('email') || backErrors.email" class="validation-alert">{{ errors.first('email') ? errors.first('email') : backErrors.email[0] }}</span>
                                     <input type="password" placeholder="пароль" name="password"
+                                           :class="fieldHasError('password')"
+                                           data-vv-delay="500"
+                                           v-validate="'required|min:6'"
                                            v-model="password"
+                                           @input="clearBackErrors('password')"
                                     >
+                                    <span v-if="errors.has('password') || backErrors.password" class="validation-alert">{{ errors.first('password') ? errors.first('password') : backErrors.password[0] }}</span>
                                     <button class="submit"
                                             @click.prevent="login"
                                     >войти</button>
@@ -46,11 +56,21 @@
                                       v-show="showLogin === false"
                                 >
                                     <input type="email" placeholder="e-mail" name="email"
+                                           :class="fieldHasError('email')"
+                                           data-vv-delay="500"
+                                           v-validate="'required|email'"
                                            v-model="email"
+                                           @input="clearBackErrors('email')"
                                     >
+                                    <span v-if="errors.has('email') || backErrors.email" class="validation-alert">{{ errors.first('email') ? errors.first('email') : backErrors.email[0]  }}</span>
                                     <input type="password" placeholder="пароль" name="password"
+                                           :class="fieldHasError('password')"
+                                           data-vv-delay="500"
+                                           v-validate="'required|min:6'"
                                            v-model="password"
+                                           @input="clearBackErrors('password')"
                                     >
+                                    <span v-if="errors.has('password') || backErrors.password" class="validation-alert">{{ errors.first('password') ? errors.first('password') : backErrors.password[0] }}</span>
                                     <button class="submit"
                                             @click.prevent="register"
                                     >зарегистрироваться</button>
@@ -63,8 +83,6 @@
         </div>
     </section>
 </template>
-
-
 <script>
     import {mapGetters} from 'vuex';
     import {mapActions} from 'vuex';
@@ -88,8 +106,21 @@
                 password: '',
                 success: false,
                 error: false,
-                errors: {}
+                backErrors: {}
             }
+        },
+        computed: {
+            ...mapGetters('favorites', {
+                favoriteItems: 'allFavoriteItems',
+            }),
+            isFormDirty() {
+                return Object.keys(this.fields).some(key => this.fields[key].dirty);
+            },
+            fieldHasError() {
+                return (item) => this.errors.items.find(elem => elem.field === item) || Object.keys(this.backErrors).some(key => key === item)
+                    ? 'border-alert'
+                    : 'border-success';
+            },
         },
         methods: {
             ...mapActions('favorites', {
@@ -98,6 +129,15 @@
             ...mapActions('cart', {
                 loadCart: 'setCartItems'
             }),
+            clearBackErrors(fieldName) {
+                if (Object.keys(this.backErrors).some(key => key === fieldName)) {
+                    Object.keys(this.backErrors).forEach(item => {
+                        if (item === fieldName) {
+                            delete this.backErrors[item]
+                        }
+                    })
+                }
+            },
             login() {
                 this.$auth.login({
                     params: {
@@ -108,7 +148,10 @@
                         this.loadFavorites(this.$auth.user().favorites);
                         this.loadCart(this.$auth.user().cart.cart_items)
                     },
-                    error: () => {},
+                    error: (res) => {
+                        this.error = true;
+                        this.backErrors = res.response.data.errors;
+                    },
                     fetchUser: true,
                 });
             },
@@ -123,18 +166,20 @@
                     },
                     error: (resp) => {
                         this.error = true;
-                        this.errors = resp.response.data.errors;
+                        this.backErrors = resp.response.data.errors;
                     },
                     autoLogin: true,
                     rememberMe: true,
                     redirect: {path: '/start3'}
                 });
+            },
+            switchTab() {
+                this.showLogin = !this.showLogin;
+                this.email = '';
+                this.password = '';
+                this.$validator.reset();
+                this.$validator.errors.remove();
             }
-        },
-        computed: {
-            ...mapGetters('favorites', {
-                favoriteItems: 'allFavoriteItems',
-            }),
         }
     }
 </script>

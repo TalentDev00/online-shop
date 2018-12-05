@@ -22,6 +22,7 @@ Validator.localize('ru', {
         email: 'Почта',
         name: 'Имя',
         new_password: 'Пароль',
+        password: 'Пароль',
         address: 'Адрес доставки',
         phone: 'Телефон',
         confirm_password: 'Подтверждение пароля'

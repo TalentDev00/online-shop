@@ -3,7 +3,6 @@ import axios from 'axios';
 const post = (url, data, cb = null, errorCb = null) => {
     axios.post(url, data)
         .then(response => {
-            console.log(response.data);
             cb !== null ? cb(response.data) : {}
         })
         .catch(error => {
