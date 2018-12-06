@@ -12,7 +12,6 @@ import VueScrollTo from 'vue-scrollto';
 Vue.use(VueAxios, axios);
 Vue.use(VueRouter);
 Vue.use(VueScrollTo);
-
 import ru from 'vee-validate/dist/locale/ru';
 import VeeValidate, {Validator} from 'vee-validate';
 Vue.use(VeeValidate);
@@ -28,6 +27,7 @@ Validator.localize('ru', {
         confirm_password: 'Подтверждение пароля'
     }
 });
+
 
 
 Vue.router = router;
@@ -102,6 +102,11 @@ Vue.directive('delayed', {
         el.addEventListener(options.arg, callback);
     }
 });
+
+/*import InfiniteLoading from 'vue-infinite-loading';
+Vue.use(InfiniteLoading);*/
+
+
 
 const app = new Vue({
     el: '#app',

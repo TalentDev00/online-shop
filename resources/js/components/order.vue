@@ -13,7 +13,7 @@
                                 <a href=""><img :src="'/images/' + cartItem.item.images[0].large" alt=""></a>
                             </router-link>
                             <div class="cart-item__body__product__details">
-                                <p class="cart-item__body__product__details__name">Вафли с вареньем на завтрак</p>
+                                <p class="cart-item__body__product__details__name">{{ cartItem.item.name }}</p>
                                 <div class="cart-item__body__product__details__prices">
                                     <p v-show="cartItem.item.discount === 0" class="cart-item__body__product__details__prices__nodiscount">{{ cartItem.item.price }} <span>руб.</span></p>
                                     <p v-show="cartItem.item.discount !== 0" class="cart-item__body__product__details__prices__odlprice">{{ cartItem.item.price }}</p>
@@ -27,7 +27,7 @@
                         <ul class="cart-item__body__conditions">
                             <li class="cart-item__body__conditions__item"
                                 v-for="(variant, index) in cartItem.item.variants" :key="index"
-                            >{{ variant.name }}: <span> {{ variant.selected ? variant.selected : variant.values[0] }}</span></li>
+                            >{{ variant.name }}: <span> {{ variant.values[0] }}</span></li>
                         </ul>
                     </div>
                 </div>

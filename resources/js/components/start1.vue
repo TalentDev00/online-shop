@@ -15,31 +15,23 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import {mapActions} from 'vuex';
-
-    const getCatalog = (cb, errorCb) => {
-        axios
-            .get('/info')
-            .then(response => {
-                cb(response.data);
-            }).catch(error => {
-            errorCb(error.response.data);
-        });
-    };
+    import {get as getShopInformation} from '../api';
 
     export default {
         beforeRouteEnter (to, from, next) {
-            getCatalog(data => {
-                next(vm => {
-                    vm.loadItems(data.categories);
-                    vm.payments(data.payment_methods);
-                    vm.delivery(data.delivery_methods);
-                    vm.name(data.name);
-                    vm.logo(data.logo);
-                    vm.description(data.description);
-                    vm.loadPromotions(data.vouchers);
-                });
+            next(vm => {
+                getShopInformation('/info', {},
+                    (data) => {
+                        vm.loadItems(data.categories);
+                        vm.payments(data.payment_methods);
+                        vm.delivery(data.delivery_methods);
+                        vm.name(data.name);
+                        vm.logo(data.logo);
+                        vm.description(data.description);
+                        vm.loadPromotions(data.vouchers);
+                    }
+                );
             });
         },
         methods: {

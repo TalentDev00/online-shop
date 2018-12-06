@@ -37,6 +37,7 @@
                             <img v-if="!item.cat_id"
                                  class="list__item__catalog" src="../../images/icons/folder.svg" alt="">
                         </router-link>
+
                     </template>
                 </ul>
             </div>
@@ -87,7 +88,7 @@
             },
             updateInput(e) {
                 this.keywords = e;
-            }
+            },
         }
     }
 </script>

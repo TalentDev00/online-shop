@@ -22,7 +22,7 @@
         props: ['variant', 'value', 'product' ],
         data() {
             return {
-                selected: this.variant.selected ? this.variant.selected : this.variant.values[0]
+                selected: this.variant.selected ? this.variant.selected : this.value
             }
         },
         methods: {
@@ -41,6 +41,9 @@
         computed: {
             indexVal() {
                 return (index) => index === 0;
+            },
+            selectedValue() {
+                return this.variant.selected ? this.variant.selected : this.variant.values[0]
             }
         }
     }

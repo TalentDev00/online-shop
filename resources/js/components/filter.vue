@@ -5,7 +5,7 @@
                 <ul class="list">
                     <li v-for="(filter, index) in filters" :key="index"
                         class="list__item">
-                        <router-link tag="a" :to="{ name:'parameters', params: {cat_id: $route.params.cat_id, keywords: $route.params.keywords, filter_id: filter.id} }" replace>
+                        <router-link tag="a" :to="{ name:'parameters', params: {cat_id: $route.params.cat_id, keywords: $route.params.keywords, filter_name: filter.name} }" replace>
                             <div class="item-wrapper">
                                 <div class="name-wrapper">
                                     <span class="list__item__name">{{ filter.name }}</span>
@@ -49,7 +49,6 @@
 
     export default {
         beforeRouteEnter(to, from, next) {
-            console.log(from);
             next(vm => {
 
                 let url;
@@ -183,7 +182,6 @@
                             });
                         });
                     }
-
                     else {
                         if (item.price >= parseInt(this.minRange)
                             && item.price <= parseInt(this.maxRange)) {
@@ -192,7 +190,11 @@
                     }
                 });
 
-                return sorted;
+                return sorted.filter((item, i) => {
+                    return sorted.findIndex((elem) => {
+                        return elem.name === item.name && elem.value === item.value;
+                    }) === i;
+                });
             },
         },
         methods: {

@@ -1,5 +1,6 @@
 import {deleteMethod as deleteData, get as getData} from '../../api'
 import Vue from 'vue'
+
 export default {
     namespaced: true,
     state: {

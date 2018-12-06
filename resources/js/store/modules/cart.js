@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import axios from 'axios';
 import {post as sendData, get as loadData} from '../../api';
 
 export default {
@@ -20,7 +19,9 @@ export default {
             return state.items.length;
         },
         itemQty(state, getters) {
-            return (product) => getters.getProducts.find(item => item.item.id === product.id || item.item.item_id === product.id) ? getters.getProducts.find(item => item.item.id === product.id || item.item.item_id === product.id).qty : null;
+            return (product) => getters.getProducts.find(item => item.item.id === product.id || item.item.item_id === product.id)
+                ? getters.getProducts.find(item => item.item.id === product.id || item.item.item_id === product.id).qty
+                : null;
         },
         inCart(state, getters) {
             return (product) => getters.getProducts.find(item => item.item.id === product.id || item.item.item_id === product.id)
@@ -38,8 +39,6 @@ export default {
         cartFinalPrice(state, getters) {
             return getters.cartTotalPrice - getters.cartDiscountPrice;
         },
-
-        // Checkout
         getDeliveryMethod(state) {
             return state.deliveryMethod;
         },
@@ -52,7 +51,6 @@ export default {
         getComment(state) {
             return state.comment;
         }
-
     },
     mutations: {
         mutateAddToCart(state, product) {
@@ -100,6 +98,25 @@ export default {
                     else {
                         Vue.set(foundVariant, 'selected', obj.value)
                     }
+
+                    let first = obj.value;
+                    foundVariant.values.sort((x, y) => {
+                        return x === first ? -1 : y === first ? 1 : 0;
+                    });
+                }
+            }
+        },
+        mutatePutSelectedVariantToFirstPosition(state, obj) {
+            let found = state.items.find(item => item.item.id === obj.product.id);
+            if (found) {
+
+                let foundVariant = found.item.variants.find(item => item.name === obj.variant.name);
+
+                if (foundVariant) {
+                    let first = obj.value;
+                    foundVariant.values.sort((x, y) => {
+                        return x === first ? -1 : y === first ? 1 : 0;
+                    });
                 }
             }
         },
@@ -112,8 +129,6 @@ export default {
         mutateCheckoutStatus(state, status) {
             state.checkoutStatus = status;
         },
-
-        // Checkout
         mutatePaymentMethod(state, data) {
             state.paymentMethod = data;
         },
@@ -147,36 +162,12 @@ export default {
         setProductSelectedVariantInCart(store, obj) {
             store.commit('mutateProductVariant', obj);
         },
-
-        // Checkout
         checkout({commit, state}, cartItems) {
             const savedCartItems = [...state.items];
-            console.log(savedCartItems)
             commit('mutateCheckoutStatus', null);
             commit('mutateClearCartItems');
 
-         /*   sendData(
-                '/store/order',
-                {
-                    items: products,
-                    payment_method: state.paymentMethod,
-                    delivery_method: state.deliveryMethod,
-                    delivery_address: state.deliveryAddress,
-                    status: 'в обработке',
-                    comment: state.comment
-                },
-                (data) => {
-                    console.log(data.order);
-                    commit('mutateCheckoutStatus', 'successful');
-                    commit('orders/addOrder', data.order, {root: true});
-                },
-                (error) => {
-                    console.log(error);
-                    commit('mutateCheckoutStatus', 'failed');
-                    commit('mutateSetCartItems', savedCartItems)
-                }
-            )*/
-            axios.post(
+            sendData(
                 '/store/order',
                 {
                     items: cartItems,
@@ -185,22 +176,16 @@ export default {
                     delivery_address: state.deliveryAddress,
                     status: 'в обработке',
                     comment: state.comment
-                }).then(
+                },
                 (data) => {
-                    console.log(data);
                     commit('mutateCheckoutStatus', 'successful');
-                   // commit('orders/addOrder', data.order, {root: true});
-                    },
-                ).catch(
-                (error) => {
-                    console.log(error);
+                    Vue.router.replace({ name: 'order', params: { order_id: data.order.id } });
+                },
+                () => {
                     commit('mutateCheckoutStatus', 'failed');
                     commit('mutateSetCartItems', savedCartItems)
-                    }
-                );
-
-
-
+                }
+            )
         },
         setPaymentMethod(store, data) {
             store.commit('mutatePaymentMethod', data);
@@ -241,7 +226,6 @@ export default {
             if (Vue.auth.check()) {
                 loadData('/store/cart', {},
                     (data) => {
-                    console.log(data);
                         commit('mutateSetCartItems', data.cart_items);
                     }
                 );
@@ -255,6 +239,14 @@ export default {
                     }
                 );
             }
+        },
+        syncCart({commit, state}, cartItems) {
+            sendData(
+                '/store/cart/sync',
+                {
+                    syncItems: cartItems,
+                },
+            )
         }
     }
 }

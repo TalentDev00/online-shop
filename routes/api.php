@@ -34,6 +34,7 @@ Route::group(['middleware' => 'jwt.auth'], function() {
 
         //Cart
         Route::post('/store/cart', 'CartController@syncItem');
+        Route::post('/store/cart/sync', 'CartController@syncCart');
         Route::get('/store/cart', 'CartController@index');
 
         //User

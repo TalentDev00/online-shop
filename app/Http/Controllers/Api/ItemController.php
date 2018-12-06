@@ -125,7 +125,6 @@ class ItemController extends Controller
     public function favorite(Request $request)
     {
         if ($request->post('item_id') && $request->filled('item_id')) {
-            //$user = User::find($request->post('user_id'));
             $user = Auth::user();
             $favoriteItem = $user->favorites()->where('item_id', $request->post('item_id'))->first();
             if ($favoriteItem) {
@@ -141,7 +140,6 @@ class ItemController extends Controller
         }
 
         if ($request->post('items') && $request->filled('items')) {
-            //$user = User::find($request->post('user_id'));
             $user = Auth::user();
             $user->favorites()->sync(json_decode($request->post('items'), true));
         }
@@ -211,7 +209,6 @@ class ItemController extends Controller
                             $i++;
                         }
                     }
-
                 }
             )
             ->whereHas('favorites', function($query) use ($request) {

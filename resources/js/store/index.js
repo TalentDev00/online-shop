@@ -84,5 +84,4 @@ export default new Vuex.Store({
             store.commit('setShopDescription', description);
         }
     }
-
 });

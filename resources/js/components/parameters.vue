@@ -32,7 +32,7 @@
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 let checked = vm.$store.state.products.checked;
-                let filter = checked.find(item => item.filter === vm.currentFilter.name);
+                let filter = checked.find(item => item.filter === to.params.filter_name);
 
                 if (filter) {
                     filter.values.forEach(elem => {
@@ -40,13 +40,7 @@
                     });
                 }
 
-                let found = vm.currentFilter;
-                if (found) {
-                    vm.changeTitle(found.name);
-                }
-                else {
-                    vm.changeTitle('ПАРАМЕТРЫ');
-                }
+                vm.changeTitle(to.params.filter_name);
             });
         },
         data() {
@@ -69,7 +63,7 @@
                     }
                 });
 
-                return properties.find(item => item.id === parseInt(this.$route.params.filter_id));
+                return properties.find(item => item.name === this.$route.params.filter_name);
             },
             currentFilterValues() {
                 let values = [];

@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             ItemsVouchersTableSeeder::class,
             UsersVouchersTableSeeder::class,
             ShopInformationVouchersTableSeeder::class,
+            //ItemsTableSeeder::class,
         ]);
     }
 }

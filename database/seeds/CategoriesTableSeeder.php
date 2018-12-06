@@ -86,8 +86,15 @@ class CategoriesTableSeeder extends Seeder
         $allCats = App\Models\Category::all();
 
         $allCats->each(function($cat){
-            $cat->items()->saveMany(factory(App\Models\Item::class, 8))
-                ->create(['cat_id' => $cat->id]);
+            if ($cat->id === 1) {
+                $cat->items()->saveMany(factory(App\Models\Item::class, 200))
+                    ->create(['cat_id' => $cat->id]);
+            }
+            else {
+                $cat->items()->saveMany(factory(App\Models\Item::class, 8))
+                    ->create(['cat_id' => $cat->id]);
+            }
+
         });
 
 

@@ -24,60 +24,74 @@
                             <div v-show="showLogin === false" class="line__right line__right-active"></div>
                         </transition>
                     </div>
-
-                        <div class="form">
-                            <transition name="form-login">
-                                <form class="login" action="" method="post"
-                                      v-show="showLogin === true"
+                    <div class="form">
+                        <transition name="form-login">
+                            <form class="login" action="" method="post"
+                                  v-show="showLogin === true"
+                            >
+                                <input type="email" placeholder="e-mail" name="email"
+                                       :class="fieldHasError('email')"
+                                       data-vv-delay="500"
+                                       v-validate="'required|email'"
+                                       v-model="email"
+                                       @input="clearBackErrors('email')"
                                 >
-                                    <input type="email" placeholder="e-mail" name="email"
-                                           :class="fieldHasError('email')"
-                                           data-vv-delay="500"
-                                           v-validate="'required|email'"
-                                           v-model="email"
-                                           @input="clearBackErrors('email')"
-                                    >
-                                    <span v-if="errors.has('email') || backErrors.email" class="validation-alert">{{ errors.first('email') ? errors.first('email') : backErrors.email[0] }}</span>
-                                    <input type="password" placeholder="пароль" name="password"
-                                           :class="fieldHasError('password')"
-                                           data-vv-delay="500"
-                                           v-validate="'required|min:6'"
-                                           v-model="password"
-                                           @input="clearBackErrors('password')"
-                                    >
-                                    <span v-if="errors.has('password') || backErrors.password" class="validation-alert">{{ errors.first('password') ? errors.first('password') : backErrors.password[0] }}</span>
-                                    <button class="submit"
-                                            @click.prevent="login"
-                                    >войти</button>
-                                </form>
-                            </transition>
-                            <transition name="form-register">
-                                <form class="login register" action="" method="post"
-                                      v-show="showLogin === false"
+                                <span v-if="errors.has('email') || backErrors.email"
+                                      class="validation-alert"
                                 >
-                                    <input type="email" placeholder="e-mail" name="email"
-                                           :class="fieldHasError('email')"
-                                           data-vv-delay="500"
-                                           v-validate="'required|email'"
-                                           v-model="email"
-                                           @input="clearBackErrors('email')"
-                                    >
-                                    <span v-if="errors.has('email') || backErrors.email" class="validation-alert">{{ errors.first('email') ? errors.first('email') : backErrors.email[0]  }}</span>
-                                    <input type="password" placeholder="пароль" name="password"
-                                           :class="fieldHasError('password')"
-                                           data-vv-delay="500"
-                                           v-validate="'required|min:6'"
-                                           v-model="password"
-                                           @input="clearBackErrors('password')"
-                                    >
-                                    <span v-if="errors.has('password') || backErrors.password" class="validation-alert">{{ errors.first('password') ? errors.first('password') : backErrors.password[0] }}</span>
-                                    <button class="submit"
-                                            @click.prevent="register"
-                                    >зарегистрироваться</button>
-                                </form>
-                            </transition>
-                        </div>
-
+                                    {{ errors.first('email') ? errors.first('email') : backErrors.email[0] }}
+                                </span>
+                                <input type="password" placeholder="пароль" name="password"
+                                       :class="fieldHasError('password')"
+                                       data-vv-delay="500"
+                                       v-validate="'required|min:6'"
+                                       v-model="password"
+                                       @input="clearBackErrors('password')"
+                                >
+                                <span v-if="errors.has('password') || backErrors.password"
+                                      class="validation-alert"
+                                >
+                                    {{ errors.first('password') ? errors.first('password') : backErrors.password[0] }}
+                                </span>
+                                <button class="submit"
+                                        @click.prevent="login"
+                                >войти</button>
+                            </form>
+                        </transition>
+                        <transition name="form-register">
+                            <form class="login register" action="" method="post"
+                                  v-show="showLogin === false"
+                            >
+                                <input type="email" placeholder="e-mail" name="email"
+                                       :class="fieldHasError('email')"
+                                       data-vv-delay="500"
+                                       v-validate="'required|email'"
+                                       v-model="email"
+                                       @input="clearBackErrors('email')"
+                                >
+                                <span v-if="errors.has('email') || backErrors.email"
+                                      class="validation-alert"
+                                >
+                                    {{ errors.first('email') ? errors.first('email') : backErrors.email[0]  }}
+                                </span>
+                                <input type="password" placeholder="пароль" name="password"
+                                       :class="fieldHasError('password')"
+                                       data-vv-delay="500"
+                                       v-validate="'required|min:6'"
+                                       v-model="password"
+                                       @input="clearBackErrors('password')"
+                                >
+                                <span v-if="errors.has('password') || backErrors.password"
+                                      class="validation-alert"
+                                >
+                                    {{ errors.first('password') ? errors.first('password') : backErrors.password[0] }}
+                                </span>
+                                <button class="submit"
+                                        @click.prevent="register"
+                                >зарегистрироваться</button>
+                            </form>
+                        </transition>
+                    </div>
                 </div>
             </div>
         </div>
@@ -113,6 +127,9 @@
             ...mapGetters('favorites', {
                 favoriteItems: 'allFavoriteItems',
             }),
+            ...mapGetters('cart', {
+                productsInCart: 'getProducts',
+            }),
             isFormDirty() {
                 return Object.keys(this.fields).some(key => this.fields[key].dirty);
             },
@@ -127,7 +144,9 @@
                 loadFavorites: 'setItems'
             }),
             ...mapActions('cart', {
-                loadCart: 'setCartItems'
+                loadCart: 'setCartItems',
+
+                syncUserCart: 'syncCart'
             }),
             clearBackErrors(fieldName) {
                 if (Object.keys(this.backErrors).some(key => key === fieldName)) {
@@ -139,34 +158,39 @@
                 }
             },
             login() {
+                let that = this;
                 this.$auth.login({
                     params: {
                         email: this.email,
                         password: this.password
                     },
                     success: () => {
-                        this.loadFavorites(this.$auth.user().favorites);
-                        this.loadCart(this.$auth.user().cart.cart_items)
+                        that.loadFavorites(that.$auth.user().favorites);
+                        that.loadCart(that.$auth.user().cart.cart_items)
                     },
                     error: (res) => {
-                        this.error = true;
-                        this.backErrors = res.response.data.errors;
+                        that.error = true;
+                        that.backErrors = res.response.data.errors;
                     },
                     fetchUser: true,
                 });
             },
             register() {
+                let that = this;
                 this.$auth.register({
                     data: {
                         email: this.email,
                         password: this.password
                     },
                     success: () => {
-                        this.success = true;
+                        that.success = true;
+                        if (that.productsInCart.length > 0) {
+                            that.syncUserCart(that.productsInCart);
+                        }
                     },
                     error: (resp) => {
-                        this.error = true;
-                        this.backErrors = resp.response.data.errors;
+                        that.error = true;
+                        that.backErrors = resp.response.data.errors;
                     },
                     autoLogin: true,
                     rememberMe: true,
@@ -179,14 +203,13 @@
                 this.password = '';
                 this.$validator.reset();
                 this.$validator.errors.remove();
+                Object.keys(this.backErrors).forEach(item => delete this.backErrors[item])
             }
         }
     }
 </script>
-
 <style scoped lang="scss">
-
-// tabs animation
+    // tabs animation
     .tab-register-enter{
         transform: translateX(-100%);
         transition: all 0.4s;
@@ -212,9 +235,7 @@
         opacity: 0;
         transform: translateX(100%);
     }
-
-
-// form animation
+    // form animation
     .form-register-enter{
         transform: translateX(-100%);
         transition: all 0.4s;
@@ -240,7 +261,4 @@
         opacity: 0;
         transform: translateX(100%);
     }
-
-
-
 </style>

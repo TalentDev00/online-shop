@@ -38,9 +38,7 @@ export default {
         },
 
         /*
-        *
         * FILTER GETTERS
-        *
         * */
         getChecked(state) {
             return state.checked;
@@ -69,7 +67,6 @@ export default {
                 found.filter = data.filter;
                 found.values = data.values;
             }
-
             else {
                 state.checked.push({
                     filter: data.filter,
@@ -93,8 +90,11 @@ export default {
             state.boughtWithItems = data;
         },
         mutateProductSelectedVariant(state, obj) {
-              let found = state.items.find(item => item.id === obj.product.id);
-              if (found) {
+              let found = state.items.find(item => item.id === obj.product.id)
+                  || state.freshItems.find(item => item.id === obj.product.id)
+                  || state.popularItems.find(item => item.id === obj.product.id);
+            if (found) {
+                  console.log(1);
 
                   let foundVariant = found.variants.find(item => item.name === obj.variant.name);
 
@@ -112,9 +112,7 @@ export default {
             state.sort = value;
         },
         /*
-        *
         * FILTER MUTATIONS
-        *
         * */
         mutateClearCheckedParams(state, filter) {
             let found = state.checked.find(item => item.filter === filter.name);
@@ -136,12 +134,6 @@ export default {
         mutateStartMax(state, value) {
             state.slider.startMax = value;
         },
-
-        /*
-        *
-        * FAVORITE
-        *
-        * */
     },
     actions: {
         setProductSelectedVariantInProducts(store, obj) {
@@ -157,9 +149,7 @@ export default {
             store.commit('mutateSort', value);
         },
         /*
-        *
         * FILTER ACTIONS
-        *
         * */
         clearCheckedParams(store, filter) {
             store.commit('mutateClearCheckedParams', filter);
@@ -179,7 +169,6 @@ export default {
         changeStartMin(store, value) {
             store.commit('mutateStartMin', value);
         },
-
         setProductItems({commit, state}, param) {
             let options = {
                 sort: state.sort,

@@ -38,12 +38,10 @@ class AuthController extends Controller
         if ( ! $token = JWTAuth::attempt($credentials)) {
             return response([
                 'status' => 'error',
-                //'error' => 'invalid.credentials',
                 'errors' => [
                     'email' => ['Неверные учетные данные'],
                     'password' => ['Неверные учетные данные']
                 ],
-                //'msg' => 'Неверные учетные данные'
             ], 400);
         }
         return response([

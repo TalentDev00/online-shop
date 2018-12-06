@@ -74,7 +74,6 @@
                 </div>
                 <button class="btn btn__fixed"
                         @click="toCheckout"
-
                 >оформить заказ</button>
             </div>
         </section>
@@ -168,7 +167,8 @@
                 this.$router.push({name: 'catalog'});
             },
             toCheckout() {
-                this.$router.push({name: 'checkout'});
+                this.$auth.check() ? this.$router.push({name: 'checkout'}) : this.$router.push({ name: 'start2' });
+                console.log(this)
             },
             installSwipers() {
                 let products = document.querySelectorAll('.swipable');

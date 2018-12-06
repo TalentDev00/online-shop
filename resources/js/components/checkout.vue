@@ -72,7 +72,7 @@
             </div>
         </div>
         <button class="btn btn__fixed"
-                @click="checkout(productsInCart)"
+                @click="$auth.check ? placeOrderAndCheckout(productsInCart) : $router.push({ name: 'start2' })"
         >заказать</button>
     </section>
 </template>
@@ -146,10 +146,6 @@
                 this.comment = value;
                 this.changeComment(value);
             },
-            checkout(cartItems) {
-                this.placeOrderAndCheckout(cartItems);
-                this.$router.push({ name: 'catalog' });
-            }
         }
     }
 </script>

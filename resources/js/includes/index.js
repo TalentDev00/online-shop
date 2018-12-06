@@ -1,7 +1,7 @@
-import axios from 'axios';
 export {
     scrollToTop,
-    wordEnds
+    wordEnds,
+    debounce
 }
 
 const scrollToTop = (scrollDuration) => {
@@ -14,28 +14,7 @@ const scrollToTop = (scrollDuration) => {
         }, 15);
 };
 
-const getProducts = (cat_id, sort, min, max, filters, callback) => {
-    let params = { cat_id, sort, min, max, filters };
-    axios.get('/store/catalog', { params })
-        .then(response => {
-            callback(response.data);
-        }).catch(error => {
-        callback(error.response.data);
-    });
-};
-
-const getResults = (keywords, sort, min, max, filters, callback) => {
-    let params = { keywords, sort, min, max, filters };
-    axios.get('/store/catalog', { params })
-        .then(response => {
-            callback(response.data);
-        }).catch(error => {
-        callback(error.response.data);
-    });
-};
-
-function wordEnds(number, variant1, variant2, variant3){
-
+const wordEnds = (number, variant1, variant2, variant3) => {
     let h1 = number % 10;
     let h2 = number % 100;
     let result;
@@ -57,4 +36,19 @@ function wordEnds(number, variant1, variant2, variant3){
     }
 
     return result;
-}
+};
+
+const debounce = (fn, delay = 300) => {
+    let timeoutID = null;
+
+    return function () {
+        clearTimeout(timeoutID);
+
+        let args = arguments;
+        let that = this;
+
+        timeoutID = setTimeout(function () {
+            fn.apply(that, args);
+        }, delay);
+    }
+};

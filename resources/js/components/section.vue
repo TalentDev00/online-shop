@@ -103,7 +103,7 @@
     export default {
         components: {
             myModal,
-            mySearch
+            mySearch,
         },
         beforeRouteEnter(to, from, next) {
             next(vm => {
@@ -216,6 +216,6 @@
                     this.keywords = null;
                 }
             },
-        }
+        },
     }
 </script>

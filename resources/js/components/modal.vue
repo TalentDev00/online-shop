@@ -3,10 +3,10 @@
         <div class=popup__content>
             <h2 class=name>{{ product.name }}</h2>
             <form action="">
-                <my-select v-for="(variant, index) in product.variants " :key="index"
+                <my-select v-for="(variant, index) in product.variants " :key="variant.name + index"
                            :variant="variant"
                            :product="product"
-                           :value="variant.name"
+                           :value="variant.values[0]"
                            @onchange="updateValue($event)"
                 ></my-select>
                 <div v-if="routeCart"

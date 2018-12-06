@@ -66,6 +66,11 @@ const routes = [
         component: myHome,
     },
     {
+        name: 'favorite',
+        path: '/store/favorite',
+        component: myFavorite,
+    },
+    {
         name: 'chat',
         path: '/chat',
         component: myChat,
@@ -128,11 +133,6 @@ const routes = [
         name: 'checkout',
         path: '/store/cart/checkout',
         component: myCheckout,
-    },
-    {
-        name: 'favorite',
-        path: '/store/favorite',
-        component: myFavorite,
     },
     /*
     *  Routes for Menu

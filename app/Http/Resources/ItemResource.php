@@ -24,7 +24,9 @@ class ItemResource extends JsonResource
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'properties' => ItemPropertyResource::collection($this->whenLoaded('item_properties')),
             'variants' => ItemVariantResource::collection($this->whenLoaded('item_variants')),
-            'category' => new CategoryResource($this->whenLoaded('category'))
+            'category' => new CategoryResource($this->whenLoaded('category')),
         ];
     }
+
+
 }

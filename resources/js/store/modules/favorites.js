@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import {post as syncItems, gets as loadFavoriteItems,} from '../../api/index';
 
 export default {
