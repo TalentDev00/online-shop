@@ -18,18 +18,12 @@ class OrderController extends Controller
     {
         $paymentMethod = PaymentMethod::where('name', $request->input('payment_method'))->first();
         $deliveryMethod = DeliveryMethod::where('name', $request->input('delivery_method'))->first();
-       /* $cartItemIds = [];
-        foreach ($request->input('items') as $cartItem) {
-            $cartItem = CartItem::create([
-                'item_id' => $cartItem['item']['id'],
-                'qty' => $cartItem['qty']
-            ]);
-            $cartItemIds[] = $cartItem->id;
-        }*/
+
         $cartItemIds = [];
         foreach ($request->input('items') as $cartItem) {
             $cartItemIds[] = $cartItem['id'];
         }
+
         $order = new Order;
         $order->status = $request->input('status');
         $order->delivery_address = $request->input('delivery_address');
@@ -91,7 +85,6 @@ class OrderController extends Controller
             return OrderResource::collection(
                 Order::where('user_id', Auth::user()->id)
                     ->with('cart_items.item')
-                    //->with(['cart_items.item.item_properties', 'cart_items.item.item_variants', 'cart_items.item.images'])
                     ->get()
             );
         }

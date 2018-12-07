@@ -4,8 +4,7 @@
             <h2 class="head" slot="title">{{ headerTitle }}</h2>
         </my-header>
         <div class="transition-wrapper" v-if="$auth.ready()">
-            <transition :name="animationName" mode="out-in"
-                        v-on:leave="leave"
+            <transition :name="transitionName" mode="out-in"
             >
                 <router-view :key="$route.fullPath"></router-view>
             </transition>
@@ -48,10 +47,84 @@
         created() {
             this.$auth.ready(() => {
                 if (this.$auth.check()) {
-                    this.loadFavorites(this.$auth.user().favorites)
-                    this.loadCart(this.$auth.user().cart.cart_items)
+                    this.loadFavorites(this.$auth.user().favorites);
+                    this.loadCart(this.$auth.user().cart.cart_items);
                 }
             });
+        },
+        data() {
+            return {
+                transitionName: 'swipe-left'
+            }
+        },
+        watch: {
+            '$route' (to, from) {
+                const toDepth = to.path.split('/').length;
+                const fromDepth = from.path.split('/').length;
+
+                if (
+                        to.name === 'home'
+                        || to.name === 'cart'
+                        || to.name === 'favorite'
+                        || (to.name === 'catalog' && from.name !== 'start3' )
+                        || (to.name === 'filter' && from.name !== 'parameters')
+                        || to.name === 'sort'
+                    )
+                {
+                    this.transitionName = 'fade'
+                }
+                else if (to.name === 'menu' &&
+                    (
+                        from.name === 'contacts'
+                        || from.name === 'delivery'
+                        || from.name === 'about'
+                        || from.name === 'orders'
+                        || from.name === 'settings'
+                        || from.name === 'chat'
+                    ))
+                {
+                    this.transitionName = 'swipe-right'
+                }
+                else if (to.name === 'menu' &&
+                    (
+                        from.name !== 'contacts'
+                        || from.name !== 'delivery'
+                        || from.name !== 'about'
+                        || from.name !== 'orders'
+                        || from.name !== 'settings'
+                        || from.name !== 'chat'
+                    ))
+                {
+                    this.transitionName = 'fade'
+                }
+                else if (to.name === 'parameters' && from.name === 'filter') {
+                    this.transitionName = 'swipe-left'
+                }
+                else if (from.name === 'parameters' && to.name === 'filter') {
+                    this.transitionName = 'swipe-right'
+                }
+                else if (from.name === 'filter' || from.name === 'sort') {
+                    this.transitionName = 'fade'
+                }
+                else if (to.name === 'chat') {
+                    this.transitionName = 'swipe-left'
+                }
+                else if (from.name === 'chat') {
+                    this.transitionName = 'swipe-right'
+                }
+                else if (from.name === 'subcatalog' && to.name === 'section') {
+                    this.transitionName = 'fade'
+                }
+                else if (from.name === 'cart' && to.name === 'action') {
+                    this.transitionName = 'fade'
+                }
+                else if (toDepth < fromDepth) {
+                    this.transitionName = 'swipe-right'
+                }
+                else {
+                    this.transitionName = 'swipe-left'
+                }
+            }
         },
         methods: {
             ...mapActions('favorites', {
@@ -59,13 +132,6 @@
             }),
             ...mapActions('cart', {
                 loadCart: 'setCartItems'
-            }),
-            leave: function (el, done) {
-                this.changeAnimationName = 'swipe-left';
-                done();
-            },
-            ...mapActions('header', {
-                changeAnimationName: 'setAnimationName'
             }),
             onNext(){
                 if (this.currentScreenStart1) {
@@ -134,9 +200,6 @@
         },
     }
 </script>
-<style>
-    .transition-wrapper {
-        overflow-x: hidden;
-        overflow-y: scroll;
-    }
+<style lang="scss" scoped>
+
 </style>

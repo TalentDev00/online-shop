@@ -15,6 +15,12 @@ export default {
         }
     },
     mutations: {
+        mutateClearKeyWords(state) {
+            state.searchKeywords = null;
+        },
+        mutateClearResults(state) {
+            state.results = [];
+        },
         mutateSetResults(state, data) {
             state.results = data;
         },
@@ -32,6 +38,10 @@ export default {
         },
         syncKeywords(store, keywords) {
             store.commit('mutateSearchKeywords', keywords);
+        },
+        clearSearchStore({commit, state}) {
+            commit('mutateClearKeyWords');
+            commit('mutateClearResults');
         }
     }
 }

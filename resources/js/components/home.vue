@@ -138,6 +138,7 @@
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 vm.installOwlCarousel();
+                vm.resetSearch();
                 vm.loadPopular( { popular: 4 } );
                 vm.loadFresh( { fresh: 4 } );
             });
@@ -190,6 +191,9 @@
                 likeUnLike: 'addOrRemoveFavorite',
                 loadFavorites: 'getFavoriteItems',
 
+            }),
+            ...mapActions('search', {
+                resetSearch: 'clearSearchStore'
             }),
             installOwlCarousel() {
                 $('section.banner>.owl-carousel').owlCarousel({

@@ -1,75 +1,92 @@
-.popup {
+.modal-mask {
     position: fixed;
-    width: calc(100% - 64px);
-    background: $white;
-    border-radius: 10px;
     z-index: 10001;
-    box-sizing: border-box;
-    top:60%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,.2);
-    @include xs-block() {
-        top:66.8%;
-    }
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    display: table;
+    transition: opacity .3s ease;
 
-    &__content {
-        height:100%;
-        display: flex;
-        flex-direction: column;
-        padding-left: 16px;
-        padding-right: 16px;
+    .modal-wrapper {
+        display: table-cell;
+        vertical-align: bottom;
+        padding-bottom: 120px;
 
-        .name {
-            margin: 18px 0 8px 0;
-            font-family: Montserrat, sans-serif;
-            font-size: 16px;
-            font-weight: bold;
-            line-height: 20px;
-            text-align: center;
-            padding-right: 5px;
-        }
+        .modal-container {
+            width: calc(100% - 64px);
+            margin: 0px auto;
+            background: $white;
+            border-radius: 10px;
+            box-sizing: border-box;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,.2);
+            transition: all .3s ease;
+            font-family: Helvetica, Arial, sans-serif;
 
-        form {
-            label {
-                opacity: 0.3;
-                font-family: Montserrat, sans-serif;
-                font-size: 14px;
-                font-weight: 500;
-                font-style: normal;
-                font-stretch: normal;
-                line-height: 20px;
-                letter-spacing: normal;
-                color: $black;
-                display: block;
-                margin-bottom: 3px;
-            }
+            .modal-body {
+                height:100%;
+                display: flex;
+                flex-direction: column;
+                padding-left: 16px;
+                padding-right: 16px;
 
-            .select {
-                margin-bottom: 13px;
-            }
-
-            button {
-                margin-top: 3px;
-                margin-bottom: 16px;
-            }
-
-            .buttons {
-                display:flex;
-                align-items: center;
-                justify-content: space-between;
-
-                .btn {
-                    max-width:166px;
+                .name {
+                    margin: 18px 0 8px 0;
+                    font-family: Montserrat, sans-serif;
+                    font-size: 16px;
+                    font-weight: bold;
+                    line-height: 20px;
+                    text-align: center;
+                    padding-right: 5px;
                 }
 
-                .product__actions__counter {
-                    max-width: 96px;
-                    margin-left: 0px;
-                    margin-top: 3px;
-                    margin-bottom: 21px;
+                form {
+                    label {
+                        opacity: 0.3;
+                        font-family: Montserrat, sans-serif;
+                        font-size: 14px;
+                        font-weight: 500;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: 20px;
+                        letter-spacing: normal;
+                        color: $black;
+                        display: block;
+                        margin-bottom: 3px;
+                    }
+
+                    .select {
+                        margin-bottom: 13px;
+                    }
+
+                    button {
+                        margin-top: 3px;
+                        margin-bottom: 16px;
+                    }
+
+                    .buttons {
+                        display:flex;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        .btn {
+                            max-width:166px;
+                        }
+
+                        .product__actions__counter {
+                            max-width: 96px;
+                            margin-left: 0px;
+                            margin-top: 3px;
+                            margin-bottom: 21px;
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+
+
+

@@ -27,7 +27,7 @@
         watch: {
             value(after, before) {
                 this.results(this.value);
-                if (this.$route.params.keywords && this.value === '') {
+                if (this.$route.params.keywords && this.value === '')  {
                     this.$emit('onclear');
                 }
             }

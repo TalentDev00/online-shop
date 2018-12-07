@@ -51,20 +51,16 @@
         },
         data(){
             return {
-                keywords: this.$route.params.keywords ? this.$route.params.keywords : null,
+                //keywords: (this.$route.params.keywords && this.$route.name !== 'home') ? this.$route.params.keywords : null,
+                keywords: null
             }
         },
         methods: {
-            ...mapActions('header', {
-                changeAnimationName: 'setAnimationName',
-            }),
             ...mapActions('search', {
                 setKeywords: 'syncKeywords'
             }),
             back() {
-                this.changeAnimationName('swipe-right');
                 this.$route.name === 'parameters' ? this.$router.replace({name: 'filter', params: {cat_id: this.$route.params.cat_id, keywords: this.$route.params.keywords} }) : this.$router.go(-1);
-                //this.changeAnimationName('swipe-left');
             },
             toChat() {
               this.$router.push({name: 'chat'});
@@ -90,9 +86,11 @@
         },
         computed: {
             ...mapGetters('products', {
-                allProducts: 'getItems',
                 filtersActiveCount: 'getCheckedCount'
             }),
+            routeHasKeywords() {
+                return this.$route.params.keywords;
+            },
             currentScreenChat(){
                 return this.$route.name === 'chat';
             },
@@ -104,12 +102,6 @@
                     || this.$route.name === 'section'
                     || this.$route.name === 'result'
             },
-            getProduct() {
-                return this.allProducts.find(item => item.product_id === parseInt(this.$route.params.id));
-            },
-            getFilter() {
-                return this.allFilters.find(item => item.id === parseInt(this.$route.params.id));
-            }
         }
     }
 </script>

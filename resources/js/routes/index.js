@@ -57,12 +57,12 @@ const routes = [
     },
     {
         name: 'action',
-        path: '/discounts',
+        path: '/store/catalog/discounts',
         component: myAction,
     },
     {
         name: 'home',
-        path: '/home',
+        path: '/store/home',
         component: myHome,
     },
     {
@@ -72,7 +72,7 @@ const routes = [
     },
     {
         name: 'chat',
-        path: '/chat',
+        path: '/store/chat',
         component: myChat,
     },
     /*
@@ -80,12 +80,12 @@ const routes = [
     * */
     {
         name: 'product',
-        path: '/store/catalog/items/:item_id?',
+        path: '/store/catalog/:cat_id?/section/:keywords?/items/:item_id?',
         component: myItem,
     },
     {
         name: 'gallery',
-        path: '/store/catalog/items/:item_id?/gallery',
+        path: '/store/catalog/:cat_id?/section/:keywords?/items/:item_id?/gallery',
         component: myGallery,
     },
     /*
@@ -139,47 +139,50 @@ const routes = [
     * */
     {
         name: 'menu',
-        path: '/menu',
+        path: '/store/menu',
         component: myMenu,
     },
     {
         name: 'orders',
-        path: '/store/order',
+        path: '/store/menu/order',
         component: myOrders,
     },
     {
         name: 'order',
-        path: '/store/order/:order_id?',
+        path: '/store/menu/order/:order_id?',
         component: myOrder,
     },
     {
         name: 'settings',
-        path: '/menu/settings',
+        path: '/store/menu/settings',
         component: mySettings,
     },
     {
         name: 'edit',
-        path: '/menu/settings/edit',
+        path: '/store/menu/settings/edit',
         component: myEdit,
     },
     {
         name: 'about',
-        path: '/menu/about',
+        path: '/store/menu/about',
         component: myAbout,
     },
     {
         name: 'delivery',
-        path: '/menu/delivery',
+        path: '/store/menu/delivery',
         component: myDelivery,
     },
     {
         name: 'contacts',
-        path: '/menu/contacts',
+        path: '/store/menu/contacts',
         component: myContacts,
     },
 ];
 
 export default new VueRouter({
     routes,
+    scrollBehavior (to, from, savedPosition) {
+        return { x: 0, y: 0 }
+    },
     mode: 'history'
 });

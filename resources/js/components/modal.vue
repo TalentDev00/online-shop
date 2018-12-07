@@ -1,37 +1,43 @@
 <template>
-    <div class=popup>
-        <div class=popup__content>
-            <h2 class=name>{{ product.name }}</h2>
-            <form action="">
-                <my-select v-for="(variant, index) in product.variants " :key="variant.name + index"
-                           :variant="variant"
-                           :product="product"
-                           :value="variant.values[0]"
-                           @onchange="updateValue($event)"
-                ></my-select>
-                <div v-if="routeCart"
-                     class="buttons">
-                    <div class="product__actions__counter">
-                        <button class="product__actions__counter__remove"
-                                @click.prevent="removeFromCartAndClose(product)"
-                        ><span>-</span></button>
-                        <div class="product__actions__counter__count">{{ productQty(product) }}</div>
-                        <button class="product__actions__counter__add"
-                                @click.prevent="addWithoutSync(product)"
-                        ><span>+</span></button>
-                    </div>
-                    <button class="btn"
-                            @click.prevent="closeWithSync(product)"
-                    >сохранить</button>
-                </div>
+    <transition name="modal">
+        <div class="modal-mask" @click="close()">
+            <div class="modal-wrapper" >
+                <div class="modal-container" @click.stop>
+                    <div class=modal-body>
+                        <h2 class=name>{{ product.name }}</h2>
+                        <form action="">
+                            <my-select v-for="(variant, index) in product.variants " :key="variant.name + index"
+                                       :variant="variant"
+                                       :product="product"
+                                       :value="variant.values[0]"
+                                       @onchange="updateValue($event)"
+                            ></my-select>
+                            <div v-if="routeCart"
+                                 class="buttons">
+                                <div class="product__actions__counter">
+                                    <button class="product__actions__counter__remove"
+                                            @click.prevent="removeFromCartAndClose(product)"
+                                    ><span>-</span></button>
+                                    <div class="product__actions__counter__count">{{ productQty(product) }}</div>
+                                    <button class="product__actions__counter__add"
+                                            @click.prevent="addWithoutSync(product)"
+                                    ><span>+</span></button>
+                                </div>
+                                <button class="btn"
+                                        @click.prevent="closeWithSync(product)"
+                                >сохранить</button>
+                            </div>
 
-                <button v-else
-                        class="btn"
-                        @click.prevent="addToCartAndClose(product)"
-                >добавить в корзину</button>
-            </form>
+                            <button v-else
+                                    class="btn"
+                                    @click.prevent="addToCartAndClose(product)"
+                            >добавить в корзину</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </transition>
 </template>
 <script>
     import {mapGetters} from 'vuex';
@@ -110,3 +116,18 @@
         }
     }
 </script>
+<style lang="scss">
+    .modal-enter {
+        opacity: 0;
+    }
+
+    .modal-leave-active {
+        opacity: 0;
+    }
+
+    .modal-enter .modal-container,
+    .modal-leave-active .modal-container {
+        -webkit-transform: scale(1.1);
+        transform: scale(1.1);
+    }
+</style>

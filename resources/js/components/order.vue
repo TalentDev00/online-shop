@@ -63,6 +63,7 @@
                     params,
                     (data) => vm.setData(data)
                 );
+
                 vm.changeTitle('ЗАКАЗ #' + to.params.order_id);
             });
         },

@@ -55,13 +55,18 @@ body {
     position: relative;
 }
 
-
+.swipe-left-enter {
+    opacity: 0;
+}
 .swipe-left-enter-active {
     animation: swipe-left-In 0.4s;
+    transition: opacity .4s ease;
 }
 
 .swipe-left-leave-active {
     animation: swipe-left-Out 0.4s;
+    opacity: 0;
+    transition: opacity .4s ease;
 }
 
 @keyframes swipe-left-In {
@@ -74,12 +79,18 @@ body {
     to{transform: translateX(-100%);}
 }
 
+.swipe-right-enter {
+    opacity: 0;
+}
 .swipe-right-enter-active {
     animation: swipe-right-In 0.4s;
+    transition: opacity .4s ease;
 }
 
 .swipe-right-leave-active {
     animation: swipe-right-Out 0.4s;
+    opacity: 0;
+    transition: opacity .4s ease;
 }
 
 @keyframes swipe-right-In {
@@ -91,6 +102,34 @@ body {
     from{transform: translateX(0px);}
     to{transform: translateX(100%);}
 }
+
+// animation
+.transition-wrapper {
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .2s ease;
+}
+.fade-enter, .fade-leave-active {
+    opacity: 0;
+}
+.child-view {
+    position: absolute;
+    transition: all .5s cubic-bezier(.55,0,.1,1);
+}
+.slide-left-enter, .slide-right-leave-active {
+    opacity: 0;
+    -webkit-transform: translate(30px, 0);
+    transform: translate(30px, 0);
+}
+.slide-left-leave-active, .slide-right-enter {
+    opacity: 0;
+    -webkit-transform: translate(-30px, 0);
+    transform: translate(-30px, 0);
+}
+
+
 
 .result-search {
     padding: 64px 0 39px 0;

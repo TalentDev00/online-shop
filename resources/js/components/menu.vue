@@ -35,7 +35,9 @@
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 vm.changeTitle('ЛИЧНЫЙ КАБИНЕТ');
-                vm.loadOrders();
+                if (vm.$auth.check()) {
+                    vm.loadOrders();
+                }
             });
         },
         computed: {
