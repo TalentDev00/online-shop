@@ -9,7 +9,10 @@ export default {
         deliveryMethod: 'Курьером - 300 рублей',
         deliveryAddress: '',
         comment: '',
-        checkoutStatus: null
+        checkoutStatus: null,
+        promoDiscountFixed: null,
+        promoDiscountPercent: null,
+        promoApplied: false
     },
     getters: {
         getProducts(state) {
@@ -32,9 +35,17 @@ export default {
             }, 0);
         },
         cartDiscountPrice(state, getters) {
-            return getters.getProducts.reduce((total, cartItem) => {
-                 return total + cartItem.item.discount * cartItem.qty
-            }, 0);
+            if (state.promoDiscountPercent !== null) {
+                return getters.getProducts.reduce((total, cartItem) => {
+                    return total + cartItem.item.discount * cartItem.qty
+                }, 0) + (getters.cartTotalPrice * state.promoDiscountPercent);
+            }
+            else {
+                return getters.getProducts.reduce((total, cartItem) => {
+                    return total + cartItem.item.discount * cartItem.qty
+                }, 0) + state.promoDiscountFixed;
+            }
+
         },
         cartFinalPrice(state, getters) {
             return getters.cartTotalPrice - getters.cartDiscountPrice;
@@ -50,6 +61,15 @@ export default {
         },
         getComment(state) {
             return state.comment;
+        },
+        getPromoApplyStatus(state) {
+            return state.promoApplied;
+        },
+        getPromoFixed(state) {
+            return state.promoDiscountFixed;
+        },
+        getPromoPercent(state) {
+            return state.promoDiscountPercent;
         }
     },
     mutations: {
@@ -120,6 +140,19 @@ export default {
                 }
             }
         },
+        mutateSetDiscountFixed(state, discount) {
+            state.promoDiscountFixed = discount;
+        },
+        mutateSetDiscountPercent(state, discount) {
+            state.promoDiscountPercent = discount;
+        },
+        mutateSetPromoApplyStatus(state, status) {
+            state.promoApplied = status
+        },
+        mutateClearDiscounts(state) {
+            state.promoDiscountFixed = null;
+            state.promoDiscountPercent = null;
+        },
         mutateClearCartItems(state) {
             state.items = [];
         },
@@ -162,30 +195,51 @@ export default {
         setProductSelectedVariantInCart(store, obj) {
             store.commit('mutateProductVariant', obj);
         },
-        checkout({commit, state}, cartItems) {
+        checkout({commit, state, getters}, cartItems) {
+            let data = {
+                items: cartItems,
+                payment_method: state.paymentMethod,
+                delivery_method: state.deliveryMethod,
+                delivery_address: state.deliveryAddress,
+                status: 'в обработке',
+                comment: state.comment,
+                total_price: getters.cartTotalPrice,
+                total_discount: getters.cartDiscountPrice,
+                final_price: getters.cartFinalPrice
+            };
+
             const savedCartItems = [...state.items];
+            const savedFixedDiscount = state.promoDiscountFixed;
+            const savedPercentDiscount = state.promoDiscountPercent;
+            commit('mutateClearDiscounts');
             commit('mutateCheckoutStatus', null);
             commit('mutateClearCartItems');
 
             sendData(
                 '/store/order',
-                {
-                    items: cartItems,
-                    payment_method: state.paymentMethod,
-                    delivery_method: state.deliveryMethod,
-                    delivery_address: state.deliveryAddress,
-                    status: 'в обработке',
-                    comment: state.comment
-                },
+                data,
                 (data) => {
                     commit('mutateCheckoutStatus', 'successful');
+                    commit('mutateSetPromoApplyStatus', false);
                     Vue.router.replace({ name: 'order', params: { order_id: data.order.id } });
                 },
                 () => {
                     commit('mutateCheckoutStatus', 'failed');
-                    commit('mutateSetCartItems', savedCartItems)
+                    commit('mutateSetPromoApplyStatus', true);
+                    commit('mutateSetCartItems', savedCartItems);
+                    commit('mutateSetDiscountFixed', savedFixedDiscount);
+                    commit('mutateSetDiscountPercent', savedPercentDiscount);
                 }
             )
+        },
+        setDiscountFixed({commit, state}, discount) {
+            commit('mutateSetDiscountFixed', discount);
+        },
+        setDiscountPercent({commit, state}, discount) {
+            commit('mutateSetDiscountPercent', discount);
+        },
+        setAppliedStatus({commit, state}, status) {
+            commit('mutateSetPromoApplyStatus', status);
         },
         setPaymentMethod(store, data) {
             store.commit('mutatePaymentMethod', data);
@@ -227,6 +281,24 @@ export default {
                 loadData('/store/cart', {},
                     (data) => {
                         commit('mutateSetCartItems', data.cart_items);
+                        if (data.vouchers) {
+
+                            let vouchers = data.vouchers;
+                            let fixedDiscounts = 0;
+                            let percentDiscounts = 0;
+                            vouchers.forEach(voucher => {
+
+                                if (voucher.is_fixed === 1 && voucher.type === 2) {
+                                    fixedDiscounts += parseFloat(voucher.discount_amount);
+                                }
+                                else {
+                                    percentDiscounts += parseFloat(voucher.discount_amount);
+                                }
+                            });
+                            commit('mutateSetPromoApplyStatus', true);
+                            fixedDiscounts === 0 ? commit('mutateSetDiscountFixed', null) : commit('mutateSetDiscountFixed', fixedDiscounts);
+                            percentDiscounts === 0 ?  commit('mutateSetDiscountPercent', null) : commit('mutateSetDiscountPercent', percentDiscounts);
+                        }
                     }
                 );
             }

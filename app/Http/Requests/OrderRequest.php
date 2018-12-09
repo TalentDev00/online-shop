@@ -26,6 +26,9 @@ class OrderRequest extends FormRequest
         return [
             'status' => 'string|max:255',
             'comment' => 'string|max:255',
+            'total_price' => 'numeric',
+            'total_discount' => 'numeric',
+            'final_price' => 'numeric',
         ];
     }
 }

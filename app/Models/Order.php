@@ -11,10 +11,6 @@ class Order extends Model
     ];
 
     // Relations
-    public function cart_items()
-    {
-        return $this->belongsToMany('App\Models\CartItem');
-    }
 
     public function user()
     {

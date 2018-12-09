@@ -11,6 +11,6 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        return new ShopInformationResource(ShopInformation::with( ['categories.children', 'vouchers'])->first());
+        return new ShopInformationResource(ShopInformation::with( ['categories.children', 'vouchers.users:user_id'])->first());
     }
 }

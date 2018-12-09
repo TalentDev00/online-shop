@@ -39,6 +39,9 @@ Route::group(['middleware' => 'jwt.auth'], function() {
 
         //User
         Route::post('/menu/settings', 'UserController@index');
+
+        //Vouchers
+        Route::post('/store/voucher', 'VoucherController@index');
     });
 
 });

@@ -49,18 +49,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="promocode-wrapper">
+                <div class="promocode-wrapper" v-show="!promoApplied">
                     <div class="wrapper-16">
                         <div class="promocode" >
-                            <my-input type="text"
-                                      styleClasses="promocode__item promocode__input"
-                                      name="promocode"
-                                      placeholder="промокод"
-                            ></my-input>
+                            <input type="text"
+                                   class="promocode__item promocode__input"
+                                   name="promocode"
+                                   placeholder="промокод"
+                                   v-model="promo"
+                                   @input="clearPromoErrors()"
+                            >
                             <button class="promocode__item promocode__apply"
+                                    @click="$auth.check() ? applyPromoCode() : $router.push({ name: 'start2' })"
                             >применить</button>
                         </div>
-
+                        <span v-if="promoErrors.length > 0" class="promocode_error">{{ promoErrors[0] }}</span>
                     </div>
                 </div>
                 <div class="cartsum-wrapper">
@@ -105,6 +108,7 @@
     import {mapActions} from 'vuex';
     import myInput from './helpers/input';
     import myModal from '../components/modal';
+    import {post as sendData} from "../api";
 
     export default {
         components: {
@@ -113,7 +117,7 @@
         },
         beforeRouteEnter(to, from, next) {
             next(vm => {
-               // vm.loadCart();
+                vm.loadCart();
                 vm.changeTitle('КОРЗИНА');
                 vm.installSwipers();
             });
@@ -123,7 +127,9 @@
               promoCode: '',
               showModal: false,
               items: [],
-              currentProduct: ''
+              currentProduct: '',
+              promo: '',
+              promoErrors: []
           }
         },
         computed: {
@@ -131,14 +137,18 @@
                 products: 'getItems'
             }),
             ...mapGetters('promotions', {
-                actions: 'getActions'
+                actions: 'getActions',
+                findPromoByName: 'getPromoByCodeName'
             }),
             ...mapGetters('cart', {
                 productsInCart: 'getProducts',
                 countProductsInCart: 'getCountProducts',
                 totalPrice: 'cartTotalPrice',
                 discountPrice: 'cartDiscountPrice',
-                finalPrice: 'cartFinalPrice'
+                finalPrice: 'cartFinalPrice',
+                promoApplied: 'getPromoApplyStatus',
+                promoFixed: 'getPromoFixed',
+                promoPercent: 'getPromoPercent'
             }),
             ...mapGetters('favorites', {
                 isFavorite: 'isFavoriteItem'
@@ -152,7 +162,10 @@
                 add: 'addCartItem',
                 remove: 'removeCartItem',
                 removeWithAllCounts: 'removeFromCartWithAllCounts',
-                loadCart: 'loadUserCart'
+                loadCart: 'loadUserCart',
+                changeFixedDiscount: 'setDiscountFixed',
+                changePercentDiscount: 'setDiscountPercent',
+                changePromoApplyStatus: 'setAppliedStatus'
             }),
             ...mapActions('favorites', {
                 likeUnLike: 'addOrRemoveFavorite',
@@ -161,14 +174,13 @@
                 changeTitle: 'setTitle'
             }),
             toDiscounts(){
-                this.$router.push({name: 'action', params: {action_id: this.actions[0].id } });
+                this.$router.push({name: 'home' });
             },
             toCatalog(){
                 this.$router.push({name: 'catalog'});
             },
             toCheckout() {
                 this.$auth.check() ? this.$router.push({name: 'checkout'}) : this.$router.push({ name: 'start2' });
-                console.log(this)
             },
             installSwipers() {
                 let products = document.querySelectorAll('.swipable');
@@ -200,6 +212,35 @@
                 this.currentProduct = product;
                 this.showModal = !this.showModal;
             },
+            clearPromoErrors() {
+                if (this.promoErrors.length > 0) {
+                    this.promoErrors = [];
+                }
+            },
+            applyPromoCode() {
+                this.promoErrors = [];
+                sendData(
+                    '/store/voucher',
+                    {
+                        voucher: this.promo
+                    },
+                    (data) => {
+                        let promoCode = data.voucher;
+                        if (promoCode.is_fixed === 1) {
+                            this.changeFixedDiscount(promoCode.discount_amount);
+                        }
+                        else {
+                            this.changePercentDiscount(promoCode.discount_amount / 100);
+                        }
+                        this.changePromoApplyStatus(true)
+                    },
+                    (error) => {
+                        this.promoErrors = error.error
+                    }
+                );
+
+                this.promo = '';
+            }
         }
     }
 </script>

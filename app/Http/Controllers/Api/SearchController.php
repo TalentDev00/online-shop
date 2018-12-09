@@ -20,10 +20,6 @@ class SearchController extends Controller
                 'item_properties'
             ]);
 
-
-
-
-
         return $categories->merge($items);
     }
 }

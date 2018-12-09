@@ -28,23 +28,22 @@ Validator.localize('ru', {
     }
 });
 
-
-
 Vue.router = router;
 Vue.use(require('@websanova/vue-auth'), {
     auth: require('@websanova/vue-auth/drivers/auth/bearer.js'),
     http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
     router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
     registerData:       {url: '/user/register',     method: 'POST', redirect: null},
-    loginData:          {url: '/user/login',        method: 'POST', redirect: '/home'},
+    loginData:          {url: '/user/login',        method: 'POST', redirect: {path: '/start3'}},
     logoutData:         {url: '/user/logout',       method: 'POST', redirect: '/user', makeRequest: false},
     oauth1Data:         {url: '/user/login',        method: 'POST'},
     fetchData:          {url: '/user',         method: 'GET'},
     refreshData:        {url: '/refresh',      method: 'GET'},
-    authRedirect: {path: null},
-    forbiddenRedirect: {path: '/menu'},
-    notFoundRedirect: {path: '/home'}
+    authRedirect: {path: '/store/home'},
+    forbiddenRedirect: {path: '/store/menu'},
+    notFoundRedirect: {path: '/store/home'}
 });
+
 import router from './routes';
 import store from './store';
 import App from './components/App';
@@ -102,11 +101,6 @@ Vue.directive('delayed', {
         el.addEventListener(options.arg, callback);
     }
 });
-
-/*import InfiniteLoading from 'vue-infinite-loading';
-Vue.use(InfiniteLoading);*/
-
-
 
 const app = new Vue({
     el: '#app',

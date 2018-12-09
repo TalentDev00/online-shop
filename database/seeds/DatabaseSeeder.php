@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
             CategoriesShopInformationTableSeeder::class,
             OrdersTableSeeder::class,
             CartItemsTableSeeder::class,
-            CartItemsOrdersTableSeeder::class,
             CartItemsCartsTableSeeder::class,
             VouchersTableSeeder::class,
             ItemsVouchersTableSeeder::class,

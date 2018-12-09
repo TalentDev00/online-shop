@@ -62,16 +62,25 @@
                 const toDepth = to.path.split('/').length;
                 const fromDepth = from.path.split('/').length;
 
-                if (
-                        to.name === 'home'
+                if (from.name === 'action') {
+                    this.transitionName = 'swipe-down'
+                }
+                else if (
+                        (to.name === 'home' && from.name !== 'start3')
                         || to.name === 'cart'
                         || to.name === 'favorite'
                         || (to.name === 'catalog' && from.name !== 'start3' )
-                        || (to.name === 'filter' && from.name !== 'parameters')
-                        || to.name === 'sort'
+                       // || (to.name === 'filter' && from.name !== 'parameters')
+                       // || to.name === 'sort'
                     )
                 {
-                    this.transitionName = 'fade'
+                    this.transitionName = ''
+                }
+             /*   else if (to.name === 'home' && from.name === 'action') {
+                    this.transitionName = 'swipe-down'
+                }*/
+                else if (to.name === 'home' && from.name === 'start3') {
+                    this.transitionName = 'swipe-left'
                 }
                 else if (to.name === 'menu' &&
                     (
@@ -95,7 +104,7 @@
                         || from.name !== 'chat'
                     ))
                 {
-                    this.transitionName = 'fade'
+                    this.transitionName = ''
                 }
                 else if (to.name === 'parameters' && from.name === 'filter') {
                     this.transitionName = 'swipe-left'
@@ -103,8 +112,11 @@
                 else if (from.name === 'parameters' && to.name === 'filter') {
                     this.transitionName = 'swipe-right'
                 }
+                else if (to.name === 'filter' || to.name === 'sort') {
+                    this.transitionName = 'swipe-left'
+                }
                 else if (from.name === 'filter' || from.name === 'sort') {
-                    this.transitionName = 'fade'
+                    this.transitionName = 'swipe-right'
                 }
                 else if (to.name === 'chat') {
                     this.transitionName = 'swipe-left'
@@ -113,11 +125,12 @@
                     this.transitionName = 'swipe-right'
                 }
                 else if (from.name === 'subcatalog' && to.name === 'section') {
-                    this.transitionName = 'fade'
+                    this.transitionName = ''
                 }
-                else if (from.name === 'cart' && to.name === 'action') {
-                    this.transitionName = 'fade'
+                else if (from.name === 'home' && to.name === 'action') {
+                    this.transitionName = 'swipe-up'
                 }
+
                 else if (toDepth < fromDepth) {
                     this.transitionName = 'swipe-right'
                 }
@@ -142,7 +155,7 @@
                 }
             },
             skip(){
-                this.$router.push({name: 'start3'});
+                this.$router.push({name: 'home'});
             }
         },
         computed: {

@@ -31,26 +31,33 @@ class OrderController extends Controller
         $order->delivery_method_id = $deliveryMethod->id;
         $order->comment = $request->input('comment') ?? null;
         $order->user_id = Auth::user()->id;
+        $order->cart_data = serialize($request->input('items'));
+        $order->total_price = intval($request->input('total_price'));
+        $order->total_discount = intval($request->input('total_discount'));
+        $order->final_price = intval($request->input('final_price'));
         $order->save();
-        $order->cart_items()->attach($cartItemIds);
-        $cart = Auth::user()->cart()->first();
+
+        $cart = Auth::user()->cart()->with('vouchers')->first();
+        if ($cart->vouchers) {
+            foreach($cart->vouchers as $voucher) {
+                $cart->vouchers()->detach($voucher['id']);
+            }
+        }
+
         $cart->cart_items()->detach($cartItemIds);
+
         return response([
             'status' => 'success',
             'order' => $order,
         ], 200);
+
+
     }
 
     public function delete($order_id)
     {
-        $order = Order::where('user_id', Auth::user()->id)->with('cart_items')->find($order_id);
+        $order = Order::where('user_id', Auth::user()->id)->find($order_id);
         if ($order) {
-            $cartItems = $order->cart_items;
-            $cartItemIds = [];
-            foreach ($cartItems as $cartItm) {
-                $cartItemIds[] = $cartItm['id'];
-            }
-            $order->cart_items()->detach($cartItemIds);
             $order->delete();
 
             return response([
@@ -68,25 +75,11 @@ class OrderController extends Controller
     public function orders(Request $request)
     {
         if ($request->has('orderId') && $request->filled('orderId') && is_numeric($request->get('orderId'))) {
-            return new OrderResource(
-                Order::where('user_id', Auth::user()->id)
-                    ->with(
-                        [
-                            'cart_items.item.item_properties',
-                            'cart_items.item.item_variants.item_variant_values',
-                            'cart_items.item.images',
-                        ]
-                    )
-                    ->find($request->get('orderId'))
-            );
+            return new OrderResource(Order::where('user_id', Auth::user()->id)->find($request->get('orderId')));
         }
 
         if (!$request->has('orderId') && !$request->filled('orderId')) {
-            return OrderResource::collection(
-                Order::where('user_id', Auth::user()->id)
-                    ->with('cart_items.item')
-                    ->get()
-            );
+            return OrderResource::collection(Order::where('user_id', Auth::user()->id)->get());
         }
 
         return response([

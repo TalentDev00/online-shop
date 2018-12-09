@@ -27,7 +27,7 @@
         },
         methods: {
             toDiscounts(){
-                this.$router.push({name: 'action', params:{ action_id: this.actions[0].id } });
+                this.$router.push({name: 'home' });
             },
             toCatalog(){
                 this.$router.push({name: 'catalog'});

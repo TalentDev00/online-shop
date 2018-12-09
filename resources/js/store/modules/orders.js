@@ -13,7 +13,7 @@ export default {
         orderNumber(state, getters) {
             return getters.getOrders.length;
         },
-        orderTotalPrice(state) {
+/*        orderTotalPrice(state) {
             return (order) => order.cart_items ? order.cart_items.reduce((total, orderItem) => {
                 return total + orderItem.item.price * orderItem.qty
             }, 0) : 0;
@@ -28,7 +28,7 @@ export default {
         },
         countOrderItems(state) {
             return (order) => order.cart_items ? order.cart_items.length : 0;
-        },
+        },*/
         orderStatusColor(state) {
             return (order) => order.status === 'выполнен' ? 'order__status-complete' : 'order__status-inprocess';
         }

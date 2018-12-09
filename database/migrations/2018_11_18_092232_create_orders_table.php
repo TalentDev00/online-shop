@@ -40,6 +40,10 @@ class CreateOrdersTable extends Migration
 
             $table->string('delivery_address', 255);
             $table->string('comment', 255);
+            $table->longText('cart_data');
+            $table->integer('total_price')->unsigned();
+            $table->integer('total_discount')->unsigned();
+            $table->integer('final_price')->unsigned();
             $table->timestamps();
         });
     }

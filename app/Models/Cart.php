@@ -19,4 +19,14 @@ class Cart extends Model
     {
         return $this->belongsToMany('App\Models\CartItem');
     }
+
+    public function vouchers()
+    {
+        return $this->belongsToMany(
+            'App\Models\Voucher',
+            'cart_voucher',
+            'cart_id',
+            'voucher_id'
+        );
+    }
 }

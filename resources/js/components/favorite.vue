@@ -50,6 +50,7 @@
         beforeRouteEnter(to, from, next) {
             next(vm => {
                 vm.changeTitle('ИЗБРАННОЕ');
+                vm.loadFavorites();
             });
         },
         computed: {

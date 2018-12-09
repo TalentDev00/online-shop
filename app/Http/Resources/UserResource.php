@@ -23,7 +23,6 @@ class UserResource extends JsonResource
             'cart' => new CartResource($this->whenLoaded('cart')),
             'orders' => OrderResource::collection($this->whenLoaded('orders')),
             'favorites' => FavoriteResource::collection($this->whenLoaded('favorites')),
-            //'favorites' => $this->favorites
         ];
     }
 }

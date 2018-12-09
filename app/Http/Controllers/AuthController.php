@@ -6,6 +6,7 @@ use App\Http\Requests\RegisterFormRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Cart;
 use App\Models\User;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -20,6 +21,8 @@ class AuthController extends Controller
         $user->save();
 
         Cart::make()->user()->associate($user)->save();
+        $voucherIds = Voucher::all()->pluck('id')->toArray();
+        $user->vouchers()->sync($voucherIds);
 
         return response([
             'status' => 'success',
@@ -51,7 +54,6 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        //$user = User::with(['cart', 'orders:id', 'favorites:item_id'])->find(Auth::user()->id);
         $user = new UserResource(User::with(
             [
                 'cart.cart_items.item.item_properties',

@@ -12,7 +12,7 @@
                             <div class="order">
                                 <div class="order__details">
                                     <p class="order__details__number">#{{ order.id }}</p>
-                                    <p class="order__details__price"><span>{{ finalPrice(order) }} ₽ </span><span>({{ order.updated_at }})</span></p>
+                                    <p class="order__details__price"><span>{{ order.final_price }} ₽ </span><span>({{ order.updated_at }})</span></p>
                                 </div>
                                 <div class="order__status "
                                      :class="statusColor(order)"
@@ -40,7 +40,6 @@
             ...mapGetters('orders', {
                 orders: 'getOrders',
                 statusColor: 'orderStatusColor',
-                finalPrice: 'orderFinalPrice'
             }),
         },
         methods: {

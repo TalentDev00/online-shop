@@ -40,4 +40,15 @@ class Voucher extends Model
             'shop_information_id'
         );
     }
+
+    public function carts()
+    {
+        return $this->belongsToMany(
+            'App\Models\Cart',
+            'cart_voucher',
+            'voucher_id',
+            'cart_id'
+        );
+    }
+
 }

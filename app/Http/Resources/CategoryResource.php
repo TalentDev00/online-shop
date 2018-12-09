@@ -18,8 +18,6 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'path' => $this->path,
-            //'children' => $this->children,
-            //'items' => $this->items,
             'parent_id' => $this->parent_id,
             'children_count' => count($this->children)
         ];

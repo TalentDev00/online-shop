@@ -19,6 +19,7 @@ class CartController extends Controller
                 'cart_items.item.images',
                 'cart_items.item.item_properties',
                 'cart_items.item.item_variants.item_variant_values',
+                'vouchers:voucher_id,is_fixed,discount_amount,type'
             ]
         )->where('user_id', Auth::user()->id)->first());
     }

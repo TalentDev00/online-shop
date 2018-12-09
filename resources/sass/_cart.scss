@@ -23,6 +23,14 @@ section.cart, section.cart-active, section.cart-done {
         .promocode-wrapper {
             background: $gray;
             padding: 8px 0 9px 0;
+            .promocode_error {
+                font-size: 10px;
+                font-family: Montserrat, sans-serif;
+                font-weight: 700;
+                color:red;
+                margin-top: 5px;
+                float: left;
+            }
         }
 
         .cartsum-wrapper {

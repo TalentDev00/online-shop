@@ -51,8 +51,7 @@
         },
         data(){
             return {
-                //keywords: (this.$route.params.keywords && this.$route.name !== 'home') ? this.$route.params.keywords : null,
-                keywords: null
+                keywords: null,
             }
         },
         methods: {
@@ -88,6 +87,9 @@
             ...mapGetters('products', {
                 filtersActiveCount: 'getCheckedCount'
             }),
+            ...mapGetters('favorites', {
+                favoriteCount: 'countFavorites',
+            }),
             routeHasKeywords() {
                 return this.$route.params.keywords;
             },
@@ -98,11 +100,11 @@
                 return this.$route.name === 'home';
             },
             currentScreenWithFilters(){
-                return this.$route.name === 'favorite'
+                return (this.$route.name === 'favorite')
                     || this.$route.name === 'section'
                     || this.$route.name === 'result'
             },
-        }
+        },
     }
 </script>
 

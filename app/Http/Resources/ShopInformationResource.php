@@ -19,7 +19,6 @@ class ShopInformationResource extends JsonResource
             'description' => $this->description,
             'logo' => $this->logo,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
-            //'categories' => $this->categories,
             'vouchers' => VoucherResource::collection($this->whenLoaded('vouchers')),
             'payment_methods' => $this->payment_methods,
             'delivery_methods' => $this->delivery_methods,

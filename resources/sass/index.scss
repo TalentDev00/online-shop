@@ -55,18 +55,16 @@ body {
     position: relative;
 }
 
+
+// SLIDE LEFT
 .swipe-left-enter {
-    opacity: 0;
 }
 .swipe-left-enter-active {
-    animation: swipe-left-In 0.4s;
-    transition: opacity .4s ease;
+    animation: swipe-left-In ease .2s;
 }
 
 .swipe-left-leave-active {
-    animation: swipe-left-Out 0.4s;
-    opacity: 0;
-    transition: opacity .4s ease;
+    animation: swipe-left-Out ease .2s;
 }
 
 @keyframes swipe-left-In {
@@ -79,18 +77,15 @@ body {
     to{transform: translateX(-100%);}
 }
 
+// SLIDE RIGHT
 .swipe-right-enter {
-    opacity: 0;
 }
 .swipe-right-enter-active {
-    animation: swipe-right-In 0.4s;
-    transition: opacity .4s ease;
+    animation: swipe-right-In ease .2s;
 }
 
 .swipe-right-leave-active {
-    animation: swipe-right-Out 0.4s;
-    opacity: 0;
-    transition: opacity .4s ease;
+    animation: swipe-right-Out ease .2s;
 }
 
 @keyframes swipe-right-In {
@@ -103,7 +98,7 @@ body {
     to{transform: translateX(100%);}
 }
 
-// animation
+// FADE
 .transition-wrapper {
     overflow-x: hidden;
     overflow-y: scroll;
@@ -129,6 +124,64 @@ body {
     transform: translate(-30px, 0);
 }
 
+// SWIPE UP
+.swipe-up-enter {
+    //opacity: 0;
+}
+.swipe-up-enter-active {
+    animation: slideInUp  0.4s;
+   // transition: opacity .4s ease;
+}
+
+.swipe-up-leave-active {
+    //animation: slideOutDown 0.4s;
+    //opacity: 0;
+    //transition: opacity .4s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        -webkit-transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
+        visibility: visible;
+    }
+
+    to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+
+
+// SWIPE DOWN
+.swipe-down-enter {
+    //opacity: 0;
+}
+.swipe-down-enter-active {
+   //  animation: slideOutDown  0.4s;
+     //transition: opacity 2.4s ease;
+    //transition: opacity .2s ease;
+}
+
+.swipe-down-leave-active {
+   animation: slideOutDown .4s;
+    //opacity: 0;
+    //transition: opacity .4s ease;
+}
+
+@keyframes slideOutDown {
+    from {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+
+    to {
+        visibility: hidden;
+        -webkit-transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
+    }
+}
 
 
 .result-search {

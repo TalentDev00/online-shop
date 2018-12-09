@@ -1,4 +1,3 @@
-
 export default {
     namespaced: true,
     state: {
@@ -13,6 +12,12 @@ export default {
                 return item.type === 1;
             });
         },
+        getPromoByCodeName(state, getters) {
+            return (code) => getters.getPromotions.find(item => item.code === code && item.type === 2)
+        },
+        getPromoById(state, getters) {
+            return (promoCode) => getters.getPromotions.find(item => item.id === promoCode.id && item.type === 2)
+        },
         getSpecificAction(state, getters) {
             return (id) => getters.getPromotions.find(item => item.id === id);
         },
@@ -25,6 +30,12 @@ export default {
     mutations: {
         mutateClearPromotions(state) {
             state.items = [];
+        },
+        incrementUses({state,getters}, promoCode) {
+            let promo = getters.getPromoById(promoCode);
+            if (promo) {
+                promo.uses++;
+            }
         },
         mutateSetPromotions(state, data) {
             state.items = data;

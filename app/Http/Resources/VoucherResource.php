@@ -27,7 +27,8 @@ class VoucherResource extends JsonResource
             'discount_amount' => $this->discount_amount,
             'is_fixed' => $this->is_fixed,
             'starts_at' => $this->starts_at,
-            'expires_at' => $this->expires_at
+            'expires_at' => $this->expires_at,
+            'users' => $this->whenLoaded('users')
         ];
     }
 }

@@ -16,11 +16,6 @@ class CartItem extends Model
         return $this->belongsTo('App\Models\Item');
     }
 
-    public function orders()
-    {
-        return $this->belongsToMany('App\Models\Orders');
-    }
-
     public function carts()
     {
         return $this->belongsToMany('App\Models\Cart');

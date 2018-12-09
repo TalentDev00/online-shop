@@ -4,7 +4,7 @@
         <div class="items">
             <div class="incart">
                 <div class="cart-item"
-                     v-for="(cartItem, index) in order.cart_items"
+                     v-for="(cartItem, index) in order.cart_data"
                      :key="index"
                 >
                     <div class="cart-item__body">
@@ -35,9 +35,9 @@
             <div class="cartsum-wrapper">
                 <div class="wrapper-16">
                     <div class="cartsum">
-                        <p class="cartsum__products"><span class="cartsum__products__count">{{ countOrderProducts(order) }}</span> {{ wordEndings(order) }} на сумму <span class="cartsum__products__price">{{ totalPrice(order) }} руб.</span></p>
-                        <p class="cartsum__discount">Скидка: <span class="cartsum__discount__amount">-{{ discountPrice(order) }} руб.</span></p>
-                        <p class="cartsum__final">Итого: <span class="cartsum__final__num">{{ finalPrice(order) }} руб.</span></p>
+                        <p class="cartsum__products"><span class="cartsum__products__count">{{ order.cart_data ? order.cart_data.length : null }}</span> {{ wordEndings }} на сумму <span class="cartsum__products__price">{{ order.total_price }} руб.</span></p>
+                        <p class="cartsum__discount">Скидка: <span class="cartsum__discount__amount">-{{ order.total_discount }} руб.</span></p>
+                        <p class="cartsum__final">Итого: <span class="cartsum__final__num">{{ order.final_price }} руб.</span></p>
                     </div>
                 </div>
             </div>
@@ -74,14 +74,13 @@
         },
         computed: {
             ...mapGetters('orders', {
-                totalPrice: 'orderTotalPrice',
-                discountPrice: 'orderDiscount',
-                finalPrice: 'orderFinalPrice',
-                countOrderProducts: 'countOrderItems',
                 statusColor: 'orderStatusColor'
             }),
+            countOrderProducts() {
+                return this.order.cart_data ? this.order.cart_data.length : 0;
+            },
             wordEndings() {
-                return (order) => wordEnds(this.countOrderProducts(order), 'товаров', 'товар', 'товара');
+                return wordEnds(this.countOrderProducts, 'товаров', 'товар', 'товара');
             },
         },
         methods: {

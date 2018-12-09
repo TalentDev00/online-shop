@@ -173,6 +173,7 @@
                         that.backErrors = res.response.data.errors;
                     },
                     fetchUser: true,
+                    redirect: {path: '/start3'}
                 });
             },
             register() {

@@ -34,7 +34,7 @@
                     <my-select v-for="(variant, index) in item.variants" :key="index"
                                :variant="variant"
                                :product="item"
-                               :value="variant.name"
+                               :value="variant.values[0]"
                                @onchange="updateValue($event)"
                     ></my-select>
                 </form>
