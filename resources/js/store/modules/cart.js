@@ -281,7 +281,7 @@ export default {
                 loadData('/store/cart', {},
                     (data) => {
                         commit('mutateSetCartItems', data.cart_items);
-                        if (data.vouchers) {
+                        if (data.vouchers && data.vouchers.length > 0) {
 
                             let vouchers = data.vouchers;
                             let fixedDiscounts = 0;

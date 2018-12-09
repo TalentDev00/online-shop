@@ -13,22 +13,6 @@ export default {
         orderNumber(state, getters) {
             return getters.getOrders.length;
         },
-/*        orderTotalPrice(state) {
-            return (order) => order.cart_items ? order.cart_items.reduce((total, orderItem) => {
-                return total + orderItem.item.price * orderItem.qty
-            }, 0) : 0;
-        },
-        orderDiscount(state) {
-            return (order) => order.cart_items ? order.cart_items.reduce((total, orderItem) => {
-                return total + orderItem.item.discount * orderItem.qty
-            }, 0) : 0;
-        },
-        orderFinalPrice(state, getters) {
-            return (order) => getters.orderTotalPrice(order) - getters.orderDiscount(order);
-        },
-        countOrderItems(state) {
-            return (order) => order.cart_items ? order.cart_items.length : 0;
-        },*/
         orderStatusColor(state) {
             return (order) => order.status === 'выполнен' ? 'order__status-complete' : 'order__status-inprocess';
         }
