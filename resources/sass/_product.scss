@@ -168,6 +168,20 @@ section.product-single {
             line-height: 24px;
             margin-top: 8px;
             color: $black;
+
+            span {
+
+                &:first-letter {
+                    text-transform: uppercase;
+                }
+
+                & + span {
+                    text-transform: lowercase;
+                    &:before {
+                        content: ", ";
+                    }
+                }
+            }
         }
 
         .list {
@@ -212,6 +226,10 @@ section.product-single {
         .items {
             @include row-flex();
             align-items: stretch;
+
+            .product {
+                width: auto;
+            }
         }
     }
 

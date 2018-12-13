@@ -227,7 +227,6 @@ class ItemController extends Controller
 
     public function single(Request $request)
     {
-        //if ($request->has('item_id') && $request->filled('item_id')) {
         if ($request->has('item_id') && $request->filled('item_id')) {
            return new ItemResource(Item::with(
                [

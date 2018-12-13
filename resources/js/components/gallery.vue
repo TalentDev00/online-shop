@@ -25,15 +25,14 @@
                 let params = {
                     item_id: to.params.item_id
                 };
-                let that = this;
                 getData(
                     '/store/catalog/items',
                     params,
                     (data) => {
                         vm.setData(data);
-                        vm.$nextTick(function () {
+                        vm.$nextTick(() => {
                             vm.installOwlCarousel();
-                        }.bind(that));
+                        });
                     }
                 );
             });

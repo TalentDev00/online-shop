@@ -69,7 +69,6 @@
 
                     url = '/store/catalog';
                 }
-                let that = this;
                 loadData(url, params, (data) => {
                     vm.setData(data);
                     // set slider initial values
@@ -93,9 +92,9 @@
 
                         vm.slider.startMin = vm.minRange;
                         vm.slider.startMax = vm.maxRange;
-                        vm.$nextTick(function() {
+                        vm.$nextTick(() => {
                             vm.installSlider();
-                        }.bind(that));
+                        });
                     }
                     else {
                         vm.changeTitle('ФИЛЬТР');

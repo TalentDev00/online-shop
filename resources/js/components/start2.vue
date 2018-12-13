@@ -158,19 +158,18 @@
                 }
             },
             login() {
-                let that = this;
                 this.$auth.login({
                     params: {
                         email: this.email,
                         password: this.password
                     },
                     success: () => {
-                        that.loadFavorites(that.$auth.user().favorites);
-                        that.loadCart(that.$auth.user().cart.cart_items)
+                        this.loadFavorites(this.$auth.user().favorites);
+                        this.loadCart(this.$auth.user().cart.cart_items)
                     },
                     error: (res) => {
-                        that.error = true;
-                        that.backErrors = res.response.data.errors;
+                        this.error = true;
+                        this.backErrors = res.response.data.errors;
                     },
                     fetchUser: true,
                     redirect: {path: '/start3'}
@@ -185,13 +184,13 @@
                     },
                     success: () => {
                         that.success = true;
-                        if (that.productsInCart.length > 0) {
-                            that.syncUserCart(that.productsInCart);
+                        if (this.productsInCart.length > 0) {
+                            this.syncUserCart(this.productsInCart);
                         }
                     },
                     error: (resp) => {
-                        that.error = true;
-                        that.backErrors = resp.response.data.errors;
+                        this.error = true;
+                        this.backErrors = resp.response.data.errors;
                     },
                     autoLogin: true,
                     rememberMe: true,

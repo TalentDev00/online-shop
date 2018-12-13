@@ -62,45 +62,46 @@
             <div class="wrapper-16">
                 <h2 class="head">С этим товаром покупают</h2>
                 <div class="items">
-
-
-
-                </div>
-            </div>
-            <div class="owl-carousel" id="recommended-owl">
-                <div v-for="(product, index) in boughtWithProducts" :key="index"
-                     class="carousel-item product">
-                    <router-link tag="div" :to="{ name: 'product', params: { item_id: product.id } }" class="product__img">
-                        <a href=""><img :src="'/images/' + product.images[0].large" alt=""></a>
-                    </router-link>
-                    <div class="product__prices">
-                        <p v-show="product.discount === 0" class="product__prices__nodiscount">{{ product.price }} <span>руб.</span></p>
-                        <p v-show="product.discount !== 0" class="product__prices__oldprice">{{ product.price }}</p>
-                        <p v-show="product.discount !== 0" class="product__prices__newprice">{{ product.price - product.discount }} <span>руб.</span></p>
-                    </div>
-                    <p class="product__name">{{ product.name }}</p>
-                    <div class="product__actions">
-                        <button v-if="isFavorite(product)" class="product__actions__like product__actions__like-active"
-                                @click="$auth.check() ? likeUnLike(product) : $router.push({ name: 'start2' })"
-                        ><img src="../../images/icons/favorite_fill.svg" alt=""></button>
-                        <button v-else class="product__actions__like product__actions__like-active"
-                                @click="$auth.check() ? likeUnLike(product) : $router.push({ name: 'start2' })"
-                        ><img src="../../images/icons/favorite.svg" alt=""></button>
-                        <button v-if="!productInCart(product)" class="product__actions__buy"
-                                @click="popModal(product)"
-                        >купить</button>
-                        <div v-else class="product__actions__counter">
-                            <button class="product__actions__counter__remove"
-                                    @click="remove(product)"
-                            ><span>-</span></button>
-                            <div class="product__actions__counter__count">{{ productQty(product) }}</div>
-                            <button class="product__actions__counter__add"
-                                    @click="add(product)"
-                            ><span>+</span></button>
+                    <div class="owl-carousel" id="recommended-owl">
+                        <div v-for="(product, index) in boughtWithProducts" :key="index"
+                             class="carousel-item product"
+                        >
+                            <router-link tag="div" :to="{ name: 'product', params: { item_id: product.id } }" class="product__img">
+                                <a href=""><img :src="'/images/' + product.images[0].large" alt=""></a>
+                            </router-link>
+                            <div class="product__prices">
+                                <p v-show="product.discount === 0" class="product__prices__nodiscount">{{ product.price }} <span>руб.</span></p>
+                                <p v-show="product.discount !== 0" class="product__prices__oldprice">{{ product.price }}</p>
+                                <p v-show="product.discount !== 0" class="product__prices__newprice">{{ product.price - product.discount }} <span>руб.</span></p>
+                            </div>
+                            <p class="product__name">{{ product.name }}</p>
+                            <div class="product__actions">
+                                <button v-if="isFavorite(product)" class="product__actions__like product__actions__like-active"
+                                        @click="$auth.check() ? likeUnLike(product) : $router.push({ name: 'start2' })"
+                                ><img src="../../images/icons/favorite_fill.svg" alt=""></button>
+                                <button v-else class="product__actions__like product__actions__like-active"
+                                        @click="$auth.check() ? likeUnLike(product) : $router.push({ name: 'start2' })"
+                                ><img src="../../images/icons/favorite.svg" alt=""></button>
+                                <button v-if="!productInCart(product)" class="product__actions__buy"
+                                        @click="popModal(product)"
+                                >купить</button>
+                                <div v-else class="product__actions__counter">
+                                    <button class="product__actions__counter__remove"
+                                            @click="remove(product)"
+                                    ><span>-</span></button>
+                                    <div class="product__actions__counter__count">{{ productQty(product) }}</div>
+                                    <button class="product__actions__counter__add"
+                                            @click="add(product)"
+                                    ><span>+</span></button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+
                 </div>
             </div>
+
         </div>
         <button v-show="!productInCart(item)"
                 class="btn btn__fixed"
@@ -129,16 +130,15 @@
                 let params = {
                     item_id: to.params.item_id
                 };
-                let that = this;
                 getData(
                     '/store/catalog/items',
                     params,
                     (data) => {
                         vm.setData(data);
                         vm.loadBoughtWithItems({ boughtWith: 8 });
-                        vm.$nextTick(function() {
+                        vm.$nextTick(() => {
                             vm.changeTitle(vm.item.name);
-                        }.bind(that));
+                        });
                     }
                 );
                 getData(
@@ -146,9 +146,9 @@
                     {boughtWith: 8},
                     (data) => {
                         vm.loadBoughtTogether(data);
-                        vm.$nextTick(function() {
+                        vm.$nextTick(() => {
                             vm.installOwlCarousel();
-                        }.bind(that));
+                        });
                     }
                 )
             });
@@ -232,12 +232,13 @@
             installOwlCarousel() {
                 $('#recommended-owl').owlCarousel({
                     loop: true,
+                    autoplay: true,
+                    autoplayHoverPause: true,
                     items: 2,
-                    //center: false,
                     nav: false,
                     autoWidth: false,
+                    mergeFit: false,
                     margin: 0,
-                    //navText: ["<img src='../../images/icons/back_orange.svg'>", "<img src='../../images/icons/forvard_orange.svg'>"],
                     dots: false,
                     dotsEach: false,
                     rtl: false
@@ -246,23 +247,3 @@
         }
     }
 </script>
-<style scoped lang="scss">
-    p.product-ingredients {
-        span {
-
-            &:first-letter {
-                text-transform: uppercase;
-            }
-
-            & + span {
-                text-transform: lowercase;
-                &:before {
-                    content: ", ";
-                }
-            }
-        }
-    }
-    .owl-item {
-        width: 100px;
-    }
-</style>
