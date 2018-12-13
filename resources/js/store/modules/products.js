@@ -217,6 +217,9 @@ export default {
                     commit('mutateLoadBoughtWithItems', data);
                 }
             );
+        },
+        setBoughtWithItems({state,commit}, data) {
+            commit('mutateLoadBoughtWithItems', data);
         }
     }
 }

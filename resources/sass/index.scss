@@ -60,11 +60,10 @@ body {
 .swipe-left-enter {
 }
 .swipe-left-enter-active {
-    animation: swipe-left-In ease .2s;
+    animation: swipe-left-In .4s;
 }
 
 .swipe-left-leave-active {
-    animation: swipe-left-Out ease .2s;
 }
 
 @keyframes swipe-left-In {
@@ -72,30 +71,19 @@ body {
     to{transform: translateX(0px);}
 }
 
-@keyframes swipe-left-Out {
-    from{transform: translateX(0px);}
-    to{transform: translateX(-100%);}
-}
-
 // SLIDE RIGHT
 .swipe-right-enter {
 }
 .swipe-right-enter-active {
-    animation: swipe-right-In ease .2s;
+    animation: swipe-right-In .4s;
 }
 
 .swipe-right-leave-active {
-    animation: swipe-right-Out ease .2s;
 }
 
 @keyframes swipe-right-In {
     from{transform: translateX(-100%);}
     to{transform: translateX(0px);}
-}
-
-@keyframes swipe-right-Out {
-    from{transform: translateX(0px);}
-    to{transform: translateX(100%);}
 }
 
 // FADE
@@ -126,62 +114,50 @@ body {
 
 // SWIPE UP
 .swipe-up-enter {
-    //opacity: 0;
+
 }
 .swipe-up-enter-active {
-    animation: slideInUp  0.4s;
-   // transition: opacity .4s ease;
+    animation: slide-in-up  3.4s;
 }
 
 .swipe-up-leave-active {
-    //animation: slideOutDown 0.4s;
-    //opacity: 0;
-    //transition: opacity .4s ease;
+    animation: slide-in-down  3.4s;
+
 }
 
-@keyframes slideInUp {
-    from {
-        -webkit-transform: translate3d(0, 100%, 0);
-        transform: translate3d(0, 100%, 0);
-        visibility: visible;
-    }
-
-    to {
-        -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
-    }
+@keyframes slide-in-up {
+    from {transform: translateY(100%);}
+    to {transform: translateY(0px);}
+}
+@keyframes slide-in-down {
+    from {transform: translateY(0px);}
+    to {transform: translateY(-100%);}
 }
 
 
 
-// SWIPE DOWN
+/*// SWIPE DOWN
 .swipe-down-enter {
-    //opacity: 0;
 }
 .swipe-down-enter-active {
-   //  animation: slideOutDown  0.4s;
-     //transition: opacity 2.4s ease;
-    //transition: opacity .2s ease;
+    animation: slide-in-down 3.4s;
+
 }
 
 .swipe-down-leave-active {
-   animation: slideOutDown .4s;
-    //opacity: 0;
-    //transition: opacity .4s ease;
+    animation: slide-in-Updown 3.4s;
+
 }
 
-@keyframes slideOutDown {
-    from {
-        -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
-    }
-
-    to {
-        visibility: hidden;
-        -webkit-transform: translate3d(0, 100%, 0);
-        transform: translate3d(0, 100%, 0);
-    }
+@keyframes slide-in-down {
+    from {transform: translateY(0px);}
+    to {transform: translateY(100%);}
 }
+
+@keyframes slide-in-Updown {
+    from {transform: translateY(0px);}
+    to {transform: translateY(100%);}
+}*/
 
 
 .result-search {
@@ -228,6 +204,7 @@ body {
         left: 0;
         right:0;
         z-index:10001;
+
         &:after {
             display:none;
         }

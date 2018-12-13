@@ -4,7 +4,7 @@
             <h2 class="head" slot="title">{{ headerTitle }}</h2>
         </my-header>
         <div class="transition-wrapper" v-if="$auth.ready()">
-            <transition :name="transitionName" mode="out-in"
+            <transition :name="transitionName"
             >
                 <router-view :key="$route.fullPath"></router-view>
             </transition>
@@ -61,24 +61,24 @@
             '$route' (to, from) {
                 const toDepth = to.path.split('/').length;
                 const fromDepth = from.path.split('/').length;
-
+                const toDepthCatNumber = parseInt(to.path.split('/')[to.path.split('/').length - 1]);
+                const fromDepthCatNumber = parseInt(from.path.split('/')[from.path.split('/').length - 1]);
                 if (from.name === 'action') {
-                    this.transitionName = 'swipe-down'
+                    this.transitionName = 'swipe-right'
+                }
+                else if ((from.name === 'filter' || from.name === 'sort') && to.name === 'favorite') {
+                    this.transitionName = 'swipe-right'
                 }
                 else if (
                         (to.name === 'home' && from.name !== 'start3')
                         || to.name === 'cart'
-                        || to.name === 'favorite'
+                        || (to.name === 'favorite' && (from.name !== 'filter' || from.name !== 'sort'))
                         || (to.name === 'catalog' && from.name !== 'start3' )
-                       // || (to.name === 'filter' && from.name !== 'parameters')
-                       // || to.name === 'sort'
                     )
                 {
                     this.transitionName = ''
                 }
-             /*   else if (to.name === 'home' && from.name === 'action') {
-                    this.transitionName = 'swipe-down'
-                }*/
+
                 else if (to.name === 'home' && from.name === 'start3') {
                     this.transitionName = 'swipe-left'
                 }
@@ -125,10 +125,13 @@
                     this.transitionName = 'swipe-right'
                 }
                 else if (from.name === 'subcatalog' && to.name === 'section') {
-                    this.transitionName = ''
+                    this.transitionName = 'swipe-left'
+                }
+                else if (from.name === 'subcatalog' && toDepthCatNumber < fromDepthCatNumber) {
+                    this.transitionName = 'swipe-right'
                 }
                 else if (from.name === 'home' && to.name === 'action') {
-                    this.transitionName = 'swipe-up'
+                    this.transitionName = 'swipe-left'
                 }
 
                 else if (toDepth < fromDepth) {
